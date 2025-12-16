@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import "tailwindcss";
+
+body
+{
+  font-family: "Figtree", sans-serif;
+  font-size: 1rem;
+  color: oklch(27.935% 0.00894 17.506);
+  background-color: oklch(94.374% 0.00872 248.202);
+}
+
+@theme
+{
+  --color-*: initial;
+  /*Light Mode colours (lm = light mode) */ 
+  --color-background-lm: oklch(94.374% 0.00872 248.202);
+  --color-text-lm: oklch(27.935% 0.00894 17.506);
+  --color-text-lighter-lm: oklch(39.947% 0.01226 17.474);
+  --color-primary-lm: oklch(100% 0.00011 271.152);
+  --color-secondary-lm: oklch(96.696% 0.00298 264.792);
+  --color-accent-lm: oklch(54.847% 0.17827 38.314);
+  --color-stroke-orange: oklch(72.924% 0.11701 45.597);
+  --color-stroke-grey: oklch(84.212% 0.0001 271.152);
+  --color-hover-lm: oklch(96.272% 0.0117 59.292);
+  --color-message-user-lm: oklch(63.087% 0.18278 40.91);
+  --color-message-other-lm: oklch(89.776% 0.02735 43.486);
+  --color-online-indicator: oklch(65.025% 0.20094 145.619);
+
+  /* Typescale = Minor Third */
+  --text-*: initial;
+  --text-xs: 0.694rem;
+  --text-sm: 0.833rem;
+  --text-base: 1rem;
+  --text-md: 1.2rem;
+  --text-lg: 1.44rem;
+  --text-xl: 1.73rem;
+  --text-2xl: 2.074rem;
+  --text-3xl: 2.488rem;
+  --text-4xl: 2.986rem;
+}
+
+@layer base
+{
+  h1
+  {
+    font-size: var(--text-4xl);
+  }
+
+  h2
+  {
+    font-size: var(--text-3xl);
+  }
+
+  h3
+  {
+    font-size: var(--text-2xl);
+  }
+
+  h4
+  {
+    font-size: var(--text-xl);
+  }
+
+  h5
+  {
+    font-size: var(--text-lg);
+  }
+
+  h6
+  {
+    font-size: var(--text-md);
+  }
+}
+
