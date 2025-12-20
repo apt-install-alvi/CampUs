@@ -39,7 +39,7 @@ export async function extractTextFromImage(imageBase64: string): Promise<OCRResu
     await worker.setParameters({
       tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/-:. &',
       preserve_interword_spaces: '1',
-      tessedit_pageseg_mode: 6 as PSM, // Use number 6, cast to PSM type
+      tessedit_pageseg_mode: 6 as unknown as PSM, // Use number 6, cast to PSM type
     });
     
     // Perform OCR on the image

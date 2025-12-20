@@ -128,7 +128,8 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 
     // TODO: Add more validations
     console.log("Form submitted:", formData);
-    // TODO: Add API call here
+      navigate('/login');
+    
   };
 
   return (
