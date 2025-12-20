@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import SignupLoginBox from "../../components/SignupLoginBox";
-import Illustration from "../../assets/signup2.jpg";
+import Illustration from "../../assets/images/Signup_img.svg";
 
 export function Login2FA() {
   const { userId } = useParams<{ userId: string }>();
@@ -58,12 +58,12 @@ export function Login2FA() {
       illustrationTitle="2FA Illustration"
     >
       <form onSubmit={handleSubmit} className="space-y-6 max-w-xl">
-        <p className="text-sm text-text-lighter-lm)]">
+        <p className="text-lg text-text-lighter-lm">
           A 6-digit code has been sent to 01*******81
         </p>
 
         {/* Six small boxes */}
-        <div className="flex gap-2 justify-center" onPaste={handlePaste}>
+        <div className="flex gap-2 justify-center w-fit" onPaste={handlePaste}>
           {values.map((val, i) => (
             <input
               key={i}

@@ -16,13 +16,10 @@ export default function SignupLoginBox({
   return (
     <div className="min-h-[88vh] flex items-center justify-center p-4 md:p-6 bg-background-lm">
       <div
-        className="relative w-full max-w-350 rounded-2xl shadow-lg overflow-hidden"
-        style={{ backgroundColor: "rgba(255,255,255,0.98)" }}
-      >
-        {/* Increased from 1200px to 1400px */}
+        className="relative w-full max-w-350 rounded-2xl shadow-lg overflow-hidden">
         
         {/* Background spans under curve */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 bg-[#F3F4F6]">
+        <div className="grid grid-cols-1 lg:grid-cols-12 bg-secondary-lm">
           {/* Changed from md to lg for larger breakpoint */}
           
           {/* LEFT: content - increased from 6 to 7 columns on large screens */}
