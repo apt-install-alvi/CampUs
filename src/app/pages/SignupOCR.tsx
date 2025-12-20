@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import SignupLoginBox from "../../components/SignupLoginBox";
-import Illustration from "../../assets/signup.svg";
+import Illustration from "../../assets/signup2.jpg";
 import { extractTextFromImage } from "../../features/auth/api/OCR";
 import type { OCRResult } from "../../features/auth/api/OCR";
 

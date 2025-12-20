@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SignupLoginBox from "../../components/SignupLoginBox";
 import Password from "../../features/auth/components/Password"; // Direct import
-import Illustration from "../../assets/signup.svg";
+import Illustration from "../../assets/signup2.jpg";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 const DEPTS = ["CSE", "EECE", "CE", "ME", "NSE", "NAME", "EWCE", "PME", "BME", "ARCHI"];
