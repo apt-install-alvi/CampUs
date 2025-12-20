@@ -1,9 +1,11 @@
+// src/app/pages/Signup.tsx
 import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SignupLoginBox from "../../components/SignupLoginBox";
 import Password from "../../features/auth/components/Password"; // Direct import
 import Illustration from "../../assets/signup.svg";
-
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 const DEPTS = ["CSE", "EECE", "CE", "ME", "NSE", "NAME", "EWCE", "PME", "BME", "ARCHI"];
 const LEVELS = ["1", "2", "3", "4"];
 
@@ -20,7 +22,29 @@ type FormData = {
 };
 
 export default function Signup() {
+  const location = useLocation();
+
+// Handle OCR data when returning from scanning
+useEffect(() => {
+  const ocrData = location.state?.ocrData;
+  if (ocrData) {
+    console.log("Setting OCR data:", ocrData);
+    setFormData(prev => ({
+      ...prev,
+      name: ocrData.name || prev.name,
+      studentId: ocrData.studentId || prev.studentId,
+      dept: ocrData.dept || prev.dept,
+      batch: ocrData.batch || prev.batch,
+    }));
+    
+    // Clear the state to prevent re-application on refresh
+    if (window.history.replaceState) {
+      window.history.replaceState({}, document.title);
+    }
+  }
+}, [location.state]);
   const fileRef = useRef<HTMLInputElement | null>(null);
+  const navigate = useNavigate();
   const [fileName, setFileName] = useState<string | null>(null);
   const [passwordsMatch, setPasswordsMatch] = useState(true);
   const [formData, setFormData] = useState<FormData>({
@@ -42,10 +66,34 @@ export default function Signup() {
     fileRef.current?.click();
   }
 
-  function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0] || null;
-    setFileName(f ? f.name : null);
+function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+  const f = e.target.files?.[0] || null;
+  if (!f) {
+    setFileName(null);
+    return;
   }
+
+  // Convert file to base64 and navigate to OCR page
+  const reader = new FileReader();
+  reader.onload = () => {
+    const base64 = reader.result as string;
+    setFileName(f.name);
+    
+    // navigate to OCR page with base64 data
+    navigate("/signup/ocr", { 
+      state: { 
+        fileBase64: base64, 
+        fileName: f.name,
+        fileType: f.type 
+      } 
+    });
+  };
+  reader.onerror = (error) => {
+    console.error('Error reading file:', error);
+    alert('Error reading file. Please try again.');
+  };
+  reader.readAsDataURL(f);
+}
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -71,13 +119,13 @@ export default function Signup() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Check if passwords match
     if (!passwordsMatch) {
       alert("Passwords do not match");
       return;
     }
-    
+
     // TODO: Add more validations
     console.log("Form submitted:", formData);
     // TODO: Add API call here
@@ -92,7 +140,7 @@ export default function Signup() {
       <div className="mb-6">
         <div
           className="flex items-stretch w-full rounded-[12px] border"
-          style={{ 
+          style={{
             ...inputBorderStyle,
             height: 48,
             backgroundColor: "white"
@@ -101,10 +149,10 @@ export default function Signup() {
           <button
             type="button"
             onClick={chooseFile}
-            className="px-5 rounded-l-[12px] text-sm font-medium"
-            style={{ 
-              backgroundColor: "#C23D00", 
-              color: "#FFFFFF", 
+            className="px-5 rounded-l-[12px] text-sm font-medium !text-white"
+            style={{
+              backgroundColor: "#C23D00",
+              color: "#FFFFFF",
               minWidth: 120,
               borderRight: "1px solid #9CA3AF"
             }}
@@ -112,9 +160,9 @@ export default function Signup() {
             Choose File
           </button>
 
-          <div 
+          <div
             className="flex-1 flex items-center px-4 text-sm"
-            style={{ 
+            style={{
               color: fileName ? "#1F2937" : "#6B7280",
             }}
           >
@@ -134,28 +182,28 @@ export default function Signup() {
       {/* FORM */}
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Name Input */}
-        <input 
+        <input
           name="name"
           value={formData.name}
           onChange={handleInputChange}
           className="w-full rounded-[12px] border px-4 py-3 placeholder:opacity-60"
           style={inputBorderStyle}
-          placeholder="Name" 
+          placeholder="Name"
         />
-        
+
         {/* Student ID Input */}
-        <input 
+        <input
           name="studentId"
           value={formData.studentId}
           onChange={handleInputChange}
           className="w-full rounded-[12px] border px-4 py-3 placeholder:opacity-60"
           style={inputBorderStyle}
-          placeholder="Student ID" 
+          placeholder="Student ID"
         />
 
         {/* Dept and Level Dropdowns */}
         <div className="grid grid-cols-2 gap-4">
-          <select 
+          <select
             name="dept"
             value={formData.dept}
             onChange={handleInputChange}
@@ -174,7 +222,7 @@ export default function Signup() {
             {DEPTS.map(d => <option key={d} value={d}>{d}</option>)}
           </select>
 
-          <select 
+          <select
             name="level"
             value={formData.level}
             onChange={handleInputChange}
@@ -195,36 +243,36 @@ export default function Signup() {
         </div>
 
         {/* Batch Input */}
-        <input 
+        <input
           name="batch"
           value={formData.batch}
           onChange={handleInputChange}
           className="w-full rounded-[12px] border px-4 py-3 placeholder:opacity-60"
           style={inputBorderStyle}
-          placeholder="Batch" 
+          placeholder="Batch"
         />
-        
+
         {/* Email Input */}
-        <input 
+        <input
           name="email"
           type="email"
           value={formData.email}
           onChange={handleInputChange}
           className="w-full rounded-[12px] border px-4 py-3 placeholder:opacity-60"
           style={inputBorderStyle}
-          placeholder="Email" 
+          placeholder="Email"
         />
-        
+
         {/* Mobile Input */}
-        <input 
+        <input
           name="mobile"
           value={formData.mobile}
           onChange={handleInputChange}
           className="w-full rounded-[12px] border px-4 py-3 placeholder:opacity-60"
           style={inputBorderStyle}
-          placeholder="Mobile Number" 
+          placeholder="Mobile Number"
         />
-        
+
         {/* Password Field */}
         <Password
           value={formData.password}
@@ -245,8 +293,8 @@ export default function Signup() {
         <div className="flex items-center gap-4 pt-2">
           <button
             type="submit"
-            className="px-6 py-2 rounded-[12px] font-medium"
-            style={{ backgroundColor: "#C23D00", color: "#FFFFFF" }}
+            className="px-6 py-2 rounded-[12px] font-medium "
+            style={{ backgroundColor: "#C23D00" , color: "white" }}
           >
             Signup
           </button>

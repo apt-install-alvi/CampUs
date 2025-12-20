@@ -1,3 +1,4 @@
+// src/app/routes.tsx
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
 // layouts
@@ -5,6 +6,7 @@ import Layout from "./Layout";
 
 // pages
 import Signup from "./pages/Signup";
+import SignupOCR from "./pages/SignupOCR";
 import Login from "./pages/Login";
 import { Home } from "./pages/Home";
 import { CollabHub } from "./pages/CollabHub";
@@ -16,21 +18,25 @@ import { UserProfile } from "./pages/UserProfile";
 import { NotFound } from "./pages/NotFound";
 
 export const router = createBrowserRouter([
-  /* ---------- AUTH ROUTES (NO LAYOUT) mane signup login e layout er kaaj nai and layout imports TopBotNav ---------- */
+  /* ---------- AUTH ROUTES (NO LAYOUT) ---------- */
   {
     path: "/",
-    element: <Navigate to="/signup" />
+    element: <Navigate to="/signup" replace />
   },
   {
     path: "/signup",
     element: <Signup />
   },
   {
+    path: "/signup/ocr",
+    element: <SignupOCR />
+  },
+  {
     path: "/login",
     element: <Login />
   },
 
-  /* ---------- APP ROUTES (WITH LAYOUT) ekhaner page gulay layout use korbo ---------- */
+  /* ---------- APP ROUTES (WITH LAYOUT) ---------- */
   {
     element: <Layout />,
     errorElement: <NotFound />,
