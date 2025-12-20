@@ -1,4 +1,3 @@
-import React from "react";
 import type { ReactNode } from "react";
 
 interface SignupLoginBoxProps {
@@ -15,9 +14,9 @@ export default function SignupLoginBox({
   title,
 }: SignupLoginBoxProps) {
   return (
-    <div className="min-h-[88vh] flex items-center justify-center p-4 md:p-6 bg-[var(--color-background-lm)]">
+    <div className="min-h-[88vh] flex items-center justify-center p-4 md:p-6 bg-background-lm">
       <div
-        className="relative w-full max-w-[1400px] rounded-2xl shadow-lg overflow-hidden"
+        className="relative w-full max-w-350 rounded-2xl shadow-lg overflow-hidden"
         style={{ backgroundColor: "rgba(255,255,255,0.98)" }}
       >
         {/* Increased from 1200px to 1400px */}
@@ -44,7 +43,7 @@ export default function SignupLoginBox({
           </div>
 
           {/* RIGHT: overlapping curved SVG - decreased from 6 to 5 columns */}
-          <div className="relative hidden lg:block lg:col-span-5 -ml-[100px] 2xl:-ml-[120px]">
+          <div className="relative hidden lg:block lg:col-span-5 -ml-25 2xl:-ml-30">
             {/* Changed from md:col-span-6 to lg:col-span-5 */}
             {/* Adjusted negative margin for the curve overlap */}
             

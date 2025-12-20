@@ -1,12 +1,11 @@
 // src/app/pages/Signup.tsx
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SignupLoginBox from "../../components/SignupLoginBox";
-import Password from "../../features/auth/components/Password"; // Direct import
-import Illustration from "../../assets/signup.svg";
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
-const DEPTS = ["CSE", "EECE", "CE", "ME", "NSE", "NAME", "EWCE", "PME", "BME", "ARCHI"];
+import {Password} from "../../features/auth/components/Password"; // Direct import
+import Illustration from "../../assets/images/Signup_img.svg";
+import { useLocation } from "react-router";
+const DEPTS = ["CSE", "EECE", "CE", "ME", "NSE", "NAME", "EWCE", "PME", "BME", "ARCH"];
 const LEVELS = ["1", "2", "3", "4"];
 
 type FormData = {
@@ -23,6 +22,21 @@ type FormData = {
 
 export default function Signup() {
   const location = useLocation();
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const navigate = useNavigate();
+  const [fileName, setFileName] = useState<string | null>(null);
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const [formData, setFormData] = useState<FormData>({
+    name: "",
+    studentId: "",
+    dept: "",
+    level: "",
+    batch: "",
+    email: "",
+    mobile: "",
+    password: "",
+    confirmPassword: "",
+  });
 
 // Handle OCR data when returning from scanning
 useEffect(() => {
@@ -43,21 +57,7 @@ useEffect(() => {
     }
   }
 }, [location.state]);
-  const fileRef = useRef<HTMLInputElement | null>(null);
-  const navigate = useNavigate();
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [passwordsMatch, setPasswordsMatch] = useState(true);
-  const [formData, setFormData] = useState<FormData>({
-    name: "",
-    studentId: "",
-    dept: "",
-    level: "",
-    batch: "",
-    email: "",
-    mobile: "",
-    password: "",
-    confirmPassword: "",
-  });
+
 
   // Common border style for all inputs
   const inputBorderStyle = { borderColor: "#9CA3AF", borderWidth: "1px" };
@@ -140,7 +140,7 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
       {/* CHOOSE FILE - with consistent border */}
       <div className="mb-6">
         <div
-          className="flex items-stretch w-full rounded-[12px] border"
+          className="flex items-stretch w-full rounded-xl border"
           style={{
             ...inputBorderStyle,
             height: 48,
@@ -150,7 +150,7 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
           <button
             type="button"
             onClick={chooseFile}
-            className="px-5 rounded-l-[12px] text-sm font-medium !text-white"
+            className="px-5 rounded-xl text-sm font-medium text-primary-lm"
             style={{
               backgroundColor: "#C23D00",
               color: "#FFFFFF",
@@ -187,7 +187,7 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
           name="name"
           value={formData.name}
           onChange={handleInputChange}
-          className="w-full rounded-[12px] border px-4 py-3 placeholder:opacity-60"
+          className="w-full rounded-xl border px-4 py-3 placeholder:opacity-60"
           style={inputBorderStyle}
           placeholder="Name"
         />
@@ -197,7 +197,7 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
           name="studentId"
           value={formData.studentId}
           onChange={handleInputChange}
-          className="w-full rounded-[12px] border px-4 py-3 placeholder:opacity-60"
+          className="w-full rounded-xl border px-4 py-3 placeholder:opacity-60"
           style={inputBorderStyle}
           placeholder="Student ID"
         />
@@ -208,7 +208,7 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
             name="dept"
             value={formData.dept}
             onChange={handleInputChange}
-            className="w-full rounded-[12px] border px-4 py-3"
+            className="w-full rounded-xl border px-4 py-3"
             style={{
               ...inputBorderStyle,
               appearance: "none",
@@ -227,7 +227,7 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
             name="level"
             value={formData.level}
             onChange={handleInputChange}
-            className="w-full rounded-[12px] border px-4 py-3"
+            className="w-full rounded-xl border px-4 py-3"
             style={{
               ...inputBorderStyle,
               appearance: "none",
@@ -248,7 +248,7 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
           name="batch"
           value={formData.batch}
           onChange={handleInputChange}
-          className="w-full rounded-[12px] border px-4 py-3 placeholder:opacity-60"
+          className="w-full rounded-xl border px-4 py-3 placeholder:opacity-60"
           style={inputBorderStyle}
           placeholder="Batch"
         />
@@ -259,7 +259,7 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
           type="email"
           value={formData.email}
           onChange={handleInputChange}
-          className="w-full rounded-[12px] border px-4 py-3 placeholder:opacity-60"
+          className="w-full rounded-xl border px-4 py-3 placeholder:opacity-60"
           style={inputBorderStyle}
           placeholder="Email"
         />
@@ -269,7 +269,7 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
           name="mobile"
           value={formData.mobile}
           onChange={handleInputChange}
-          className="w-full rounded-[12px] border px-4 py-3 placeholder:opacity-60"
+          className="w-full rounded-xl border px-4 py-3 placeholder:opacity-60"
           style={inputBorderStyle}
           placeholder="Mobile Number"
         />
@@ -294,15 +294,15 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         <div className="flex items-center gap-4 pt-2">
           <button
             type="submit"
-            className="px-6 py-2 rounded-[12px] font-medium "
+            className="px-6 py-2 rounded-xl font-medium "
             style={{ backgroundColor: "#C23D00" , color: "white" }}
           >
             Signup
           </button>
 
-          <span className="text-sm text-[var(--color-text-lighter-lm)]">
+          <span className="text-sm text-text-lighter-lm">
             Already have an account?{" "}
-            <Link to="/login" className="underline text-[var(--color-accent-lm)]">
+            <Link to="/login" className="underline text-accent-lm">
               Login
             </Link>
           </span>

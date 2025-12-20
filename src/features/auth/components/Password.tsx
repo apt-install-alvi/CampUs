@@ -9,12 +9,11 @@ interface PasswordProps {
   onMatchChange?: (matches: boolean) => void;
 }
 
-// Password strength checker
 const checkPasswordStrength = (password: string) => {
-  if (!password) return { score: 0, message: "", strength: "" };
+  if (!password) return { score: 0, messages: [], strength: "" };
   
-  let score = 0;
-  const messages = [];
+  let score:number = 0;
+  const messages:string[] = [];
   
   // Check length
   if (password.length >= 8) score++;
@@ -54,7 +53,7 @@ const getStrengthColor = (score: number): string => {
   return "#10B981"; // green
 };
 
-export default function Password({
+export function Password({
   value,
   onChange,
   placeholder = "Password",
@@ -93,7 +92,7 @@ export default function Password({
           type={showPassword ? "text" : "password"}
           value={value}
           onChange={handleInputChange}
-          className="w-full rounded-[12px] border px-4 py-3 placeholder:opacity-60 pr-10"
+          className="w-full rounded-xl border px-4 py-3 placeholder:opacity-60 pr-10"
           style={commonBorderStyle}
           placeholder={placeholder}
         />

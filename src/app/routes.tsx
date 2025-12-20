@@ -1,13 +1,10 @@
-// src/app/routes.tsx
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router";
 
-// layouts
 import Layout from "./Layout";
 
-// pages
 import Signup from "./pages/Signup";
 import SignupOCR from "./pages/SignupOCR";
-import Login from "./pages/Login";
+import {Login} from "./pages/Login";
 import { Home } from "./pages/Home";
 import { CollabHub } from "./pages/CollabHub";
 import { Events } from "./pages/Events";

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import SignupLoginBox from "../../components/SignupLoginBox";
-import Illustration from "../../assets/signup.svg";
+import Illustration from "../../assets/images/Signup_img.svg";
 import { extractTextFromImage } from "../../features/auth/api/OCR";
 import type { OCRResult } from "../../features/auth/api/OCR";
 
@@ -22,7 +22,6 @@ export default function SignupOCR() {
   const state = (loc.state as LocationState) ?? null;
   const fileBase64 = state?.fileBase64 ?? null;
   const fileName = state?.fileName ?? null;
-  const fileType = state?.fileType ?? null;
   
   const [isScanning, setIsScanning] = useState(false);
   const [scanResult, setScanResult] = useState<OCRResult | null>(null);
@@ -85,7 +84,7 @@ export default function SignupOCR() {
       <div className="flex flex-col items-center">
         {/* Instructions */}
         <div className="mb-6 text-center">
-          <p className="text-[var(--color-text-lighter-lm)] mb-2">
+          <p className="text-text-lighter-lm mb-2">
             Make sure your ID card is clearly visible in the box below
           </p>
           {fileName && (
@@ -95,7 +94,7 @@ export default function SignupOCR() {
         
         {/* Card preview with fixed dimensions */}
         <div
-          className="relative w-[280px] h-[400px] bg-white rounded-lg shadow-md flex items-center justify-center overflow-hidden mb-6"
+          className="relative w-70 h-100 bg-white rounded-lg shadow-md flex items-center justify-center overflow-hidden mb-6"
           style={{ border: "2px solid #C23D00" }}
         >
           {/* Image sits inside and covers the area */}
@@ -147,7 +146,7 @@ export default function SignupOCR() {
         <div className="flex gap-4">
           <button
             onClick={handleBack}
-            className="px-6 py-2 rounded-[12px] font-medium border"
+            className="px-6 py-2 rounded-xl font-medium border"
             style={{ 
               backgroundColor: "white", 
               color: "#6B7280",
@@ -161,7 +160,7 @@ export default function SignupOCR() {
           <button
             onClick={handleScan}
             disabled={isScanning}
-            className="px-6 py-2 rounded-[12px] font-medium flex items-center gap-2"
+            className="px-6 py-2 rounded-xl font-medium flex items-center gap-2"
             style={{ 
               backgroundColor: isScanning ? "#E5E7EB" : "#C23D00", 
               color: "white",
@@ -190,9 +189,9 @@ export default function SignupOCR() {
         )}
         
         {/* Login link */}
-        <div className="mt-6 text-sm text-[var(--color-text-lighter-lm)]">
+        <div className="mt-6 text-sm text-text-lighter-lm">
           Already have an account?{" "}
-          <Link to="/login" className="underline text-[var(--color-accent-lm)]">
+          <Link to="/login" className="underline text-accent-lm">
             Login
           </Link>
         </div>
