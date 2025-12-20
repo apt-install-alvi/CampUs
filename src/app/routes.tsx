@@ -5,6 +5,7 @@ import Layout from "./Layout";
 import Signup from "./pages/Signup";
 import SignupOCR from "./pages/SignupOCR";
 import {Login} from "./pages/Login";
+import {Login2FA} from "./pages/Login2FA";
 import { Home } from "./pages/Home";
 import { CollabHub } from "./pages/CollabHub";
 import { Events } from "./pages/Events";
@@ -15,22 +16,18 @@ import { UserProfile } from "./pages/UserProfile";
 import { NotFound } from "./pages/NotFound";
 
 export const router = createBrowserRouter([
-  /* ---------- AUTH ROUTES (NO LAYOUT) ---------- */
-  {
-    path: "/",
-    element: <Navigate to="/signup" replace />
-  },
-  {
-    path: "/signup",
-    element: <Signup />
-  },
-  {
-    path: "/signup/ocr",
-    element: <SignupOCR />
-  },
+  { path: "/", element: <Navigate to="/signup" replace /> },
+  { path: "/signup", element: <Signup /> },
+  { path: "/signup/ocr", element: <SignupOCR /> },
   {
     path: "/login",
-    element: <Login />
+    element: <Login />,
+    errorElement: <NotFound /> // handle login errors
+  },
+  {
+    path: "/login/2fa/:userId",
+    element: <Login2FA />,
+    errorElement: <NotFound />
   },
 
   /* ---------- APP ROUTES (WITH LAYOUT) ---------- */
@@ -46,5 +43,8 @@ export const router = createBrowserRouter([
       { path: "/lost-and-found", element: <LostFound /> },
       { path: "/profile", element: <UserProfile /> }
     ]
-  }
+  },
+
+  // Catch-all route
+  { path: "*", element: <NotFound /> }
 ]);

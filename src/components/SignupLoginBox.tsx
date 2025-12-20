@@ -86,9 +86,9 @@ export default function SignupLoginBox({
                   <image
                     href={illustrationSrc}
                     x="0"
-                    y="0"
-                    width="700"
-                    height="900"
+                    y="60"
+                    width="820"
+                    height="700"
                     preserveAspectRatio="xMidYMid slice"
                     aria-labelledby="auth-illustration-title"
                   />
