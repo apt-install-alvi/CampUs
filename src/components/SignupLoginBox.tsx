@@ -1,110 +1,18 @@
 import type { ReactNode } from "react";
+import illustrationContainer from "../assets/images/signup_img_container.svg";
+import signupIllustration2 from "../assets/images/Signup_img.svg";
 
-interface SignupLoginBoxProps {
-  children: ReactNode;
-  illustrationSrc?: string;
-  illustrationTitle?: string;
-  title?: string;
-}
-
-export default function SignupLoginBox({
-  children,
-  illustrationSrc,
-  illustrationTitle = "Illustration",
-  title,
-}: SignupLoginBoxProps) {
+export function SignupLoginBox({children, title} : {children:ReactNode, title:string}) 
+{
   return (
-    <div className="min-h-[88vh] flex items-center justify-center p-4 md:p-6 bg-background-lm">
-      <div
-        className="relative w-full max-w-350 rounded-2xl shadow-lg overflow-hidden">
-        
-        {/* Background spans under curve */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 bg-secondary-lm">
-          {/* Changed from md to lg for larger breakpoint */}
-          
-          {/* LEFT: content - increased from 6 to 7 columns on large screens */}
-          <div className="relative z-10 lg:col-span-7 p-8 md:p-10 lg:p-12">
-            {/* Changed from md:col-span-6 to lg:col-span-7 */}
-            {/* Added more padding for larger screens */}
-            
-            {title && (
-              <h1
-                className="text-3xl md:text-4xl font-semibold mb-6 md:mb-8"
-                style={{ color: "var(--color-text-lm)" }}
-              >
-                {title}
-              </h1>
-            )}
-
-            {children}
-          </div>
-
-          {/* RIGHT: overlapping curved SVG - decreased from 6 to 5 columns */}
-          <div className="relative hidden lg:block lg:col-span-5 -ml-25 2xl:-ml-30">
-            {/* Changed from md:col-span-6 to lg:col-span-5 */}
-            {/* Adjusted negative margin for the curve overlap */}
-            
-            <svg
-              viewBox="0 0 700 900"
-              preserveAspectRatio="xMidYMid slice"
-              className="w-full h-full block"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <defs>
-                {/* Curve clip - adjusted for wider left side */}
-                <clipPath id="auth-clip">
-                  <path d="M180 0 C 80 140, 40 260, 140 420 C 280 640, 40 740, 180 900 L 700 900 L 700 0 Z" />
-                  {/* Adjusted curve to start earlier (from 220 to 180) */}
-                </clipPath>
-
-                {/* Shadow */}
-                <filter id="curve-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feDropShadow
-                    dx="-10"  
-                    dy="0"
-                    stdDeviation="14"  
-                    floodColor="rgba(0,0,0,0.15)"
-                    floodOpacity="0.3"
-                  />
-                </filter>
-              </defs>
-
-              {/* White curve body (creates cut effect) */}
-              <g filter="url(#curve-shadow)">
-                <path
-                  d="M180 0 C 80 140, 40 260, 140 420 C 280 640, 40 740, 180 900 L 700 900 L 700 0 Z"
-                  fill="#FFFFFF"
-                />
-              </g>
-
-              {/* Illustration inside curve */}
-              {illustrationSrc && (
-                <g clipPath="url(#auth-clip)">
-                  <image
-                    href={illustrationSrc}
-                    x="0"
-                    y="60"
-                    width="820"
-                    height="700"
-                    preserveAspectRatio="xMidYMid slice"
-                    aria-labelledby="auth-illustration-title"
-                  />
-                  <title id="auth-illustration-title">
-                    {illustrationTitle}
-                  </title>
-                </g>
-              )}
-              
-              {/* Fallback if no illustration */}
-              {!illustrationSrc && (
-                <g clipPath="url(#auth-clip)">
-                  <rect x="0" y="0" width="700" height="900" fill="#F8FAFC" />
-                  {/* Light gray fallback */}
-                </g>
-              )}
-            </svg>
-          </div>
-        </div>
+    <div className="flex flex-row mx-10 my-8 bg-secondary-lm rounded-3xl bg-clip-border">
+      <div className="px-10 py-8 flex flex-col gap-3 w-1/2 h-full">
+        <p className="text-text-lm text-xl font-[Poppins] font-medium">{title}</p>
+        {children}
+      </div>
+      <div className="overflow-hidden w-1/2 rounded-3xl">
+        <img src={illustrationContainer} className="relative top-10 left-2 scale-125 "></img>
+        <img src={signupIllustration2} className="absolute w-11/12 h-11/12 scale-100 top-1/6 left-[28.5%]"></img>
       </div>
     </div>
   );

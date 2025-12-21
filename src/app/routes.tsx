@@ -13,7 +13,7 @@ import { QnA } from "./pages/QnA";
 import { Study } from "./pages/Study";
 import { LostFound } from "./pages/LostFound";
 import { UserProfile } from "./pages/UserProfile";
-import { NotFound } from "./pages/NotFound";
+import { NotFound } from "./pages/Error_NotFound";
 
 export const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/signup" replace /> },

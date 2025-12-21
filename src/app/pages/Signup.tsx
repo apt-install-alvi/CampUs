@@ -1,9 +1,8 @@
 // src/app/pages/Signup.tsx
 import React, { useRef, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import SignupLoginBox from "../../components/SignupLoginBox";
+import {SignupLoginBox} from "../../components/SignupLoginBox";
 import {Password} from "../../features/auth/components/Password"; // Direct import
-import Illustration from "../../assets/images/Signup_img.svg";
 import { useLocation } from "react-router";
 const DEPTS = ["CSE", "EECE", "CE", "ME", "NSE", "NAME", "EWCE", "PME", "BME", "ARCH"];
 const LEVELS = ["1", "2", "3", "4"];
@@ -133,10 +132,7 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
   };
 
   return (
-    <SignupLoginBox
-      title="Signup"
-      illustrationSrc={Illustration}
-    >
+    <SignupLoginBox title="Sign Up">
       {/* CHOOSE FILE - with consistent border */}
       <div className="mb-6">
         <div
@@ -148,16 +144,8 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
           }}
         >
           <button
-            type="button"
             onClick={chooseFile}
-            className="px-5 rounded-xl text-sm font-medium text-primary-lm"
-            style={{
-              backgroundColor: "#C23D00",
-              color: "#FFFFFF",
-              minWidth: 120,
-              borderRight: "1px solid #9CA3AF"
-            }}
-          >
+            className="px-5 rounded-xl text-base font-medium text-primary-lm bg-accent-lm cursor-pointer">
             Choose File
           </button>
 
@@ -308,6 +296,6 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
           </span>
         </div>
       </form>
-    </SignupLoginBox>
+  </SignupLoginBox>
   );
 }

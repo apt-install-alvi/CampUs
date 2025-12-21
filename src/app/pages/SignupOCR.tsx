@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
-import SignupLoginBox from "../../components/SignupLoginBox";
-import Illustration from "../../assets/images/Signup_img.svg";
+import {SignupLoginBox} from "../../components/SignupLoginBox";
+// import Illustration from "../../assets/images/Signup_img.svg";
 import { extractTextFromImage } from "../../features/auth/api/OCR";
 import type { OCRResult } from "../../features/auth/api/OCR";
 
@@ -80,7 +80,10 @@ export default function SignupOCR() {
   }
 
   return (
-    <SignupLoginBox title="Scan Your ID" illustrationSrc={Illustration} illustrationTitle="Signup Illustration">
+    <SignupLoginBox 
+    title="Scan Your ID" 
+    // illustrationSrc={Illustration} illustrationTitle="Signup Illustration"
+    >
       <div className="flex flex-col items-center">
         {/* Instructions */}
         <div className="mb-6 text-center">

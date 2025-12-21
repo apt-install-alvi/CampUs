@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import SignupLoginBox from "../../components/SignupLoginBox";
-import Illustration from "../../assets/images/Signup_img.svg";
+import {SignupLoginBox} from "../../components/SignupLoginBox";
+// import Illustration from "../../assets/images/Signup_img.svg";
 
 export function Login2FA() {
   const { userId } = useParams<{ userId: string }>();
@@ -54,8 +54,8 @@ export function Login2FA() {
   return (
     <SignupLoginBox
       title="Login"
-      illustrationSrc={Illustration}
-      illustrationTitle="2FA Illustration"
+      // illustrationSrc={Illustration}
+      // illustrationTitle="2FA Illustration"
     >
       <form onSubmit={handleSubmit} className="space-y-6 max-w-xl">
         <p className="text-lg text-text-lighter-lm">

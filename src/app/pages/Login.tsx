@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
-import SignupLoginBox from "../../components/SignupLoginBox";
-import Illustration from "../../assets/images/Signup_img.svg";
+import {SignupLoginBox} from "../../components/SignupLoginBox";
+// import Illustration from "../../assets/images/Signup_img.svg";
 import {Password} from "../../features/auth/components/Password";
 
 export function Login() {
@@ -26,7 +26,10 @@ export function Login() {
 
 
   return (
-    <SignupLoginBox title="Login" illustrationSrc={Illustration} illustrationTitle="Login Illustration">
+    <SignupLoginBox 
+    title="Login" 
+    // illustrationSrc={Illustration} illustrationTitle="Login Illustration"
+    >
       <form onSubmit={handleSubmit} className="space-y-6 max-w-xl">
         <label className="block">
           <div className="mb-2 text-base text-text-lighter-lm">User ID</div>
