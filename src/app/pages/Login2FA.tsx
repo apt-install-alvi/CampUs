@@ -74,7 +74,7 @@ export function Login2FA() {
               onChange={(e) => handleChange(i, e.target.value)}
               onKeyDown={(e) => handleKeyDown(i, e)}
               maxLength={1}
-              className="w-12 h-12 text-center text-xl border rounded bg-primary-lm"
+              className="w-11 h-13 text-center text-xl border border-stroke-grey rounded bg-primary-lm"
             />
           ))}
         </div>

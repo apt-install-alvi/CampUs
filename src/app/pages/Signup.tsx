@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {SignupLoginBox} from "../../components/SignupLoginBox";
 import {Password} from "../../features/auth/components/Password"; // Direct import
 import { useLocation } from "react-router";
+import { InputField } from "../../components/InputField";
 const DEPTS = ["CSE", "EECE", "CE", "ME", "NSE", "NAME", "EWCE", "PME", "BME", "ARCH"];
 const LEVELS = ["1", "2", "3", "4"];
 
@@ -56,10 +57,6 @@ useEffect(() => {
     }
   }
 }, [location.state]);
-
-
-  // Common border style for all inputs
-  const inputBorderStyle = { borderColor: "#9CA3AF", borderWidth: "1px" };
 
   function chooseFile() {
     fileRef.current?.click();
@@ -133,160 +130,119 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 
   return (
     <SignupLoginBox title="Sign Up">
-      {/* CHOOSE FILE - with consistent border */}
-      <div className="mb-6">
-        <div
-          className="flex items-stretch w-full rounded-xl border"
-          style={{
-            ...inputBorderStyle,
-            height: 48,
-            backgroundColor: "white"
-          }}
+      <h5>Upload your ID</h5>
+      <div
+        className="flex items-center gap-2"
+      >
+        <button
+          onClick={chooseFile}
+          className="px-4 py-2 rounded-lg text-base font-medium text-primary-lm bg-accent-lm cursor-pointer">
+          Choose File
+        </button>
+
+        <p
+          className="text-sm text-text-lighter-lm"
         >
-          <button
-            onClick={chooseFile}
-            className="px-5 rounded-xl text-base font-medium text-primary-lm bg-accent-lm cursor-pointer">
-            Choose File
-          </button>
-
-          <div
-            className="flex-1 flex items-center px-4 text-sm"
-            style={{
-              color: fileName ? "#1F2937" : "#6B7280",
-            }}
-          >
-            {fileName ?? "Upload ID (image/pdf)"}
-          </div>
-        </div>
-
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/*,application/pdf"
-          onChange={onFileChange}
-          className="hidden"
-        />
+          {fileName ?? "Upload ID (image/pdf)"}
+        </p>
       </div>
 
-      {/* FORM */}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Name Input */}
-        <input
-          name="name"
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*,application/pdf"
+        onChange={onFileChange}
+        className="hidden"
+      />
+      <h6 className="-mb-2.5 mt-2 text-text-lighter-lm font-light">Or fill up the form below:</h6>
+      <form onSubmit={handleSubmit} className="space-y-2">
+        <InputField
+          label="Name"
+          type="text" 
           value={formData.name}
-          onChange={handleInputChange}
-          className="w-full rounded-xl border px-4 py-3 placeholder:opacity-60"
-          style={inputBorderStyle}
-          placeholder="Name"
-        />
+          changeHandler={handleInputChange}>
+        </InputField>
 
-        {/* Student ID Input */}
-        <input
-          name="studentId"
-          value={formData.studentId}
-          onChange={handleInputChange}
-          className="w-full rounded-xl border px-4 py-3 placeholder:opacity-60"
-          style={inputBorderStyle}
-          placeholder="Student ID"
-        />
+        <InputField
+          label="Student ID"
+          type="text"
+          value={formData.studentId} 
+          changeHandler={handleInputChange}>
+        </InputField>
+ 
+        <div className="flex flex-row w-3/4 align-middle justify-between">
+          <div className="flex flex-col">
+            <label htmlFor="dept" className="text-text-lm text-md font-medium my-0">Department</label>
+            <select
+              name="dept"
+              value={formData.dept}
+              onChange={handleInputChange}
+              className="px-2 bg-primary-lm border border-stroke-grey rounded-lg w-32 h-10 text-base text-text-lighter-lm font-normal focus:outline-accent-lm"
+            >
+            <option value="" className="text-text-lighter-lm">Dept</option>
+              {DEPTS.map(d => <option key={d} value={d}>{d}</option>)}
+            </select>
+          </div>
 
-        {/* Dept and Level Dropdowns */}
-        <div className="grid grid-cols-2 gap-4">
-          <select
-            name="dept"
-            value={formData.dept}
-            onChange={handleInputChange}
-            className="w-full rounded-xl border px-4 py-3"
-            style={{
-              ...inputBorderStyle,
-              appearance: "none",
-              backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 20 20'><path d='M5 7l5 5 5-5' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>")`,
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "right 8px center",
-              backgroundSize: "16px",
-              paddingRight: "32px",
-            }}
-          >
-            <option value="">Dept</option>
-            {DEPTS.map(d => <option key={d} value={d}>{d}</option>)}
-          </select>
+          <div className="flex flex-col">
+            <label htmlFor="level" className="text-text-lm text-md font-medium my-0">Level</label>
+            <select
+              name="level"
+              value={formData.level}
+              onChange={handleInputChange}
+              className="px-2 bg-primary-lm border border-stroke-grey rounded-lg w-32 h-10 text-base text-text-lighter-lm font-normal focus:outline-accent-lm"
+            >
+              <option value="" className="text-text-lighter-lm">Level</option>
+              {LEVELS.map(l => <option key={l} value={l}>{l}</option>)}
+            </select>
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="batch" className="text-text-lm text-md font-medium my-0">Batch</label>
+            <input
+              name="batch"
+              type="text"
+              value={formData.batch} 
+              onChange={handleInputChange}
+              placeholder="e.g CSE-23"
+              className="px-2 bg-primary-lm border border-stroke-grey rounded-lg w-32 h-10 text-base text-text-lighter-lm font-normal focus:outline-accent-lm"
+            />
+          </div>
+      </div>
 
-          <select
-            name="level"
-            value={formData.level}
-            onChange={handleInputChange}
-            className="w-full rounded-xl border px-4 py-3"
-            style={{
-              ...inputBorderStyle,
-              appearance: "none",
-              backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 20 20'><path d='M5 7l5 5 5-5' fill='none' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>")`,
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "right 8px center",
-              backgroundSize: "16px",
-              paddingRight: "32px",
-            }}
-          >
-            <option value="">Level</option>
-            {LEVELS.map(l => <option key={l} value={l}>{l}</option>)}
-          </select>
-        </div>
 
-        {/* Batch Input */}
-        <input
-          name="batch"
-          value={formData.batch}
-          onChange={handleInputChange}
-          className="w-full rounded-xl border px-4 py-3 placeholder:opacity-60"
-          style={inputBorderStyle}
-          placeholder="Batch"
-        />
-
-        {/* Email Input */}
-        <input
-          name="email"
+        <InputField 
+          label="Email"
           type="email"
-          value={formData.email}
-          onChange={handleInputChange}
-          className="w-full rounded-xl border px-4 py-3 placeholder:opacity-60"
-          style={inputBorderStyle}
-          placeholder="Email"
-        />
+          value={formData.email} 
+          placeholder="abc123@yourmail.com"
+          changeHandler={handleInputChange}>
+        </InputField>
+  
+        <InputField
+          label="Mobile Number"
+          type="text"
+          value={formData.mobile} 
+          changeHandler={handleInputChange}>
+        </InputField>
 
-        {/* Mobile Input */}
-        <input
-          name="mobile"
-          value={formData.mobile}
-          onChange={handleInputChange}
-          className="w-full rounded-xl border px-4 py-3 placeholder:opacity-60"
-          style={inputBorderStyle}
-          placeholder="Mobile Number"
-        />
-
-        {/* Password Field */}
         <Password
+          label="Password"
           value={formData.password}
           onChange={handlePasswordChange}
-          placeholder="Password"
           showStrength={true}
         />
 
-        {/* Confirm Password Field */}
         <Password
+          label="Confirm Password"
           value={formData.confirmPassword}
           onChange={handleConfirmPasswordChange}
-          placeholder="Confirm Password"
           compareValue={formData.password}
           onMatchChange={setPasswordsMatch}
         />
 
         <div className="flex items-center gap-4 pt-2">
-          <button
-            type="submit"
-            className="px-6 py-2 rounded-xl font-medium "
-            style={{ backgroundColor: "#C23D00" , color: "white" }}
-          >
-            Signup
-          </button>
+          <input type="submit" className="bg-accent-lm text-primary-lm text-base font-medium px-4 py-2 rounded-lg">
+          </input>
 
           <span className="text-sm text-text-lighter-lm">
             Already have an account?{" "}

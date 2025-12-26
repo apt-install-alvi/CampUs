@@ -82,16 +82,15 @@ export default function SignupOCR() {
   return (
     <SignupLoginBox 
     title="Scan Your ID" 
-    // illustrationSrc={Illustration} illustrationTitle="Signup Illustration"
     >
       <div className="flex flex-col items-center">
         {/* Instructions */}
         <div className="mb-6 text-center">
-          <p className="text-text-lighter-lm mb-2">
+          <p className="text-md text-text-lighter-lm mb-2">
             Make sure your ID card is clearly visible in the box below
           </p>
           {fileName && (
-            <p className="text-xs text-gray-500">File: {fileName}</p>
+            <p className="text-base text-text-lighter-lm font-semibold">File: {fileName}</p>
           )}
         </div>
         
