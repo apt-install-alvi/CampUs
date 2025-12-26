@@ -4,30 +4,30 @@ import Layout from "./Layout";
 
 import Signup from "./pages/Signup";
 import SignupOCR from "./pages/SignupOCR";
-import {Login} from "./pages/Login";
-import {Login2FA} from "./pages/Login2FA";
+import { Login } from "./pages/Login";
+import { Login2FA } from "./pages/Login2FA";
 import { Home } from "./pages/Home";
 import { CollabHub } from "./pages/CollabHub";
 import { Events } from "./pages/Events";
-import { QnA } from "./pages/QnA";
+import QnA from "./pages/QnA";
 import { Study } from "./pages/Study";
 import { LostFound } from "./pages/LostFound";
 import { UserProfile } from "./pages/UserProfile";
 import { NotFound } from "./pages/NotFound";
 
 export const router = createBrowserRouter([
-  { path: "/", element: <Navigate to="/signup" replace /> },
+  { path: "/", element: <Navigate to="/QnA" replace /> },
   { path: "/signup", element: <Signup /> },
   { path: "/signup/ocr", element: <SignupOCR /> },
   {
     path: "/login",
     element: <Login />,
-    errorElement: <NotFound /> // handle login errors
+    errorElement: <NotFound />, // handle login errors
   },
   {
     path: "/login/2fa/:userId",
     element: <Login2FA />,
-    errorElement: <NotFound />
+    errorElement: <NotFound />,
   },
 
   /* ---------- APP ROUTES (WITH LAYOUT) ---------- */
@@ -41,10 +41,10 @@ export const router = createBrowserRouter([
       { path: "/qna", element: <QnA /> },
       { path: "/study", element: <Study /> },
       { path: "/lost-and-found", element: <LostFound /> },
-      { path: "/profile", element: <UserProfile /> }
-    ]
+      { path: "/profile", element: <UserProfile /> },
+    ],
   },
 
   // Catch-all route
-  { path: "*", element: <NotFound /> }
+  { path: "*", element: <NotFound /> },
 ]);

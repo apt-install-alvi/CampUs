@@ -1,6 +1,6 @@
 export default function TopNav()
 {
   return (
-    <h1>TopNav</h1>
+    <h1></h1>
   );
 }

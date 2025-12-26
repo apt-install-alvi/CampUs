@@ -1,6 +1,6 @@
 export default function BotNav()
 {
   return (
-    <h1>BotNav</h1>
+    <h1></h1>
   );
 }

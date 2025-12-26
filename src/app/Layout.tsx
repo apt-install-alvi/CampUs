@@ -6,13 +6,17 @@ export default function Layout() {
   const location = useLocation();
 
   // adjust the list of routes where navs should be hidden
-  const authPaths = ["/signup", "/login"];
-  const hideNav = authPaths.includes(location.pathname);
+  const hideNavPaths = ["/signup", "/login"]; // hide TopNav on profile; page uses its own Navbar
+  const hideNav = hideNavPaths.includes(location.pathname);
 
   return (
     <>
       {!hideNav && <TopNav />}
-      <main className={`${hideNav ? "min-h-screen flex items-center justify-center" : "flex-1"} container mx-auto px-4 py-6`}>
+      <main
+        className={`${
+          hideNav ? "min-h-screen flex items-center justify-center" : "flex-1"
+        } container mx-auto px-4 py-6`}
+      >
         <Outlet />
       </main>
       {!hideNav && <BotNav />}
