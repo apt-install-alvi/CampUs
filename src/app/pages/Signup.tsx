@@ -155,6 +155,7 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
       <form onSubmit={handleSubmit} className="space-y-2">
         <InputField
           label="Name"
+          name="name"
           type="text" 
           value={formData.name}
           changeHandler={handleInputChange}>
@@ -162,6 +163,7 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 
         <InputField
           label="Student ID"
+          name="studentId"
           type="text"
           value={formData.studentId} 
           changeHandler={handleInputChange}>
@@ -209,6 +211,7 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 
         <InputField 
           label="Email"
+          name="email"
           type="email"
           value={formData.email} 
           placeholder="abc123@yourmail.com"
@@ -217,6 +220,7 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
   
         <InputField
           label="Mobile Number"
+          name="mobile"
           type="text"
           value={formData.mobile} 
           changeHandler={handleInputChange}>
