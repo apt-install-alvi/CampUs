@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from "react";
 import type { ChangeEvent, KeyboardEvent } from "react";
-import { Navbar } from "@/components/navbar";
+//import { Navbar } from "@/components/navbar";
 import {
   Search,
   Heart,
@@ -120,7 +120,7 @@ function QAPageContent() {
 
   return (
     <div className="min-h-screen bg-[#f6f8fb]">
-      <Navbar />
+     
 
       <main className="mx-auto max-w-4xl px-4 py-6">
         {selectedPost ? (

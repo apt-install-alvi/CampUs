@@ -8,7 +8,7 @@ import { Login } from "./pages/Login";
 import { Login2FA } from "./pages/Login2FA";
 import { Home } from "./pages/Home";
 import { CollabHub } from "./pages/CollabHub";
-import { Events } from "./pages/Events";
+import  Events  from "./pages/Events";
 import QnA from "./pages/QnA";
 import { Study } from "./pages/Study";
 import { LostFound } from "./pages/LostFound";
@@ -16,7 +16,7 @@ import { UserProfile } from "./pages/UserProfile";
 import { NotFound } from "./pages/Error_NotFound";
 
 export const router = createBrowserRouter([
-  { path: "/", element: <Navigate to="/QnA" replace /> },
+  { path: "/", element: <Navigate to="/signup" replace /> },
   { path: "/signup", element: <Signup /> },
   { path: "/signup/ocr", element: <SignupOCR /> },
   {
