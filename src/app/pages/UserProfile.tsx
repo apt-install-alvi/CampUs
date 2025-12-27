@@ -35,19 +35,19 @@ export function UserProfile() {
   const addInterest = () => {
     const tag = window.prompt("Add an interest (e.g., ML, CTF)")?.trim();
     if (!tag) return;
-    setInterests((prev) => (prev.includes(tag) ? prev : [...prev, tag]));//duplicate  page handel,ui clean  
+    setInterests((prev) => (prev.includes(tag) ? prev : [...prev, tag])); //duplicate  page handel,ui clean
   };
 
   return (
-    <div className="min-h-[70vh]">
+    <div className="min-h-[70vh] bg-background-lm text-text-lm animate-fade-in">
       {/* Page-level Navbar to match the provided design */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
         {/* Main profile card */}
-        <section className="rounded-2xl border border-orange-200 bg-white shadow-sm">
+        <section className="rounded-2xl border border-stroke-grey bg-primary-lm shadow-sm animate-slide-in">
           {/* Header */}
-          <div className="flex items-start gap-6 border-b border-orange-100 p-6">
+          <div className="flex items-start gap-6 border-b border-stroke-grey p-6">
             <div className="relative">
-              <div className="rounded-full border-4 border-orange-200 p-1">
+              <div className="rounded-full border-4 border-stroke-peach p-1">
                 <Avatar className="h-24 w-24">
                   <AvatarImage src="/user-avatar.jpg" />
                   <AvatarFallback>TT</AvatarFallback>
@@ -56,49 +56,48 @@ export function UserProfile() {
             </div>
 
             <div className="flex-1">
-              <h1 className="text-xl font-extrabold tracking-tight text-slate-900">
+              <h1 className="text-xl font-extrabold tracking-tight text-text-lm">
                 THAN THAN THAY
               </h1>
-              <div className="mt-1 text-sm text-slate-600">CSE-23</div>
-              <div className="text-sm text-slate-600">LEVEL-3</div>
+              <div className="mt-1 text-sm text-text-lighter-lm">CSE-23</div>
+              <div className="text-sm text-text-lighter-lm">LEVEL-3</div>
               <div className="mt-3">
-                <Badge className="bg-orange-50 text-orange-700 border border-orange-200 rounded-full px-3 py-1">
+                <Badge className="bg-secondary-lm text-accent-lm border border-stroke-peach rounded-full px-3 py-2">
                   An AI enthusiast
                 </Badge>
               </div>
             </div>
 
-            <div className="hidden h-24 flex-1 rounded-lg bg-orange-50/30 lg:block" />
           </div>
 
           {/* Skills */}
-          <div className="border-b border-orange-100 p-6">
+          <div className="border-b border-stroke-grey p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-slate-900">Skills</h2>
+              <h2 className="text-lg font-bold text-text-lm">Skills</h2>
               <Button
                 onClick={addSkill}
-                className="h-8 rounded-full bg-orange-600 px-3 text-white hover:bg-orange-700"
+                className="h-8 rounded-full bg-accent-lm px-3 text-primary-lm hover:bg-hover-btn-lm"
               >
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
 
-            <div className="divide-y divide-orange-100 rounded-xl border border-orange-100 bg-orange-50/20">
+            <div className="divide-y divide-stroke-grey rounded-xl border border-stroke-grey bg-secondary-lm">
               {skills.map((sk, idx) => (
                 <div
                   key={idx}
                   className="flex items-center justify-between gap-4 px-4 py-4"
                 >
                   <div>
-                    <div className="font-semibold text-slate-800">
-                      {sk.title}
-                    </div>
+                    <div className="font-semibold text-text-lm">{sk.title}</div>
                     {sk.detail && (
-                      <div className="text-sm text-slate-500">{sk.detail}</div>
+                      <div className="text-sm text-text-lighter-lm">
+                        {sk.detail}
+                      </div>
                     )}
                   </div>
                   <div>
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-orange-200 bg-white text-orange-600">
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-stroke-peach bg-primary-lm text-accent-lm">
                       <Plus className="h-4 w-4" />
                     </span>
                   </div>
@@ -110,12 +109,10 @@ export function UserProfile() {
           {/* Interested In */}
           <div className="p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-slate-900">
-                Interested In
-              </h2>
+              <h2 className="text-lg font-bold text-text-lm">Interested In</h2>
               <Button
                 onClick={addInterest}
-                className="h-8 rounded-full bg-orange-600 px-3 text-white hover:bg-orange-700"
+                className="h-8 rounded-full bg-accent-lm px-3 text-primary-lm hover:bg-hover-btn-lm"
               >
                 <Plus className="h-4 w-4" />
               </Button>
@@ -125,7 +122,7 @@ export function UserProfile() {
               {interests.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full border border-orange-200 bg-white px-4 py-1.5 text-sm font-semibold text-orange-700 shadow-sm"
+                  className="rounded-full border border-stroke-peach bg-primary-lm px-4 py-1.5 text-sm font-semibold text-accent-lm shadow-sm"
                 >
                   {tag}
                 </span>
@@ -135,14 +132,14 @@ export function UserProfile() {
         </section>
 
         {/* Sidebar */}
-        <aside className="h-fit rounded-2xl border border-orange-200 bg-white p-4 shadow-sm">
+        <aside className="h-fit rounded-2xl border border-stroke-grey bg-primary-lm p-4 shadow-sm animate-slide-in">
           <h3 className="px-2 text-sm font-bold text-slate-700">
             Upcoming Events
           </h3>
-          <div className="mt-3 rounded-xl border border-orange-100 bg-orange-50/30 p-4 text-sm text-slate-600">
+          <div className="mt-3 rounded-xl border border-stroke-grey bg-secondary-lm p-4 text-sm text-text-lm">
             No events added
           </div>
-          <Button className="mt-3 w-full rounded-full bg-orange-600 text-white hover:bg-orange-700">
+          <Button className="mt-3 w-full rounded-full bg-accent-lm text-primary-lm hover:bg-hover-btn-lm">
             Add More
           </Button>
         </aside>

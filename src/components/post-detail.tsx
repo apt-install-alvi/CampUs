@@ -80,58 +80,58 @@ export function PostDetail({ post, onBack }: PostDetailProps) {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       <button
         onClick={onBack}
-        className="flex items-center gap-2 text-orange-600 hover:text-orange-700 transition-colors"
+        className="flex items-center gap-2 text-accent-lm hover:opacity-80 transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
         <span className="text-sm font-medium">Go Back</span>
       </button>
 
       {/* Main Post Card */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-orange-100">
+      <div className="bg-primary-lm rounded-xl p-6 shadow-sm border border-stroke-grey animate-slide-in">
         <div className="flex items-start justify-between mb-4">
           <Badge
             variant="secondary"
-            className="bg-orange-50 text-orange-700 border-none px-3 py-1"
+            className="bg-secondary-lm text-accent-lm border-stroke-peach px-3 py-1"
           >
             {post.category}
           </Badge>
-          <button className="text-orange-300 hover:text-orange-500">
+          <button className="text-accent-lm hover:opacity-80">
             <MoreVertical className="h-5 w-5" />
           </button>
         </div>
 
-        <h1 className="text-2xl font-bold text-slate-900 mb-4">{post.title}</h1>
+        <h1 className="text-2xl font-bold text-text-lm mb-4">{post.title}</h1>
 
         <div className="flex items-center gap-3 mb-4">
-          <Avatar className="h-10 w-10 border border-orange-100">
+          <Avatar className="h-10 w-10 border border-stroke-grey">
             <AvatarImage src={post.authorAvatar || "/placeholder.svg"} />
             <AvatarFallback>{post.author[0]}</AvatarFallback>
           </Avatar>
           <div>
-            <div className="text-sm font-bold text-orange-600">
+            <div className="text-sm font-bold text-accent-lm">
               {post.author}
             </div>
-            <div className="text-xs text-slate-500 font-medium">
+            <div className="text-xs text-text-lighter-lm font-medium">
               {post.authorCourse}
             </div>
           </div>
         </div>
 
-        <p className="text-slate-700 leading-relaxed mb-6">{post.content}</p>
+        <p className="text-text-lm leading-relaxed mb-6">{post.content}</p>
 
-        <div className="flex items-center gap-4 pt-4 border-t border-orange-50">
-          <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-50 text-orange-600 hover:bg-orange-100 transition-colors">
-            <Heart className="h-4 w-4 fill-orange-600" />
+        <div className="flex items-center gap-4 pt-4 border-t border-stroke-grey">
+          <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary-lm text-accent-lm hover:bg-hover-lm transition-colors">
+            <Heart className="h-4 w-4" />
             <span className="text-sm font-bold">{post.reactions}</span>
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-50 text-orange-700 hover:bg-orange-100 transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary-lm text-accent-lm hover:bg-hover-lm transition-colors">
             <MessageCircle className="h-4 w-4" />
             <span className="text-sm font-bold">{post.commentsCount}</span>
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-orange-50 text-orange-700 hover:bg-orange-100 transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary-lm text-accent-lm hover:bg-hover-lm transition-colors">
             <Share2 className="h-4 w-4" />
             <span className="text-sm font-bold">{post.shares}</span>
           </button>
@@ -139,11 +139,11 @@ export function PostDetail({ post, onBack }: PostDetailProps) {
       </div>
 
       {/* Add Reply Section */}
-      <div className="bg-white rounded-xl p-4 shadow-sm border border-orange-100">
+      <div className="bg-primary-lm rounded-xl p-4 shadow-sm border border-stroke-grey">
         {!isReplying ? (
           <button
             onClick={() => setIsReplying(true)}
-            className="w-full text-left px-4 py-3 text-slate-400 text-sm hover:bg-orange-50 rounded-lg transition-colors"
+            className="w-full text-left px-4 py-3 text-text-lighter-lm text-sm hover:bg-hover-lm rounded-lg transition-colors"
           >
             Add a reply
           </button>
@@ -155,10 +155,10 @@ export function PostDetail({ post, onBack }: PostDetailProps) {
               onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                 setCommentText(e.target.value)
               }
-              className="min-h-25 border-none focus-visible:ring-0 p-0 text-sm"
+              className="min-h-25 border-none focus-visible:ring-0 p-0 text-sm bg-primary-lm text-text-lm placeholder:text-text-lighter-lm"
             />
-            <div className="flex items-center justify-between pt-2 border-t border-orange-50">
-              <span className="text-xs text-slate-400 italic">
+            <div className="flex items-center justify-between pt-2 border-t border-stroke-grey">
+              <span className="text-xs text-text-lighter-lm italic">
                 Replying as Hasan Mahmud
               </span>
               <div className="flex gap-2">
@@ -166,13 +166,13 @@ export function PostDetail({ post, onBack }: PostDetailProps) {
                   variant="ghost"
                   size="sm"
                   onClick={() => setIsReplying(false)}
-                  className="text-slate-600"
+                  className="text-text-lm"
                 >
                   Cancel
                 </Button>
                 <Button
                   size="sm"
-                  className="bg-orange-600 hover:bg-orange-700 text-white px-4"
+                  className="bg-accent-lm hover:bg-hover-btn-lm text-primary-lm px-4"
                 >
                   Comment
                 </Button>
@@ -183,11 +183,11 @@ export function PostDetail({ post, onBack }: PostDetailProps) {
       </div>
 
       {/* Comments List */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-orange-100">
+      <div className="bg-primary-lm rounded-xl p-6 shadow-sm border border-stroke-grey">
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
+          <div className="flex items-center gap-2 text-sm font-medium text-text-lighter-lm">
             Sort by:
-            <button className="text-orange-600 flex items-center gap-1">
+            <button className="text-accent-lm flex items-center gap-1">
               Best <span className="text-[10px]">▼</span>
             </button>
           </div>
@@ -211,35 +211,35 @@ function CommentItem({
   isReply?: boolean;
 }) {
   return (
-    <div className="relative">
+    <div className="relative animate-slide-in">
       <div className="flex gap-3">
         <div className="relative flex flex-col items-center">
-          <Avatar className="h-8 w-8 z-10 border-2 border-white">
+          <Avatar className="h-8 w-8 z-10 border-2 border-primary-lm">
             <AvatarImage src={comment.avatar || "/placeholder.svg"} />
             <AvatarFallback>{comment.author[0]}</AvatarFallback>
           </Avatar>
           {!isReply && comment.replies && comment.replies.length > 0 && (
-            <div className="absolute top-8 bottom-0 w-0.5 bg-gray-100 left-1/2 -translate-x-1/2" />
+            <div className="absolute top-8 bottom-0 w-0.5 bg-stroke-grey left-1/2 -translate-x-1/2" />
           )}
         </div>
         <div className="flex-1 pb-2">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-sm font-bold text-gray-900">
+            <span className="text-sm font-bold text-text-lm">
               {comment.author}
             </span>
-            <span className="text-[10px] text-gray-400 font-medium px-1.5 py-0.5 bg-gray-50 rounded">
+            <span className="text-[10px] text-text-lighter-lm font-medium px-1.5 py-0.5 bg-secondary-lm rounded">
               {comment.course}
             </span>
           </div>
-          <p className="text-sm text-gray-700 mb-2 leading-snug">
+          <p className="text-sm text-text-lm mb-2 leading-snug">
             {comment.content}
           </p>
           <div className="flex items-center gap-4">
-            <button className="flex items-center gap-1 text-[11px] font-bold text-gray-400 hover:text-orange-600">
+            <button className="flex items-center gap-1 text-[11px] font-bold text-text-lighter-lm hover:text-accent-lm">
               <Heart className="h-3 w-3" />
               {comment.likes}
             </button>
-            <button className="text-[11px] font-bold text-orange-600 hover:underline">
+            <button className="text-[11px] font-bold text-accent-lm hover:underline">
               Reply
             </button>
           </div>
@@ -248,7 +248,7 @@ function CommentItem({
 
       {/* Nested Replies */}
       {comment.replies && comment.replies.length > 0 && (
-        <div className="ml-4 mt-4 space-y-4 border-l-2 border-gray-100 pl-6">
+        <div className="ml-4 mt-4 space-y-4 border-l-2 border-stroke-grey pl-6">
           {comment.replies.map((reply) => (
             <CommentItem key={reply.id} comment={reply} isReply />
           ))}

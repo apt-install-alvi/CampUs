@@ -42,10 +42,10 @@ type Post = {
 };
 
 const categoryStyles = {
-  // Unified warm orange accents to match the desired theme
-  Question: "bg-orange-50 text-orange-700 border border-orange-200",
-  Advice: "bg-orange-50 text-orange-700 border border-orange-200",
-  Resource: "bg-orange-50 text-orange-700 border border-orange-200",
+  // Use theme tokens from index.css
+  Question: "bg-secondary-lm text-accent-lm border-stroke-peach",
+  Advice: "bg-secondary-lm text-accent-lm border-stroke-peach",
+  Resource: "bg-secondary-lm text-accent-lm border-stroke-peach",
 };
 
 const mockPosts: Post[] = [
@@ -118,8 +118,7 @@ function QAPageContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f6f8fb]">
-
+    <div className="min-h-screen bg-background-lm animate-fade-in">
       <main className="mx-auto max-w-4xl px-4 py-6">
         {selectedPost ? (
           <PostDetail
@@ -131,17 +130,17 @@ function QAPageContent() {
             {/* Search + New Post */}
             <div className="mb-6 flex items-center gap-3">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-orange-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-accent-lm" />
                 <Input
                   placeholder="Search anything"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-10 pl-9 rounded-full bg-white border border-orange-200 placeholder:text-slate-400 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="h-10 pl-9 rounded-full bg-primary-lm border border-stroke-grey placeholder:text-text-lighter-lm focus:ring-2 focus:ring-accent-lm focus:border-accent-lm"
                 />
               </div>
               <Button
                 onClick={() => setIsNewPostOpen(true)}
-                className="bg-orange-600 hover:bg-orange-700 text-white"
+                className="bg-accent-lm hover:bg-hover-btn-lm text-primary-lm"
               >
                 New Post
               </Button>
@@ -156,8 +155,8 @@ function QAPageContent() {
                     onClick={() => setActiveTab(tab)}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition ${
                       activeTab === tab
-                        ? "bg-orange-600 text-white"
-                        : "bg-white text-slate-600 hover:bg-slate-100"
+                        ? "bg-accent-lm text-primary-lm"
+                        : "bg-primary-lm text-text-lm hover:bg-hover-lm"
                     }`}
                   >
                     {tab}
@@ -172,20 +171,20 @@ function QAPageContent() {
                 <div
                   key={post.id}
                   onClick={() => setSelectedPost(post)}
-                  className="bg-white p-6 rounded-xl border border-orange-200/50 shadow-sm hover:shadow-md hover:border-orange-400 transition cursor-pointer"
+                  className="bg-primary-lm p-6 rounded-xl border border-stroke-grey shadow-sm hover:shadow-md hover:border-stroke-peach transition cursor-pointer animate-slide-in"
                 >
                   <div className="flex justify-between mb-3">
                     <Badge
-                      className={`rounded-full px-3 py-1 ${
+                      className={`rounded-full px-3 py-1 border ${
                         categoryStyles[post.category]
                       }`}
                     >
                       {post.category}
                     </Badge>
-                    <MoreVertical className="h-5 w-5 text-orange-300" />
+                    <MoreVertical className="h-5 w-5 text-accent-lm" />
                   </div>
 
-                  <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                  <h3 className="text-lg font-semibold text-text-lm mb-2">
                     {post.title}
                   </h3>
 
@@ -194,15 +193,15 @@ function QAPageContent() {
                       <AvatarImage src={post.authorAvatar} />
                       <AvatarFallback>{post.author[0]}</AvatarFallback>
                     </Avatar>
-                    <span className="text-sm font-medium text-slate-700">
+                    <span className="text-sm font-medium text-text-lm">
                       {post.author}
                     </span>
-                    <span className="text-sm text-slate-500">
+                    <span className="text-sm text-text-lighter-lm">
                       {post.timestamp}
                     </span>
                   </div>
 
-                  <p className="text-slate-600 leading-relaxed mb-4">
+                  <p className="text-text-lm leading-relaxed mb-4">
                     {post.content}
                   </p>
 
@@ -210,7 +209,7 @@ function QAPageContent() {
                     {[Heart, MessageCircle, Share2].map((Icon, i) => (
                       <button
                         key={i}
-                        className="flex items-center gap-2 px-3 py-1 rounded-full border border-orange-200 text-orange-700 bg-orange-50 hover:bg-orange-100"
+                        className="flex items-center gap-2 px-3 py-1 rounded-full border border-stroke-peach text-accent-lm bg-secondary-lm hover:bg-hover-lm"
                       >
                         <Icon className="h-4 w-4" />
                       </button>
@@ -225,7 +224,7 @@ function QAPageContent() {
 
       {/* New Post Dialog */}
       <Dialog open={isNewPostOpen} onOpenChange={setIsNewPostOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="sm:max-w-lg bg-primary-lm border-stroke-grey text-text-lm">
           <DialogHeader>
             <DialogTitle>New Post</DialogTitle>
           </DialogHeader>
@@ -237,6 +236,7 @@ function QAPageContent() {
               onChange={(e) =>
                 setNewPost({ ...newPost, title: e.target.value })
               }
+              className="bg-primary-lm border-stroke-grey text-text-lm placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
             />
 
             <Textarea
@@ -246,13 +246,14 @@ function QAPageContent() {
               onChange={(e) =>
                 setNewPost({ ...newPost, description: e.target.value })
               }
+              className="bg-primary-lm border-stroke-grey text-text-lm placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
             />
 
             {/* Tag chips (Question/Advice/Resource) */}
             <div className="space-y-2">
-              <div className="flex items-center gap-2 text-slate-700">
-                <TagIcon className="h-4 w-4 text-orange-500" />
-                <span className="text-sm font-medium">Tag</span>
+              <div className="flex items-center gap-2 text-text-lm">
+                <TagIcon className="h-4 w-4 text-accent-lm" />
+                <span className="text-sm font-medium text-text-lm">Tag</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {(["Question", "Advice", "Resource"] as const).map((cat) => (
@@ -261,14 +262,14 @@ function QAPageContent() {
                     type="button"
                     onClick={() => setNewPost({ ...newPost, category: cat })}
                     aria-pressed={newPost.category === cat}
-                    className={`group inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm border transition focus:outline-none focus:ring-2 focus:ring-orange-300 ${
+                    className={`group inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm border transition focus:outline-none focus:ring-2 focus:ring-accent-lm ${
                       newPost.category === cat
-                        ? "border-orange-400 bg-orange-50 text-orange-700 shadow-sm ring-2 ring-orange-300"
-                        : "border-orange-200 bg-white text-orange-600 hover:bg-orange-50"
+                        ? "border-stroke-peach bg-secondary-lm text-accent-lm shadow-sm ring-2 ring-accent-lm"
+                        : "border-stroke-grey bg-primary-lm text-text-lm hover:bg-hover-lm"
                     }`}
                   >
                     {newPost.category === cat && (
-                      <Check className="h-3.5 w-3.5 text-orange-600" />
+                      <Check className="h-3.5 w-3.5 text-accent-lm" />
                     )}
                     {cat}
                   </button>
@@ -276,7 +277,7 @@ function QAPageContent() {
               </div>
             </div>
 
-            <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white">
+            <Button className="w-full bg-accent-lm hover:bg-hover-btn-lm text-primary-lm">
               Post
             </Button>
           </div>
