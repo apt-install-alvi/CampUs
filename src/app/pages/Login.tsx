@@ -42,9 +42,9 @@ export function Login() {
         <Password label="Password" value={password} onChange={setPassword}/>
 
         <div className="flex items-center gap-4">
-          <button type="submit" className="px-6 py-2 rounded-xl font-medium bg-accent-lm text-primary-lm cursor-pointer">
+          <input type="submit" className="px-6 py-2 rounded-xl font-medium bg-accent-lm text-primary-lm cursor-pointer">
             Login
-          </button>
+          </input>
 
           <p className="text-sm text-text-lighter-lm">
             Don't have an account?{" "}

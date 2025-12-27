@@ -7,7 +7,7 @@ export function SignupLoginBox({children, title} : {children:ReactNode, title:st
 {
   return (
     <div className="flex flex-row mx-10 my-8 bg-secondary-lm rounded-3xl h-210 shadow-lg shadow-stroke-grey">
-      <div className="px-12 py-8 flex flex-col gap-3 w-1/2 h-full">
+      <div className="px-12 py-8 flex flex-col justify-center gap-3 w-1/2 h-full">
         <p className="text-text-lm text-xl font-[Poppins] font-medium">{title}</p>
         {children}
       </div>

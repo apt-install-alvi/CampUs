@@ -5,6 +5,7 @@ import {SignupLoginBox} from "../../components/SignupLoginBox";
 import {Password} from "../../features/auth/components/Password"; // Direct import
 import { useLocation } from "react-router";
 import { InputField } from "../../components/InputField";
+import { ButtonCTA } from "../../components/ButtonCTA";
 const DEPTS = ["CSE", "EECE", "CE", "ME", "NSE", "NAME", "EWCE", "PME", "BME", "ARCH"];
 const LEVELS = ["1", "2", "3", "4"];
 
@@ -134,12 +135,8 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
       <div
         className="flex items-center gap-2"
       >
-        <button
-          onClick={chooseFile}
-          className="px-4 py-2 rounded-lg text-base font-medium text-primary-lm bg-accent-lm cursor-pointer">
-          Choose File
-        </button>
 
+      <ButtonCTA label="Choose File" clickEvent={chooseFile}></ButtonCTA>
         <p
           className="text-sm text-text-lighter-lm"
         >
@@ -241,7 +238,7 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         />
 
         <div className="flex items-center gap-4 pt-2">
-          <input type="submit" className="bg-accent-lm text-primary-lm text-base font-medium px-4 py-2 rounded-lg">
+          <input type="submit" className="bg-accent-lm hover:bg-hover-btn-lm transition text-primary-lm text-base font-medium px-4 py-2 rounded-lg cursor-pointer">
           </input>
 
           <span className="text-sm text-text-lighter-lm">
