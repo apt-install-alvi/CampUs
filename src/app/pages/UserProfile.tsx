@@ -5,7 +5,6 @@ import { Plus } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Navbar } from "@/components/navbar";
 
 type Skill = { title: string; detail?: string };
 
@@ -42,7 +41,6 @@ export function UserProfile() {
   return (
     <div className="min-h-[70vh]">
       {/* Page-level Navbar to match the provided design */}
-      <Navbar />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
         {/* Main profile card */}
         <section className="rounded-2xl border border-orange-200 bg-white shadow-sm">
