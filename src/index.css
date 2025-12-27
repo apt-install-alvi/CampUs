@@ -26,6 +26,7 @@ body
   --color-message-user-lm: oklch(63.087% 0.18278 40.91);
   --color-message-other-lm: oklch(89.776% 0.02735 43.486);
   --color-online-indicator: oklch(65.025% 0.20094 145.619);
+  --color-shadow-peach: oklch(0.5211 0.1596 39.8);
 
   /* Typescale = Minor Third */
   --text-*: initial;
@@ -59,6 +60,16 @@ body
     to {
       opacity: 0;
       transform: translateY(-2.5%);
+    }
+  }
+
+  --animate-fade-in: fade-in 0.18s ease-in;
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
     }
   }
 }

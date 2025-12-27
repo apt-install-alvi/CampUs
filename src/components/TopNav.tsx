@@ -54,19 +54,26 @@ function UserClickModal({isOpen}:{isOpen:boolean})
     <div className={`bg-primary-lm w-60 px-2 py-3.5 rounded-xl absolute top-12.5 right-8 border border-stroke-grey ${isOpen? "animate-slide-in" : "animate-slide-out"}`}>
       <UserInfo userImg={placeholderDP} userName={userName} userBatch={userBatch} disableClick={true}></UserInfo>
       <hr className="mt-2 border-stroke-grey"></hr>
-      <ModalButtons icon={userIcon} label="Profile"></ModalButtons>
+      <ModalButtons icon={userIcon} label="Profile" linkto={"/profile"}></ModalButtons>
       <hr className="border-stroke-grey"></hr>
-      <ModalButtons icon={signoutIcon} label="Sign Out"></ModalButtons>
+      <ModalButtons icon={signoutIcon} label="Sign Out" linkto={"/signup"}></ModalButtons>
     </div>
   );
 }
 
-function ModalButtons({icon, label}:{icon:string, label:string})
+function ModalButtons({icon, label, linkto}:
+  {
+    icon:string, 
+    label:string
+    linkto: string
+  })
 {
   return (
-    <button className="flex items-center gap-2 w-full my-1 px-2 py-2 hover:bg-hover-lm hover:rounded-lg">
-      <img src={icon}></img>
-      <p className="text-accent-lm">{label}</p>
-    </button>    
+    <Link to={linkto}>
+      <button className="flex items-center gap-2 w-full my-1 px-2 py-2 hover:bg-hover-lm hover:rounded-lg">
+        <img src={icon}></img>
+        <p className="text-accent-lm">{label}</p>
+      </button>
+    </Link>    
   );
 }
