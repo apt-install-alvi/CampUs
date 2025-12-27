@@ -21,7 +21,7 @@ type FormData = {
   confirmPassword: string;
 };
 
-export default function Signup() {
+export function Signup() {
   const location = useLocation();
   const fileRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();

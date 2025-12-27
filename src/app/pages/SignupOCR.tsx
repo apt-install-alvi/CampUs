@@ -16,7 +16,7 @@ type LocationState = {
   fileType?: string;
 } | null;
 
-export default function SignupOCR() {
+export function SignupOCR() {
   const loc = useLocation();
   const navigate = useNavigate();
   const state = (loc.state as LocationState) ?? null;

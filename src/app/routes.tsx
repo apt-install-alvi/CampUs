@@ -1,11 +1,11 @@
 import { createBrowserRouter, Navigate } from "react-router";
 
-import Layout from "./Layout";
+import { Layout } from "./Layout";
 
-import Signup from "./pages/Signup";
-import SignupOCR from "./pages/SignupOCR";
-import {Login} from "./pages/Login";
-import {Login2FA} from "./pages/Login2FA";
+import { Signup } from "./pages/Signup";
+import { SignupOCR } from "./pages/SignupOCR";
+import { Login } from "./pages/Login";
+import { Login2FA } from "./pages/Login2FA";
 import { Home } from "./pages/Home";
 import { CollabHub } from "./pages/CollabHub";
 import { Events } from "./pages/Events";

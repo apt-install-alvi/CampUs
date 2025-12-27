@@ -1,4 +1,4 @@
-export default function BotNav()
+export function BotNav()
 {
   return (
     <h1>BotNav</h1>

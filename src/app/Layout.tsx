@@ -1,8 +1,8 @@
 import { Outlet, useLocation } from "react-router-dom";
-import TopNav from "../components/TopNav";
-import BotNav from "../components/BotNav";
+import {TopNav} from "../components/TopNav";
+import {BotNav} from "../components/BotNav";
 
-export default function Layout() {
+export function Layout() {
   const location = useLocation();
 
   // adjust the list of routes where navs should be hidden
