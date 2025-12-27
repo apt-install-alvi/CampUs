@@ -1,5 +1,4 @@
 import { Link } from "react-router";
-
 interface UserDetails
 {
   userImg:string, 
@@ -7,7 +6,6 @@ interface UserDetails
   userBatch:string
   disableClick?: boolean
 }
-
 export function UserInfo({userImg, userName, userBatch, disableClick}:UserDetails)
 {
   return (

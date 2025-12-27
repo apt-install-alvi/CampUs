@@ -16,7 +16,7 @@ import { UserProfile } from "./pages/UserProfile";
 import { NotFound } from "./pages/Error_NotFound";
 
 export const router = createBrowserRouter([
-  { path: "/", element: <Navigate to="/QnA" replace /> },
+  { path: "/", element: <Navigate to="/signup" replace /> },
   { path: "/signup", element: <Signup /> },
   { path: "/signup/ocr", element: <SignupOCR /> },
   {
