@@ -1,13 +1,8 @@
-// src/features/feed/components/EventPost.tsx
 import React, { useState } from "react";
 import PostBody from "/src/features/feed/components/PostBody.tsx";
 import PostButtons from "./PostButtons";
 import ShareModal from "./ShareModal";
 
-/**
- * Keep the shape local — match whatever your existing PostBody/PostButtons expect.
- * If you already have a shared type, you can replace this with your exported type.
- */
 export type Segment = {
   id: string;
   name?: string;
@@ -55,7 +50,11 @@ export default function EventPost({ post }: Props) {
 
   return (
     <>
-      <article id={`post-${post.id}`} className="rounded-xl border bg-white p-6 shadow-sm">
+      {/* Home page design */}
+      <article
+        id={`post-${post.id}`}
+        className="flex flex-col gap-6 bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey"
+      >
         <PostBody
           post={post}
           expanded={expanded}
@@ -82,7 +81,11 @@ export default function EventPost({ post }: Props) {
           className="fixed inset-0 z-60 flex items-center justify-center bg-black/60"
           onClick={() => setLightboxSrc(null)}
         >
-          <img src={lightboxSrc} className="max-h-[80vh] max-w-[90vw] rounded-lg shadow-xl" alt="post" />
+          <img
+            src={lightboxSrc}
+            className="max-h-[80vh] max-w-[90vw] rounded-lg shadow-xl"
+            alt="post"
+          />
         </div>
       )}
     </>
