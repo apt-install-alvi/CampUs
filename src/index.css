@@ -1,62 +1,12 @@
-@import url("https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import "tailwindcss";
-@import "tw-animate-css";
 
-/* Enable class-based dark mode */
-@custom-variant dark (&:is(.dark *));
-
-/* ================================
-   DESIGN TOKENS (LIGHT MODE)
-================================ */
-:root {
-  /* Core */
-  --background: oklch(98.6% 0.015 55);
-  --foreground: oklch(27.935% 0.00894 17.506);
-
-  --card: oklch(97.8% 0.01 55);
-  --card-foreground: oklch(27.935% 0.00894 17.506);
-
-  --popover: oklch(97.8% 0.01 55);
-  --popover-foreground: oklch(27.935% 0.00894 17.506);
-
-  --primary: oklch(65% 0.22 50);
-  --primary-foreground: oklch(100% 0 0);
-
-  --secondary: oklch(97.8% 0.01 55);
-  --secondary-foreground: oklch(39.947% 0.01226 17.474);
-
-  --muted: oklch(96.8% 0.02 55);
-  --muted-foreground: oklch(39.947% 0.01226 17.474);
-
-  --accent: oklch(65% 0.22 50);
-  --accent-foreground: oklch(100% 0 0);
-
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(1 0 0);
-
-  --border: oklch(84.212% 0.0001 271.152);
-  --input: oklch(84.212% 0.0001 271.152);
-  --ring: oklch(72.924% 0.11701 45.597);
-
-  /* Charts */
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-
-  /* Radius */
-  --radius: 0.625rem;
-
-  /* Sidebar */
-  --sidebar: oklch(97.8% 0.01 55);
-  --sidebar-foreground: oklch(27.935% 0.00894 17.506);
-  --sidebar-primary: oklch(65% 0.22 50);
-  --sidebar-primary-foreground: oklch(100% 0 0);
-  --sidebar-accent: oklch(96.8% 0.02 55);
-  --sidebar-accent-foreground: oklch(27.935% 0.00894 17.506);
-  --sidebar-border: oklch(84.212% 0.0001 271.152);
-  --sidebar-ring: oklch(72.924% 0.11701 45.597);
+body
+{
+  font-family: "Figtree", sans-serif;
+  font-size: 1rem;
+  color: oklch(27.935% 0.00894 17.506);
+  background-color: oklch(94.374% 0.00872 248.202);
 }
 
 @theme
@@ -124,88 +74,36 @@
   }
 }
 
-/* ================================
-   TAILWIND TOKEN BRIDGE
-================================ */
-@theme inline {
-  --font-sans: "Figtree", system-ui, sans-serif;
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-}
-
-/* ================================
-   BASE STYLES
-================================ */
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
+@layer base
+{
+  h1
+  {
+    font-size: var(--text-4xl);
   }
 
-  body {
-    @apply bg-background text-foreground font-sans;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
+  h2
+  {
+    font-size: var(--text-3xl);
+  }
+
+  h3
+  {
+    font-size: var(--text-2xl);
+  }
+
+  h4
+  {
+    font-size: var(--text-xl);
+  }
+
+  h5
+  {
+    font-size: var(--text-lg);
+  }
+
+  h6
+  {
+    font-size: var(--text-md);
   }
 }
 
-/* ================================
-   LOGIN PAGE HELPERS
-   Bridges legacy class names used in Login.tsx
-================================ */
-@layer base {
-  .text-text-lighter-lm {
-    color: var(--muted-foreground);
-  }
-  .bg-accent-lm {
-    background-color: var(--primary);
-  }
-  .text-primary-lm {
-    color: var(--primary-foreground);
-  }
-  .text-accent-lm {
-    color: var(--primary);
-  }
-}
-
-/* Optional: polished button/link styles for auth actions */
-@layer components {
-  .auth-btn {
-    background-color: var(--primary);
-    color: var(--primary-foreground);
-    border-radius: var(--radius-xl);
-    padding: 0.5rem 1rem; /* px-4 py-2 */
-    font-weight: 600;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
-    transition: background-color 150ms ease, box-shadow 150ms ease;
-  }
-  .auth-btn:hover {
-    background-color: color-mix(in oklch, var(--primary) 88%, white 12%);
-    box-shadow: 0 2px 6px color-mix(in oklch, var(--primary) 20%, transparent);
-  }
-  .auth-link {
-    color: var(--primary);
-    text-decoration: underline;
-  }
-}
