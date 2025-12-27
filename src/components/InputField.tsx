@@ -1,23 +1,25 @@
 import type { ChangeEventHandler } from "react"
 
-type TextInputTypes= {
+interface InputProps
+{
   label:string, 
+	name: string,
   placeholder?:string, 
 	type: string,
   value: string,
   changeHandler?: ChangeEventHandler<HTMLInputElement>
 }
 
-export function InputField({label, placeholder, value, type, changeHandler}:TextInputTypes)
+export function InputField({label, placeholder, value, type, name, changeHandler}:InputProps)
 {
 	return (
 	<>
-		<label htmlFor={label} className="block text-text-lm text-md font-medium my-0">
+		<label htmlFor={name} className="block text-text-lm text-md font-medium my-0">
 			{label}
 		</label>
 		<input 
-		name={label.toLowerCase()}
-		id={label.toLowerCase()} 
+		name={name}
+		id={name} 
 		type={type} 
 		placeholder={placeholder} 
 		value={value} 
