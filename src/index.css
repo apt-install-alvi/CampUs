@@ -19,12 +19,14 @@ body
   --color-primary-lm: oklch(100% 0.00011 271.152);
   --color-secondary-lm: oklch(96.696% 0.00298 264.792);
   --color-accent-lm: oklch(54.847% 0.17827 38.314);
-  --color-stroke-orange: oklch(72.924% 0.11701 45.597);
+  --color-stroke-peach: oklch(72.924% 0.11701 45.597);
   --color-stroke-grey: oklch(84.212% 0.0001 271.152);
   --color-hover-lm: oklch(96.272% 0.0117 59.292);
+  --color-hover-btn-lm: oklch(45.513% 0.16317 34.108);
   --color-message-user-lm: oklch(63.087% 0.18278 40.91);
   --color-message-other-lm: oklch(89.776% 0.02735 43.486);
   --color-online-indicator: oklch(65.025% 0.20094 145.619);
+  --color-shadow-peach: oklch(0.5211 0.1596 39.8);
 
   /* Typescale = Minor Third */
   --text-*: initial;
@@ -37,6 +39,39 @@ body
   --text-2xl: 2.074rem;
   --text-3xl: 2.488rem;
   --text-4xl: 2.986rem;
+
+  /*Animations*/
+  --animate-slide-in: slide-in 0.15s ease-in-out forwards;
+  @keyframes slide-in {
+    from{
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+      transform: translateY(2.5%);
+    }
+  }
+
+  --animate-slide-out: slide-out 0.15s ease-in-out forwards;
+  @keyframes slide-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-2.5%);
+    }
+  }
+
+  --animate-fade-in: fade-in 0.18s ease-in;
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 }
 
 @layer base
