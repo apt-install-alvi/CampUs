@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import Logo from "../assets/logo-light.svg";
 
-import placeholderDP from "../assets/images/placeholderUser.png";
+import placeholderDP from "../features/feed/assets/placeholderUser.png";
 import messageIcon from "../assets/icons/message_icon.svg";
 import bellIcon from "../assets/icons/bell_icon.svg";
 import moonIcon from "../assets/icons/moon_icon.svg";

@@ -54,8 +54,6 @@ export function Login2FA() {
   return (
     <SignupLoginBox
       title="Login"
-      // illustrationSrc={Illustration}
-      // illustrationTitle="2FA Illustration"
     >
       <form onSubmit={handleSubmit} className="space-y-6 max-w-xl">
         <p className="text-lg text-text-lighter-lm">
