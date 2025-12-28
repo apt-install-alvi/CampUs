@@ -6,6 +6,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
+import userImg from "../../features/feed/assets/placeholderUser.png";
+import { UpcomingEvents } from "./Home";
+
 type Skill = { title: string; detail?: string };
 
 export function UserProfile() {
@@ -49,7 +52,7 @@ export function UserProfile() {
             <div className="relative">
               <div className="rounded-full border-4 border-stroke-peach p-1">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage src="/user-avatar.jpg" />
+                  <AvatarImage src={userImg} />
                   <AvatarFallback>TT</AvatarFallback>
                 </Avatar>
               </div>
@@ -57,7 +60,7 @@ export function UserProfile() {
 
             <div className="flex-1">
               <h1 className="text-xl font-extrabold tracking-tight text-text-lm">
-                THAN THAN THAY
+                Alvi Binte Zamil
               </h1>
               <div className="mt-1 text-sm text-text-lighter-lm">CSE-23</div>
               <div className="text-sm text-text-lighter-lm">LEVEL-3</div>
@@ -132,7 +135,8 @@ export function UserProfile() {
         </section>
 
         {/* Sidebar */}
-        <aside className="h-fit rounded-2xl border border-stroke-grey bg-primary-lm p-4 shadow-sm animate-slide-in">
+        {/* <UpcomingEvents></UpcomingEvents> */}
+        {/* <aside className="h-fit rounded-2xl border border-stroke-grey bg-primary-lm p-4 shadow-sm animate-slide-in">
           <h3 className="px-2 text-sm font-bold text-slate-700">
             Upcoming Events
           </h3>
@@ -142,7 +146,7 @@ export function UserProfile() {
           <Button className="mt-3 w-full rounded-full bg-accent-lm text-primary-lm hover:bg-hover-btn-lm">
             Add More
           </Button>
-        </aside>
+        </aside> */}
       </div>
     </div>
   );

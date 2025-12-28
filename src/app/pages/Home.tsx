@@ -27,7 +27,7 @@ export function Home()
   );
 }
 
-function UpcomingEvents()
+export function UpcomingEvents()
 {
 
   const [eventCount, setEventCount]=useState(1);//temp val for presentation purposes only, will be set to 0 initially and connected with db
