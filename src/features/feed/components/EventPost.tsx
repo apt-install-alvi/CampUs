@@ -1,6 +1,7 @@
 // src/features/feed/components/EventPost.tsx
 import React from "react";
 import { PostBody } from "./PostBody";
+import userImg from "../assets/placeholderUser.png";
 // don't render buttons here — PostBody already renders the Like/Comment/Share components
 // if ShareModal is used by your ShareButton internally, it will open from there
 
@@ -37,7 +38,7 @@ export default function EventPost({ post }: Props) {
         user={{
           name: post.author,
           batch: post.dept ?? "",
-          imgURL: "", // fill with avatar URL if you have one
+          imgURL: userImg
         }}
         content={{
           text: post.body ?? post.excerpt ?? "",

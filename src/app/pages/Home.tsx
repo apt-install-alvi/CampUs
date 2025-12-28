@@ -1,5 +1,5 @@
 import { PostBody } from "../../features/feed/components/PostBody";
-
+import { Link } from "react-router";
 //placeholder data
 import {placeholderUser} from "../../features/feed/api/placeholderUser.ts";
 import placeholderPostImg from "../../features/feed/assets/placeholderPostImg.png"
@@ -49,8 +49,9 @@ export function UpcomingEvents()
         }
       </div>
       <div className="flex justify-end p-3">
+        <Link to="/events">
         <ButtonCTA label={"Add More"}></ButtonCTA>
-        {/* add a click event that navigates to Event page */}
+        </Link>
       </div>
     </div>
   );

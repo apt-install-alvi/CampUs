@@ -99,7 +99,7 @@ export function CollabHub() {
                 <div className="flex items-center gap-3 mb-4">
                   <div className="relative">
                     <img
-                      src={p.user.avatar}
+                      src={p.user.imgURL}
                       alt={p.user.name}
                       className="w-12 h-12 rounded-full object-cover"
                     />
@@ -111,7 +111,7 @@ export function CollabHub() {
                       {p.user.name}
                     </span>
                     <span className="text-text-lighter-lm text-sm">
-                      {p.user.dept} • {p.user.role || "Student"}
+                      2 days ago • {p.user.batch|| "Student"}
                     </span>
                   </div>
                 </div>

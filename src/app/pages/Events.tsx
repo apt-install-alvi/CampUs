@@ -1,5 +1,6 @@
 // src/app/pages/Events.tsx
 import React, { useMemo, useState } from "react";
+import postImg from "../../features/feed/assets/placeholderPostImg.png";
 
 import CategorySelection, {type CategoryKey } from "../../components/CategorySelection";
 
@@ -45,7 +46,7 @@ const initialPosts: EventPostType[] = [
       "For the first time, MIST Cyber Security Club is hosting a 3-in-1 event exclusively for MIST students! CyberVoid'25 kicks off on Dec 10, 2025...",
     body:
       "For the first time, MIST Cyber Security Club is hosting a 3-in-1 event exclusively for MIST students! CyberVoid'25 kicks off on Dec 10, 2025, and wraps up on Dec 12. Don't miss out on this incredible 3-day experience! Register now and secure your spot! Features include cybersecurity quiz, CTF challenges and hands-on workshops.",
-    image: "/assets/event-sample-1.jpg",
+    image: postImg,
     segments: [],
     tags: ["hackathon", "ctf"],
     likes: 46,
