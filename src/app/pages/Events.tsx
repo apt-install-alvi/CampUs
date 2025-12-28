@@ -85,7 +85,7 @@ export function Events() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--background)]">
+    <div className="min-h-screen bg-background-lm">
 
  
 
@@ -96,10 +96,10 @@ export function Events() {
           </div>
 
           <div className="col-span-12 lg:col-span-9">
-            <div className="rounded-xl border bg-white p-4 shadow-sm">
+            <div className="rounded-xl bg-secondary-lm border border-stroke-grey p-4">
               <button
                 onClick={() => setModalOpen(true)}
-                className="w-full rounded-md border px-4 py-3 text-left text-sm text-[var(--color-muted-foreground)] hover:bg-[#FFF4EE]"
+                className="w-full rounded-md border border-stroke-grey bg-primary-lm px-4 py-3 text-left text-sm text-text-lighter-lm hover:bg-[#FFF4EE]"
               >
                 Click to announce an event here
               </button>

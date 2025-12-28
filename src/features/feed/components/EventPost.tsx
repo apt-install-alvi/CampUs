@@ -32,7 +32,7 @@ interface Props {
 
 export default function EventPost({ post }: Props) {
   return (
-    <article className="rounded-xl border bg-white p-6 shadow-sm">
+    <article className="rounded-xl border border-stroke-grey bg-primary-lm p-6 shadow-sm">
       <PostBody
         title={post.title}
         user={{

@@ -19,8 +19,8 @@ const categories: { key: CategoryKey; label: string }[] = [
 export default function CategorySelection({ value, onChange }: Props) {
   return (
     <aside className="w-full max-w-xs">
-      <div className="rounded-lg border bg-white p-4">
-        <h3 className="mb-3 font-semibold text-[var(--color-card-foreground)]">Categories</h3>
+      <div className="rounded-lg border border-stroke-grey bg-primary-lm p-4">
+        <h3 className="mb-3 font-semibold text-text-lm text-lg">Categories</h3>
         <ul className="space-y-2">
           {categories.map((c) => {
             const active = value === c.key;
@@ -30,8 +30,8 @@ export default function CategorySelection({ value, onChange }: Props) {
                   onClick={() => onChange(c.key)}
                   className={`w-full text-left rounded-md px-3 py-2 text-sm ${
                     active
-                      ? "bg-[#C23D00] text-white"
-                      : "text-[var(--color-muted-foreground)] hover:bg-orange-50"
+                      ? "bg-accent-lm text-primary-lm"
+                      : "text-accent-lm hover:bg-hover-lm"
                   }`}
                   style={active ? { color: "white" } : undefined}
                 >
