@@ -24,6 +24,9 @@ export default function CreateEventModal({ open, onClose, onCreate }: Props) {
   ]);
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
 
+  // validation state for title
+  const [titleError, setTitleError] = useState(false);
+
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (!open) return;
@@ -72,6 +75,12 @@ export default function CreateEventModal({ open, onClose, onCreate }: Props) {
   }
 
   function handlePost() {
+    // make title mandatory
+    if (!title.trim()) {
+      setTitleError(true);
+      return;
+    }
+
     const post: EventPostType = {
       id: generateId(),
       category,
@@ -89,6 +98,13 @@ export default function CreateEventModal({ open, onClose, onCreate }: Props) {
 
     onCreate(post);
     onClose();
+  }
+
+  // clear title error when user types
+  function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const v = e.target.value;
+    setTitle(v);
+    if (titleError && v.trim()) setTitleError(false);
   }
 
   if (!open) return null;
@@ -152,11 +168,16 @@ export default function CreateEventModal({ open, onClose, onCreate }: Props) {
             <div>
               <h3 className="mb-2 text-lg font-medium">Title</h3>
               <input
-                className="w-full border border-stroke-grey rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#C23D00]"
+                className={`w-full border border-stroke-grey rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#C23D00] ${
+                  titleError ? "border-red-500" : ""
+                }`}
                 placeholder="Enter event title"
                 value={title}
-                onChange={e => setTitle(e.target.value)}
+                onChange={handleTitleChange}
               />
+              {titleError && (
+                <p className="text-sm text-red-600 mt-1">Title field is mandatory.</p>
+              )}
             </div>
 
             {/* Segment list */}
