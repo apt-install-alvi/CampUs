@@ -1,4 +1,3 @@
-// src/features/feed/components/EventPost.tsx
 import React from "react";
 import { PostBody } from "./PostBody";
 import userImg from "../assets/placeholderUser.png";
@@ -44,6 +43,7 @@ export default function EventPost({ post }: Props) {
           text: post.body ?? post.excerpt ?? "",
           img: post.image ?? undefined,
         }}
+        tags={post.tags} /* <-- added: pass tags through */
       />
     </article>
   );
