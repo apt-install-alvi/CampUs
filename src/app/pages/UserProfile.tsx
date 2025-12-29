@@ -100,9 +100,9 @@ export function UserProfile() {
                     )}
                   </div>
                   <div>
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-stroke-peach bg-primary-lm text-accent-lm">
+                    {/* <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-stroke-peach bg-primary-lm text-accent-lm">
                       <Plus className="h-4 w-4" />
-                    </span>
+                    </span> */}
                   </div>
                 </div>
               ))}
