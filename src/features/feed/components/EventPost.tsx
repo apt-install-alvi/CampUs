@@ -37,13 +37,14 @@ export default function EventPost({ post }: Props) {
         user={{
           name: post.author,
           batch: post.dept ?? "",
-          imgURL: userImg
+          imgURL: userImg,
         }}
         content={{
           text: post.body ?? post.excerpt ?? "",
           img: post.image ?? undefined,
         }}
-        tags={post.tags} /* <-- added: pass tags through */
+        tags={post.tags}           /* <-- pass tags */
+        category={post.category}   /* <-- pass category */
       />
     </article>
   );
