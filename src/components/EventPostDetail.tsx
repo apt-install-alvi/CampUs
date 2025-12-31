@@ -127,6 +127,20 @@ export default function EventPostDetail({ post, onBack }: Props) {
 
         <h1 className="text-2xl font-bold text-text-lm mb-4">{post.title}</h1>
 
+        {/* TAGS: added under title, same style as feed */}
+        {post.tags && post.tags.length > 0 && (
+          <div className="flex gap-2 flex-wrap mb-4">
+            {post.tags.map((t) => (
+              <span
+                key={t}
+                className="border border-accent-lm text-accent-lm rounded-full px-3 py-1 text-sm"
+              >
+                #{t}
+              </span>
+            ))}
+          </div>
+        )}
+
         <div className="flex items-center gap-3 mb-4">
           <Avatar className="h-10 w-10 border border-stroke-grey">
             <AvatarImage src={undefined /* placeholder or use actual avatar */} />
