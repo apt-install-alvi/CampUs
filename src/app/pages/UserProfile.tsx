@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import userImg from "../../features/feed/assets/placeholderUser.png";
+import { Mail, Github, Facebook, Linkedin, MessageCircle } from "lucide-react";
 
 type Skill = { title: string; detail?: string };
 
@@ -45,6 +46,56 @@ export function UserProfile() {
     }
     setInterestValue("");
     setAddInterestOpen(false);
+  };
+
+  /* ---------- Contact Links ---------- */
+  type ContactLink = { url: string; label?: string };
+  const [links, setLinks] = useState<ContactLink[]>([]);
+  const [addLinkOpen, setAddLinkOpen] = useState(false);
+  const [linkLabel, setLinkLabel] = useState("");
+  const [linkValue, setLinkValue] = useState("");
+
+  const normalizeLink = (raw: string) => {
+    const v = raw.trim();
+    if (!v) return "";
+    // Email detection
+    if (v.includes("@") && !v.startsWith("http")) {
+      return v.startsWith("mailto:") ? v : `mailto:${v}`;
+    }
+    // Add https if missing
+    if (!/^https?:\/\//i.test(v)) {
+      return `https://${v}`;
+    }
+    return v;
+  };
+
+  const getLinkMeta = (href: string) => {
+    const lower = href.toLowerCase();
+    if (lower.startsWith("mailto:")) {
+      return { icon: Mail, display: "Email" };
+    }
+    if (lower.includes("github.com")) {
+      return { icon: Github, display: "GitHub" };
+    }
+    if (lower.includes("linkedin.com")) {
+      return { icon: Linkedin, display: "LinkedIn" };
+    }
+    if (lower.includes("facebook.com")) {
+      return { icon: Facebook, display: "Facebook" };
+    }
+    return { icon: MessageCircle, display: "Contact" };
+  };
+
+  const saveLink = () => {
+    const href = normalizeLink(linkValue);
+    if (!href) return;
+    // avoid duplicates
+    if (!links.some((l) => l.url === href)) {
+      setLinks([...links, { url: href, label: linkLabel || undefined }]);
+    }
+    setLinkLabel("");
+    setLinkValue("");
+    setAddLinkOpen(false);
   };
 
   return (
@@ -177,6 +228,72 @@ export function UserProfile() {
                     {tag}
                   </span>
                 ))}
+              </div>
+            </div>
+
+            {/* CONTACT LINKS */}
+            <div className="border-t border-stroke-grey p-8">
+              <div className="mb-6 flex items-center justify-between">
+                <h2 className="text-xl font-bold">Contact Links</h2>
+                <Button
+                  onClick={() => setAddLinkOpen(true)}
+                  className="h-9 w-9 rounded-md bg-accent-lm p-0 text-primary-lm"
+                >
+                  <Plus />
+                </Button>
+              </div>
+
+              {addLinkOpen && (
+                <div className="mb-6 grid grid-cols-1 gap-3 rounded-xl border bg-secondary-lm p-4 sm:grid-cols-2">
+                  <Input
+                    placeholder="Label (optional, e.g. GitHub)"
+                    value={linkLabel}
+                    onChange={(e) => setLinkLabel(e.target.value)}
+                  />
+                  <Input
+                    placeholder="Paste link or email"
+                    value={linkValue}
+                    onChange={(e) => setLinkValue(e.target.value)}
+                  />
+
+                  <div className="col-span-1 sm:col-span-2 flex gap-2">
+                    <Button size="sm" onClick={saveLink}>
+                      <Check className="mr-1 h-4 w-4" /> Save
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setAddLinkOpen(false)}
+                    >
+                      <X className="mr-1 h-4 w-4" /> Cancel
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex flex-wrap gap-4">
+                {links.map((lnk, idx) => {
+                  const meta = getLinkMeta(lnk.url);
+                  const Icon = meta.icon;
+                  const label = lnk.label || meta.display;
+                  const isMail = lnk.url.toLowerCase().startsWith("mailto:");
+                  return (
+                    <a
+                      key={idx}
+                      href={lnk.url}
+                      target={isMail ? undefined : "_blank"}
+                      rel={isMail ? undefined : "noopener noreferrer"}
+                      className="inline-flex items-center gap-2 rounded-full border border-stroke-peach bg-primary-lm px-5 py-2 text-sm font-semibold text-accent-lm hover:bg-hover-lm"
+                    >
+                      <Icon className="h-4 w-4" /> {label}
+                    </a>
+                  );
+                })}
+                {links.length === 0 && (
+                  <span className="text-sm text-text-lighter-lm">
+                    No links added yet.
+                  </span>
+                )}
               </div>
             </div>
           </section>
