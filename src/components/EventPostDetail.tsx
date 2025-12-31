@@ -1,7 +1,5 @@
-"use client";
-
-import { useState } from "react";
-import type { ChangeEvent } from "react";
+// src/components/EventPostDetail.tsx
+import React, { useState } from "react";
 import {
   ArrowLeft,
   Heart,
@@ -14,6 +12,30 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 
+type Segment = {
+  id: string;
+  name?: string;
+  description?: string;
+  date?: string;
+  time?: string;
+};
+
+export type EventPostType = {
+  id: string;
+  category: string;
+  title: string;
+  author: string;
+  dept?: string;
+  excerpt?: string;
+  body?: string;
+  image?: string | null;
+  segments?: Segment[];
+  tags?: string[];
+  likes?: number;
+  comments?: number;
+  shares?: number;
+};
+
 type Comment = {
   id: string;
   author: string;
@@ -25,21 +47,8 @@ type Comment = {
   timestamp: string;
 };
 
-type Post = {
-  id: string;
-  title: string;
-  author: string;
-  authorAvatar: string;
-  authorCourse: string;
-  content: string;
-  category: string;
-  reactions: number;
-  commentsCount: number;
-  shares: number;
-};
-
-interface PostDetailProps {
-  post: Post;
+interface Props {
+  post: EventPostType;
   onBack: () => void;
 }
 
@@ -47,10 +56,12 @@ function generateId(prefix = "") {
   return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2);
 }
 
-export function PostDetail({ post, onBack }: PostDetailProps) {
+export default function EventPostDetail({ post, onBack }: Props) {
+  // top-level add reply state (keeps same names you had)
   const [commentText, setCommentText] = useState("");
   const [isReplying, setIsReplying] = useState(false);
 
+  // initial dummy comments (moved into state so they update)
   const [comments, setComments] = useState<Comment[]>([
     {
       id: "c1",
@@ -83,7 +94,19 @@ export function PostDetail({ post, onBack }: PostDetailProps) {
     },
   ]);
 
-  // add top-level comment
+  // Category badge classes (same mapping as PostBody)
+  const catClassMap: Record<string, string> = {
+    workshop: "bg-red-100 text-red-700 border border-red-200",
+    seminar: "bg-green-100 text-green-700 border border-green-200",
+    course: "bg-blue-100 text-blue-700 border border-blue-200",
+    competition: "bg-purple-100 text-purple-700 border border-purple-200",
+  };
+
+  const catLabel = post.category
+    ? post.category.charAt(0).toUpperCase() + post.category.slice(1)
+    : "";
+
+  // Add top-level comment
   function addTopLevelComment() {
     const txt = commentText.trim();
     if (!txt) return;
@@ -99,12 +122,13 @@ export function PostDetail({ post, onBack }: PostDetailProps) {
       timestamp: "Just now",
     };
 
+    // newest on top
     setComments((prev) => [newComment, ...prev]);
     setCommentText("");
     setIsReplying(false);
   }
 
-  // recursive helper to add reply to tree
+  // Recursive helper to add reply to tree
   function addReplyToTree(list: Comment[], parentId: string, reply: Comment): Comment[] {
     return list.map((c) => {
       if (c.id === parentId) {
@@ -121,6 +145,7 @@ export function PostDetail({ post, onBack }: PostDetailProps) {
   function handleAddReply(parentId: string, text: string) {
     const txt = text.trim();
     if (!txt) return;
+
     const reply: Comment = {
       id: generateId("r_"),
       author: "Hasan Mahmud",
@@ -131,6 +156,7 @@ export function PostDetail({ post, onBack }: PostDetailProps) {
       replies: [],
       timestamp: "Just now",
     };
+
     setComments((prev) => addReplyToTree(prev, parentId, reply));
   }
 
@@ -149,9 +175,9 @@ export function PostDetail({ post, onBack }: PostDetailProps) {
         <div className="flex items-start justify-between mb-4">
           <Badge
             variant="secondary"
-            className="bg-secondary-lm text-accent-lm border-stroke-peach px-3 py-1"
+            className={`bg-secondary-lm text-accent-lm px-3 py-1 ${catClassMap[post.category] ?? ""}`}
           >
-            {post.category}
+            {catLabel}
           </Badge>
           <button className="text-accent-lm hover:opacity-80">
             <MoreVertical className="h-5 w-5" />
@@ -160,35 +186,91 @@ export function PostDetail({ post, onBack }: PostDetailProps) {
 
         <h1 className="text-2xl font-bold text-text-lm mb-4">{post.title}</h1>
 
+        {/* TAGS: added under title, same style as feed */}
+        {post.tags && post.tags.length > 0 && (
+          <div className="flex gap-2 flex-wrap mb-4">
+            {post.tags.map((t) => (
+              <span
+                key={t}
+                className="border border-accent-lm text-accent-lm rounded-full px-3 py-1 text-sm"
+              >
+                #{t}
+              </span>
+            ))}
+          </div>
+        )}
+
         <div className="flex items-center gap-3 mb-4">
           <Avatar className="h-10 w-10 border border-stroke-grey">
-            <AvatarImage src={post.authorAvatar || "/placeholder.svg"} />
-            <AvatarFallback>{post.author[0]}</AvatarFallback>
+            <AvatarImage src={undefined /* placeholder or use actual avatar */} />
+            <AvatarFallback>{post.author?.[0] ?? "U"}</AvatarFallback>
           </Avatar>
           <div>
             <div className="text-sm font-bold text-accent-lm">
               {post.author}
             </div>
             <div className="text-xs text-text-lighter-lm font-medium">
-              {post.authorCourse}
+              {post.dept ?? ""}
             </div>
           </div>
         </div>
 
-        <p className="text-text-lm leading-relaxed mb-6">{post.content}</p>
+        <p className="text-text-lm leading-relaxed mb-6">
+          {post.body ?? post.excerpt ?? ""}
+        </p>
+
+        {/* Segments: show each segment as a separate card */}
+        {post.segments && post.segments.length > 0 && (
+          <div className="space-y-4 mb-6">
+            {post.segments.map((seg) => (
+              <div
+                key={seg.id}
+                className="rounded-lg border border-stroke-grey bg-secondary-lm p-4"
+              >
+                <h4 className="font-semibold text-text-lm">{seg.name}</h4>
+                {seg.description && (
+                  <p className="text-sm text-text-lm mt-2">{seg.description}</p>
+                )}
+                <div className="text-xs text-text-lighter-lm mt-3">
+                  {seg.date && (
+                    <span className="mr-4">
+                      {new Date(seg.date).toLocaleDateString(undefined, {
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </span>
+                  )}
+                  {seg.time && <span>{seg.time}</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Image */}
+        {post.image && (
+          <div className="mb-6 w-full h-72 overflow-hidden rounded-md">
+            <img
+              src={post.image}
+              className="object-cover object-center w-full h-full"
+              alt={post.title}
+            />
+          </div>
+        )}
 
         <div className="flex items-center gap-4 pt-4 border-t border-stroke-grey">
           <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary-lm text-accent-lm hover:bg-hover-lm transition-colors">
             <Heart className="h-4 w-4" />
-            <span className="text-sm font-bold">{post.reactions}</span>
+            <span className="text-sm font-bold">{post.likes ?? 0}</span>
           </button>
           <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary-lm text-accent-lm hover:bg-hover-lm transition-colors">
             <MessageCircle className="h-4 w-4" />
-            <span className="text-sm font-bold">{post.commentsCount}</span>
+            <span className="text-sm font-bold">{post.comments ?? 0}</span>
           </button>
           <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary-lm text-accent-lm hover:bg-hover-lm transition-colors">
             <Share2 className="h-4 w-4" />
-            <span className="text-sm font-bold">{post.shares}</span>
+            <span className="text-sm font-bold">{post.shares ?? 0}</span>
           </button>
         </div>
       </div>
@@ -207,7 +289,7 @@ export function PostDetail({ post, onBack }: PostDetailProps) {
             <Textarea
               placeholder="Add a reply..."
               value={commentText}
-              onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                 setCommentText(e.target.value)
               }
               className="min-h-25 border-none focus-visible:ring-0 p-0 text-sm bg-primary-lm text-text-lm placeholder:text-text-lighter-lm"
@@ -356,5 +438,3 @@ function CommentItem({
     </div>
   );
 }
-
-export default PostDetail;

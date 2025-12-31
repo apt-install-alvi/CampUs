@@ -23,6 +23,13 @@ export default function CreateEventModal({ open, onClose, onCreate }: Props) {
     { id: generateId(), name: "", description: "", date: "", time: "" },
   ]);
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
+  const [imageName, setImageName] = useState<string | null>(null);
+
+  // validation state for title
+  const [titleError, setTitleError] = useState(false);
+
+  // preview modal open state (for expanded image view)
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -33,6 +40,16 @@ export default function CreateEventModal({ open, onClose, onCreate }: Props) {
       document.body.style.overflow = previous || "";
     };
   }, [open]);
+
+  // close expanded preview on Escape
+  useEffect(() => {
+    if (!previewOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPreviewOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [previewOpen]);
 
   function addSegment() {
     setSegments(prev => [
@@ -55,6 +72,8 @@ export default function CreateEventModal({ open, onClose, onCreate }: Props) {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setImageName(file.name ?? null);
+
     const reader = new FileReader();
     reader.onload = () => setImageDataUrl(reader.result as string);
     reader.readAsDataURL(file);
@@ -72,6 +91,12 @@ export default function CreateEventModal({ open, onClose, onCreate }: Props) {
   }
 
   function handlePost() {
+    // make title mandatory
+    if (!title.trim()) {
+      setTitleError(true);
+      return;
+    }
+
     const post: EventPostType = {
       id: generateId(),
       category,
@@ -89,6 +114,13 @@ export default function CreateEventModal({ open, onClose, onCreate }: Props) {
 
     onCreate(post);
     onClose();
+  }
+
+  // clear title error when user types
+  function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const v = e.target.value;
+    setTitle(v);
+    if (titleError && v.trim()) setTitleError(false);
   }
 
   if (!open) return null;
@@ -152,11 +184,16 @@ export default function CreateEventModal({ open, onClose, onCreate }: Props) {
             <div>
               <h3 className="mb-2 text-lg font-medium">Title</h3>
               <input
-                className="w-full border border-stroke-grey rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#C23D00]"
+                className={`w-full border border-stroke-grey rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#C23D00] ${
+                  titleError ? "border-red-500" : ""
+                }`}
                 placeholder="Enter event title"
                 value={title}
-                onChange={e => setTitle(e.target.value)}
+                onChange={handleTitleChange}
               />
+              {titleError && (
+                <p className="text-sm text-red-600 mt-1">Title field is mandatory.</p>
+              )}
             </div>
 
             {/* Segment list */}
@@ -287,8 +324,11 @@ export default function CreateEventModal({ open, onClose, onCreate }: Props) {
             {/* Upload */}
             <div>
               <label className="block mb-2 font-medium">Upload Image</label>
-              <div className="flex gap-3">
-                <label className="bg-accent-lm text-primary-lm px-5 py-2 rounded-lg cursor-pointer" style={{ color: "white" }}>
+              <div className="flex gap-3 items-center">
+                <label
+                  className="bg-accent-lm text-primary-lm px-5 py-2 rounded-lg cursor-pointer"
+                  style={{ color: "white" }}
+                >
                   Choose File
                   <input
                     type="file"
@@ -297,8 +337,35 @@ export default function CreateEventModal({ open, onClose, onCreate }: Props) {
                     onChange={handleImage}
                   />
                 </label>
-                <div className="flex-1 border border-stroke-grey rounded-lg px-3 py-2">
-                  {imageDataUrl ? "Image selected" : "No file chosen"}
+
+                {/* preview area */}
+                <div className="flex-1 border border-stroke-grey rounded-lg px-3 py-2 flex items-center">
+                  {!imageDataUrl ? (
+                    <div className="text-sm text-text-lighter-lm">No file chosen</div>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      {/* clickable thumbnail */}
+                      <button
+                        type="button"
+                        onClick={() => setPreviewOpen(true)}
+                        className="inline-block rounded-md overflow-hidden border border-stroke-grey"
+                        aria-label="Open image preview"
+                      >
+                        <img
+                          src={imageDataUrl}
+                          alt={imageName ?? "Selected image"}
+                          className="h-20 w-28 object-cover"
+                        />
+                      </button>
+
+                      <div className="flex flex-col">
+                        <div className="text-sm font-medium text-text-lm">
+                          {imageName ?? "Image selected"}
+                        </div>
+                        <div className="text-xs text-text-lighter-lm">Click to expand</div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -315,6 +382,41 @@ export default function CreateEventModal({ open, onClose, onCreate }: Props) {
           </div>
         </div>
       </div>
+
+      {/* Expanded image preview lightbox */}
+      {previewOpen && imageDataUrl && (
+        <>
+          <div
+            className="fixed inset-0 z-60"
+            onClick={() => setPreviewOpen(false)}
+            style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
+          />
+          <div className="fixed inset-0 z-70 flex items-center justify-center p-6 pointer-events-none">
+            <div
+              className="pointer-events-auto max-w-[90vw] max-h-[90vh] relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setPreviewOpen(false)}
+                className="absolute top-2 right-2 z-80 rounded-full bg-white/90 p-2 border border-stroke-grey"
+                aria-label="Close preview"
+              >
+                ✕
+              </button>
+              <img
+                src={imageDataUrl}
+                alt={imageName ?? "Selected image preview"}
+                className="max-w-full max-h-[80vh] object-contain rounded-md shadow-lg"
+              />
+              {imageName && (
+                <div className="mt-2 text-sm text-center text-text-lighter-lm">
+                  {imageName}
+                </div>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 }
