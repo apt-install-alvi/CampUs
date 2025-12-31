@@ -1,3 +1,4 @@
+// src/features/feed/components/EventPost.tsx
 import React from "react";
 import { PostBody } from "./PostBody";
 import userImg from "../assets/placeholderUser.png";
@@ -27,11 +28,28 @@ export type EventPostType = {
 
 interface Props {
   post: EventPostType;
+  onClick?: () => void; // optional click handler to open detail
 }
 
-export default function EventPost({ post }: Props) {
+export default function EventPost({ post, onClick }: Props) {
+  // make the whole article clickable but preserve keyboard accessibility
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!onClick) return;
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
   return (
-    <article className="rounded-xl border border-stroke-grey bg-primary-lm p-6 shadow-sm">
+    <article
+      className="rounded-xl border border-stroke-grey bg-primary-lm p-6 shadow-sm"
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+      aria-pressed={onClick ? false : undefined}
+    >
       <PostBody
         title={post.title}
         user={{
@@ -43,8 +61,8 @@ export default function EventPost({ post }: Props) {
           text: post.body ?? post.excerpt ?? "",
           img: post.image ?? undefined,
         }}
-        tags={post.tags}           /* <-- pass tags */
-        category={post.category}   /* <-- pass category */
+        tags={post.tags}
+        category={post.category}
       />
     </article>
   );

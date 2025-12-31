@@ -2,14 +2,15 @@
 import React, { useMemo, useState } from "react";
 import postImg from "../../features/feed/assets/placeholderPostImg.png";
 
-import CategorySelection, {type CategoryKey } from "../../components/CategorySelection";
+import CategorySelection, { type CategoryKey } from "../../components/CategorySelection";
 
 // Use your feed EventPost composer that relies on PostBody/PostButtons/ShareModal
 import EventPost from "../../features/feed/components/EventPost";
 import CreateEventModal from "../../components/CreateEventModal";
+import EventPostDetail from "@/components/EventPostDetail";
 
 /**
- * Local EventPostType (keep in sync with what your EventPost expects)
+ * Local Segment & EventPostType (keep in sync with what your EventPost expects)
  */
 type Segment = {
   id: string;
@@ -47,7 +48,23 @@ const initialPosts: EventPostType[] = [
     body:
       "For the first time, MIST Cyber Security Club is hosting a 3-in-1 event exclusively for MIST students! CyberVoid'25 kicks off on Dec 10, 2025, and wraps up on Dec 12. Don't miss out on this incredible 3-day experience! Register now and secure your spot! Features include cybersecurity quiz, CTF challenges and hands-on workshops.",
     image: postImg,
-    segments: [],
+    segments: [
+      {
+        id: "s1",
+        name: "CyberSecurity Quiz",
+        description:
+          "Short quiz about security basics with small prizes for winners.",
+        date: "2025-12-27",
+        time: "15:00",
+      },
+      {
+        id: "s2",
+        name: "Break the Firewall",
+        description: "Hands-on CTF challenge to test your penetration skills.",
+        date: "2025-12-27",
+        time: "15:00",
+      },
+    ],
     tags: ["hackathon", "ctf"],
     likes: 46,
     comments: 12,
@@ -75,6 +92,9 @@ export function Events() {
   const [filter, setFilter] = useState<CategoryKey>("all");
   const [modalOpen, setModalOpen] = useState(false);
 
+  // selected post for detail view
+  const [selectedPost, setSelectedPost] = useState<EventPostType | null>(null);
+
   const filtered = useMemo(() => {
     if (filter === "all") return posts;
     return posts.filter((p) => p.category === filter);
@@ -84,11 +104,19 @@ export function Events() {
     setPosts((prev) => [post, ...prev]);
   }
 
+  // when user clicks a post: show detail
+  function openDetail(post: EventPostType) {
+    setSelectedPost(post);
+    // optionally scroll to top:
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function closeDetail() {
+    setSelectedPost(null);
+  }
+
   return (
     <div className="min-h-screen bg-background-lm">
-
- 
-
       <div className="mx-auto max-w-7xl px-4 py-10">
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-12 lg:col-span-3">
@@ -106,17 +134,25 @@ export function Events() {
             </div>
 
             <div className="mt-6 space-y-6">
-              {filtered.map((p) => (
-                <EventPost key={p.id} post={p as any} />
-              ))}
+              {selectedPost ? (
+                // Render the detail view
+                <EventPostDetail post={selectedPost} onBack={closeDetail} />
+              ) : (
+                // Render the feed
+                filtered.map((p) => (
+                  <EventPost key={p.id} post={p as any} onClick={() => openDetail(p)} />
+                ))
+              )}
             </div>
           </div>
         </div>
       </div>
 
-  
-
-      <CreateEventModal open={modalOpen} onClose={() => setModalOpen(false)} onCreate={handleCreate} />
+      <CreateEventModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onCreate={handleCreate}
+      />
     </div>
   );
 }
