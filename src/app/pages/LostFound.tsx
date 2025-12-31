@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Heart, MessageCircle, Share2, MoreVertical, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+
+import CommentThread, { type Comment as CTComment } from "@/components/CommentThread";
 
 type LFPost = {
   id: string;
@@ -55,9 +57,13 @@ export function LostFound() {
     time: "",
     file: undefined as File | undefined,
   });
+  const [titleError, setTitleError] = useState(false);
+
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const [activePost, setActivePost] = useState<LFPost | null>(null);
-  const [commentText, setCommentText] = useState("");
+
+  // posts state (initialized from mockPosts)
+  const [posts, setPosts] = useState<LFPost[]>(mockPosts);
 
   type LFComment = {
     id: string;
@@ -67,12 +73,8 @@ export function LostFound() {
     timestamp: string;
   };
 
-  // posts state (initialized from mockPosts)
-  const [posts, setPosts] = useState<LFPost[]>(mockPosts);
-
-  const [commentsByPost, setCommentsByPost] = useState<
-    Record<string, LFComment[]>
-  >({
+  // commentsByPost stores simple comments; we will map to CommentThread's shape on demand
+  const [commentsByPost, setCommentsByPost] = useState<Record<string, LFComment[]>>({
     "lf-1": [
       {
         id: "c1",
@@ -91,29 +93,13 @@ export function LostFound() {
     ],
   });
 
+  // open comments dialog for a post
   const openComments = (post: LFPost) => {
     setActivePost(post);
     setIsCommentsOpen(true);
   };
 
-  const submitComment = () => {
-    if (!activePost) return;
-    const txt = commentText.trim();
-    if (!txt) return;
-    const newC: LFComment = {
-      id: `${activePost.id}-c-${Date.now()}`,
-      author: "You",
-      avatar: "/placeholder.svg?key=u1",
-      content: txt,
-      timestamp: "now",
-    };
-    setCommentsByPost((prev) => ({
-      ...prev,
-      [activePost.id]: [...(prev[activePost.id] ?? []), newC],
-    }));
-    setCommentText("");
-  };
-
+  // Filtering posts (search query currently unused)
   const filtered = posts.filter((p) =>
     p.title.toLowerCase().includes(query.toLowerCase())
   );
@@ -122,27 +108,25 @@ export function LostFound() {
     return `${prefix}${Date.now().toString(36)}${Math.random().toString(36).slice(2)}`;
   }
 
-  // Handle posting new Lost/Found announcement
+  // Post creation: require title, create image URL for preview, prepend post and create empty comment array
   function handlePost() {
     const title = form.title.trim();
     const description = form.description.trim();
 
-    // simple guard: require at least title or description
-    if (!title && !description) {
-      // you can show validation if you want; for now just return
+    if (!title) {
+      setTitleError(true);
       return;
     }
 
-    // create image URL if file present
     const imageUrl = form.file ? URL.createObjectURL(form.file) : undefined;
 
     const newPost: LFPost = {
       id: generateId("lf-"),
-      title: title || "Untitled",
+      title: title,
       author: "You",
       authorCourse: "—",
       authorAvatar: "/placeholder.svg",
-      description: description,
+      description,
       imageUrl,
       reactions: 0,
       comments: 0,
@@ -150,10 +134,9 @@ export function LostFound() {
       timestamp: "Just now",
     };
 
-    // prepend post (newest first)
     setPosts((prev) => [newPost, ...prev]);
 
-    // ensure comment bucket exists for this post
+    // ensure a comments bucket exists for this post
     setCommentsByPost((prev) => ({
       ...prev,
       [newPost.id]: prev[newPost.id] ?? [],
@@ -168,12 +151,46 @@ export function LostFound() {
       file: undefined,
     });
 
-    // clear native file input value if present
+    // reset file input element if present
     const fileInput = document.getElementById("lf-file-input") as HTMLInputElement | null;
     if (fileInput) fileInput.value = "";
 
-    // close dialog
+    setTitleError(false);
     setIsAnnounceOpen(false);
+  }
+
+  // Helper: convert LFComment[] -> CTComment[] for CommentThread initialComments
+  function mapLFToCTComments(lf: LFComment[] | undefined): CTComment[] {
+    if (!lf) return [];
+    return lf.map((c) => ({
+      id: c.id,
+      author: c.author,
+      avatar: c.avatar,
+      course: undefined,
+      content: c.content,
+      likes: 0,
+      replies: [],
+      timestamp: c.timestamp,
+    }));
+  }
+
+  // Handler when CommentThread changes comments for the active post:
+  function handleCommentsChangeForActivePost(newComments: CTComment[]) {
+    if (!activePost) return;
+    // map back to simple LFComment[]
+    const lfList: LFComment[] = newComments.map((nc) => ({
+      id: nc.id,
+      author: nc.author,
+      avatar: nc.avatar,
+      content: nc.content,
+      timestamp: nc.timestamp,
+    }));
+
+    // update commentsByPost and post.comment count
+    setCommentsByPost((prev) => ({ ...prev, [activePost.id]: lfList }));
+    setPosts((prev) =>
+      prev.map((p) => (p.id === activePost.id ? { ...p, comments: lfList.length } : p))
+    );
   }
 
   return (
@@ -192,78 +209,17 @@ export function LostFound() {
         {/* Posts */}
         <div className="space-y-4">
           {filtered.map((post) => (
-            <div
+            <LFPostCard
               key={post.id}
-              className="bg-primary-lm p-6 rounded-xl border border-stroke-grey shadow-sm hover:shadow-md hover:border-stroke-peach transition animate-slide-in"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div>
-                  <h3 className="text-xl font-bold text-text-lm">
-                    {post.title}
-                  </h3>
-                  <div className="mt-2 flex items-center gap-2">
-                    <Avatar className="h-6 w-6">
-                      <AvatarImage
-                        src={post.authorAvatar || "/placeholder.svg"}
-                      />
-                      <AvatarFallback>{post.author[0]}</AvatarFallback>
-                    </Avatar>
-                    <span className="text-sm font-medium text-text-lm">
-                      {post.author}
-                    </span>
-                    <span className="text-[12px] text-text-lighter-lm">
-                      {post.authorCourse}
-                    </span>
-                    <span className="text-[12px] text-text-lighter-lm">
-                      • {post.timestamp}
-                    </span>
-                  </div>
-                </div>
-                <MoreVertical className="h-5 w-5 text-accent-lm" />
-              </div>
-
-              <p className="text-text-lm mb-4">
-                {post.description}
-                <Button
-                  variant="ghost"
-                  className="ml-2 h-auto p-0 text-accent-lm"
-                >
-                  Read More
-                </Button>
-              </p>
-
-              {post.imageUrl && (
-                <img
-                  src={post.imageUrl}
-                  alt="Lost item"
-                  className="w-full rounded-lg border border-stroke-grey"
-                />
-              )}
-
-              <div className="mt-4 flex items-center gap-3">
-                <button className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-stroke-peach bg-secondary-lm text-accent-lm">
-                  <Heart className="h-4 w-4" />
-                  <span className="text-sm font-bold">{post.reactions}</span>
-                </button>
-                <button
-                  className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-stroke-peach bg-secondary-lm text-accent-lm"
-                  onClick={() => openComments(post)}
-                >
-                  <MessageCircle className="h-4 w-4" />
-                  <span className="text-sm font-bold">{post.comments}</span>
-                </button>
-                <button className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-stroke-peach bg-secondary-lm text-accent-lm">
-                  <Share2 className="h-4 w-4" />
-                  <span className="text-sm font-bold">{post.shares}</span>
-                </button>
-              </div>
-            </div>
+              post={post}
+              onOpenComments={() => openComments(post)}
+            />
           ))}
         </div>
       </main>
 
       {/* Announce Dialog */}
-      <Dialog open={isAnnounceOpen} onOpenChange={setIsAnnounceOpen}>
+      <Dialog open={isAnnounceOpen} onOpenChange={(v) => { setIsAnnounceOpen(v); if(!v) setTitleError(false); }}>
         <DialogContent className="sm:max-w-xl bg-primary-lm border-stroke-grey text-text-lm">
           <DialogHeader>
             <DialogTitle>Announce Lost or Found Item</DialogTitle>
@@ -274,10 +230,17 @@ export function LostFound() {
               <Input
                 placeholder="Title"
                 value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                onChange={(e) => {
+                  setForm({ ...form, title: e.target.value });
+                  if (titleError && e.target.value.trim()) setTitleError(false);
+                }}
                 className="mt-1 bg-primary-lm border-stroke-grey text-text-lm placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
               />
+              {titleError && (
+                <p className="text-sm text-red-600 mt-1">Title is required.</p>
+              )}
             </div>
+
             <div>
               <label className="text-sm text-text-lighter-lm">
                 Description
@@ -292,6 +255,7 @@ export function LostFound() {
                 className="mt-1 bg-primary-lm border-stroke-grey text-text-lm placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
               />
             </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="text-sm text-text-lighter-lm">Date</label>
@@ -312,6 +276,7 @@ export function LostFound() {
                 />
               </div>
             </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr] items-center gap-3">
               <Button
                 className="bg-accent-lm hover:bg-hover-btn-lm text-primary-lm"
@@ -328,6 +293,7 @@ export function LostFound() {
                 className="bg-primary-lm border-stroke-grey text-text-lm file:text-text-lm"
               />
             </div>
+
             <Button
               className="w-full bg-accent-lm hover:bg-hover-btn-lm text-primary-lm"
               onClick={handlePost}
@@ -338,8 +304,8 @@ export function LostFound() {
         </DialogContent>
       </Dialog>
 
-      {/* Comments Dialog */}
-      <Dialog open={isCommentsOpen} onOpenChange={setIsCommentsOpen}>
+      {/* Comments Dialog (uses your CommentThread) */}
+      <Dialog open={isCommentsOpen} onOpenChange={(v) => setIsCommentsOpen(v)}>
         <DialogContent className="sm:max-w-xl bg-primary-lm border-stroke-grey text-text-lm">
           {activePost && (
             <div className="space-y-4">
@@ -348,6 +314,7 @@ export function LostFound() {
                   {activePost.author}
                 </DialogTitle>
               </DialogHeader>
+
               <div>
                 <h3 className="text-lg font-bold text-text-lm">
                   {activePost.title}
@@ -356,40 +323,12 @@ export function LostFound() {
                   {activePost.description}
                 </p>
               </div>
-              <div className="flex items-center gap-2">
-                <Input
-                  placeholder="Join the conversation"
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  className="flex-1 bg-primary-lm border-stroke-grey text-text-lm placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
-                />
-                <Button
-                  className="h-9 w-9 p-0 rounded-full bg-accent-lm text-primary-lm hover:bg-hover-btn-lm"
-                  onClick={submitComment}
-                  aria-label="Send"
-                >
-                  <Send className="h-4 w-4" />
-                </Button>
-              </div>
-              <div className="space-y-4">
-                {(commentsByPost[activePost.id] ?? []).map((c) => (
-                  <div key={c.id} className="flex gap-2">
-                    <Avatar className="h-8 w-8 border border-stroke-grey">
-                      <AvatarImage src={c.avatar || "/placeholder.svg"} />
-                      <AvatarFallback>{c.author[0]}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="text-sm font-bold text-text-lm">
-                        {c.author}
-                      </div>
-                      <div className="text-sm text-text-lm">{c.content}</div>
-                      <div className="text-xs text-text-lighter-lm">
-                        {c.timestamp}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+
+              <CommentThread
+                initialComments={mapLFToCTComments(commentsByPost[activePost.id])}
+                currentUser={{ name: "You", avatar: "/placeholder.svg", course: "—" }}
+                onChange={(newComments) => handleCommentsChangeForActivePost(newComments)}
+              />
             </div>
           )}
         </DialogContent>
@@ -397,3 +336,111 @@ export function LostFound() {
     </div>
   );
 }
+
+/**
+ * Small helper component to render each post and handle "Read more" when description overflows.
+ * Kept inside same file to avoid changing your project structure.
+ */
+function LFPostCard({ post, onOpenComments }: { post: LFPost; onOpenComments: () => void }) {
+  const descRef = useRef<HTMLDivElement | null>(null);
+  const [collapsed, setCollapsed] = useState(true);
+  const [showReadMore, setShowReadMore] = useState(false);
+
+  useEffect(() => {
+    // measure overflow after render
+    const el = descRef.current;
+    if (!el) return;
+
+    // use a small timeout to ensure styles applied
+    const t = setTimeout(() => {
+      // if scrollHeight is bigger than clientHeight, it overflows
+      setShowReadMore(el.scrollHeight > el.clientHeight + 1);
+    }, 0);
+
+    // also listen for window resize to recompute
+    const onResize = () => {
+      if (!el) return;
+      setShowReadMore(el.scrollHeight > el.clientHeight + 1);
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [post.description]);
+
+  return (
+    <div
+      className="bg-primary-lm p-6 rounded-xl border border-stroke-grey shadow-sm hover:shadow-md hover:border-stroke-peach transition animate-slide-in"
+    >
+      <div className="flex items-start justify-between mb-3">
+        <div>
+          <h3 className="text-xl font-bold text-text-lm">{post.title}</h3>
+          <div className="mt-2 flex items-center gap-2">
+            <Avatar className="h-6 w-6">
+              <AvatarImage src={post.authorAvatar || "/placeholder.svg"} />
+              <AvatarFallback>{post.author[0]}</AvatarFallback>
+            </Avatar>
+            <span className="text-sm font-medium text-text-lm">{post.author}</span>
+            <span className="text-[12px] text-text-lighter-lm">{post.authorCourse}</span>
+            <span className="text-[12px] text-text-lighter-lm">• {post.timestamp}</span>
+          </div>
+        </div>
+        <MoreVertical className="h-5 w-5 text-accent-lm" />
+      </div>
+
+      <div className="mb-4">
+        {/* description container: set a CSS maxHeight when collapsed so we can detect overflow */}
+        <div
+          ref={descRef}
+          style={
+            collapsed
+              ? { maxHeight: "4.5rem", overflow: "hidden" } // approx 3 lines
+              : undefined
+          }
+          className="text-text-lm mb-2"
+        >
+          {post.description}
+        </div>
+
+        {/* Read More only shows when content overflows the collapsed box */}
+        {showReadMore && (
+          <Button
+            variant="ghost"
+            className="ml-0 h-auto p-0 text-accent-lm"
+            onClick={() => setCollapsed((c) => !c)}
+          >
+            {collapsed ? "Read More" : "Show less"}
+          </Button>
+        )}
+      </div>
+
+      {post.imageUrl && (
+        <img src={post.imageUrl} alt="Lost item" className="w-full rounded-lg border border-stroke-grey mb-4" />
+      )}
+
+      <div className="mt-4 flex items-center gap-3">
+        <button className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-stroke-peach bg-secondary-lm text-accent-lm">
+          <Heart className="h-4 w-4" />
+          <span className="text-sm font-bold">{post.reactions}</span>
+        </button>
+
+        <button
+          className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-stroke-peach bg-secondary-lm text-accent-lm"
+          onClick={onOpenComments}
+        >
+          <MessageCircle className="h-4 w-4" />
+          <span className="text-sm font-bold">{post.comments}</span>
+        </button>
+
+        <button className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-stroke-peach bg-secondary-lm text-accent-lm">
+          <Share2 className="h-4 w-4" />
+          <span className="text-sm font-bold">{post.shares}</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default LostFound;
