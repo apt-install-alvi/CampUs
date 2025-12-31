@@ -43,11 +43,15 @@ interface PostDetailProps {
   onBack: () => void;
 }
 
+function generateId(prefix = "") {
+  return prefix + Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+
 export function PostDetail({ post, onBack }: PostDetailProps) {
   const [commentText, setCommentText] = useState("");
   const [isReplying, setIsReplying] = useState(false);
 
-  const comments: Comment[] = [
+  const [comments, setComments] = useState<Comment[]>([
     {
       id: "c1",
       author: "Hasan Mahmud",
@@ -77,7 +81,58 @@ export function PostDetail({ post, onBack }: PostDetailProps) {
       likes: 8,
       timestamp: "15m ago",
     },
-  ];
+  ]);
+
+  // add top-level comment
+  function addTopLevelComment() {
+    const txt = commentText.trim();
+    if (!txt) return;
+
+    const newComment: Comment = {
+      id: generateId("c_"),
+      author: "Hasan Mahmud",
+      avatar: "/placeholder.svg?key=h1",
+      course: "CSE-22",
+      content: txt,
+      likes: 0,
+      replies: [],
+      timestamp: "Just now",
+    };
+
+    setComments((prev) => [newComment, ...prev]);
+    setCommentText("");
+    setIsReplying(false);
+  }
+
+  // recursive helper to add reply to tree
+  function addReplyToTree(list: Comment[], parentId: string, reply: Comment): Comment[] {
+    return list.map((c) => {
+      if (c.id === parentId) {
+        const nextReplies = c.replies ? [...c.replies, reply] : [reply];
+        return { ...c, replies: nextReplies };
+      }
+      if (c.replies && c.replies.length > 0) {
+        return { ...c, replies: addReplyToTree(c.replies, parentId, reply) };
+      }
+      return c;
+    });
+  }
+
+  function handleAddReply(parentId: string, text: string) {
+    const txt = text.trim();
+    if (!txt) return;
+    const reply: Comment = {
+      id: generateId("r_"),
+      author: "Hasan Mahmud",
+      avatar: "/placeholder.svg?key=h1",
+      course: "CSE-22",
+      content: txt,
+      likes: 0,
+      replies: [],
+      timestamp: "Just now",
+    };
+    setComments((prev) => addReplyToTree(prev, parentId, reply));
+  }
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -173,6 +228,7 @@ export function PostDetail({ post, onBack }: PostDetailProps) {
                 <Button
                   size="sm"
                   className="bg-accent-lm hover:bg-hover-btn-lm text-primary-lm px-4"
+                  onClick={addTopLevelComment}
                 >
                   Comment
                 </Button>
@@ -195,7 +251,7 @@ export function PostDetail({ post, onBack }: PostDetailProps) {
 
         <div className="space-y-8">
           {comments.map((comment) => (
-            <CommentItem key={comment.id} comment={comment} />
+            <CommentItem key={comment.id} comment={comment} onAddReply={handleAddReply} />
           ))}
         </div>
       </div>
@@ -206,10 +262,23 @@ export function PostDetail({ post, onBack }: PostDetailProps) {
 function CommentItem({
   comment,
   isReply = false,
+  onAddReply,
 }: {
   comment: Comment;
   isReply?: boolean;
+  onAddReply: (parentId: string, text: string) => void;
 }) {
+  const [replying, setReplying] = useState(false);
+  const [replyText, setReplyText] = useState("");
+
+  function submitReply() {
+    const txt = replyText.trim();
+    if (!txt) return;
+    onAddReply(comment.id, txt);
+    setReplyText("");
+    setReplying(false);
+  }
+
   return (
     <div className="relative animate-slide-in">
       <div className="flex gap-3">
@@ -239,21 +308,53 @@ function CommentItem({
               <Heart className="h-3 w-3" />
               {comment.likes}
             </button>
-            <button className="text-[11px] font-bold text-accent-lm hover:underline">
+            <button
+              className="text-[11px] font-bold text-accent-lm hover:underline"
+              onClick={() => setReplying((r) => !r)}
+            >
               Reply
             </button>
           </div>
         </div>
       </div>
 
+      {/* Reply form for this comment */}
+      {replying && (
+        <div className="ml-4 mt-4 space-y-3">
+          <Textarea
+            placeholder={`Reply to ${comment.author}...`}
+            value={replyText}
+            onChange={(e) => setReplyText(e.target.value)}
+            className="min-h-20 border-none focus-visible:ring-0 p-0 text-sm bg-primary-lm text-text-lm placeholder:text-text-lighter-lm"
+          />
+          <div className="flex items-center justify-end gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setReplying(false);
+                setReplyText("");
+              }}
+            >
+              Cancel
+            </Button>
+            <Button size="sm" className="bg-accent-lm hover:bg-hover-btn-lm text-primary-lm px-4" onClick={submitReply}>
+              Comment
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Nested Replies */}
       {comment.replies && comment.replies.length > 0 && (
         <div className="ml-4 mt-4 space-y-4 border-l-2 border-stroke-grey pl-6">
           {comment.replies.map((reply) => (
-            <CommentItem key={reply.id} comment={reply} isReply />
+            <CommentItem key={reply.id} comment={reply} isReply onAddReply={onAddReply} />
           ))}
         </div>
       )}
     </div>
   );
 }
+
+export default PostDetail;
