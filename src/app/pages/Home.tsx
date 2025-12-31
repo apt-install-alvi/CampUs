@@ -17,12 +17,14 @@ const user=placeholderUser;
 export function Home()
 {
   return (
-    <div className="flex gap-10 h-full w-full p-10">
-      <div className="flex flex-col gap-10 h-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey">
+    <div className="flex gap-10 h-full p-10">
+      <div className="flex flex-col gap-10 w-3/4 h-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey">
         <PostBody title={title} content={content} user={user}/>
         <PostBody title={title} content={content} user={user}/>
       </div>
-      <UpcomingEvents></UpcomingEvents>
+      <div className="w-1/4">
+        <UpcomingEvents></UpcomingEvents>
+      </div>
     </div>
   );
 }
@@ -32,7 +34,7 @@ export function UpcomingEvents()
 
   const [eventCount, setEventCount]=useState(1);//temp val for presentation purposes only, will be set to 0 initially and connected with db
   return (
-    <div className="flex flex-col justify-start w-170 h-fit bg-primary-lm border-2 border-stroke-grey rounded-2xl">
+    <div className="flex flex-col justify-start w-80 h-fit bg-primary-lm border-2 border-stroke-grey rounded-2xl">
       <div className="p-3 border border-t-0 border-l-0 border-r-0 border-b-stroke-grey">
         <h6 className="font-[Poppins] font-semibold text-text-lm">Upcoming Events</h6>
       </div>
