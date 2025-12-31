@@ -67,6 +67,9 @@ export function LostFound() {
     timestamp: string;
   };
 
+  // posts state (initialized from mockPosts)
+  const [posts, setPosts] = useState<LFPost[]>(mockPosts);
+
   const [commentsByPost, setCommentsByPost] = useState<
     Record<string, LFComment[]>
   >({
@@ -111,9 +114,67 @@ export function LostFound() {
     setCommentText("");
   };
 
-  const filtered = mockPosts.filter((p) =>
+  const filtered = posts.filter((p) =>
     p.title.toLowerCase().includes(query.toLowerCase())
   );
+
+  function generateId(prefix = "lf-") {
+    return `${prefix}${Date.now().toString(36)}${Math.random().toString(36).slice(2)}`;
+  }
+
+  // Handle posting new Lost/Found announcement
+  function handlePost() {
+    const title = form.title.trim();
+    const description = form.description.trim();
+
+    // simple guard: require at least title or description
+    if (!title && !description) {
+      // you can show validation if you want; for now just return
+      return;
+    }
+
+    // create image URL if file present
+    const imageUrl = form.file ? URL.createObjectURL(form.file) : undefined;
+
+    const newPost: LFPost = {
+      id: generateId("lf-"),
+      title: title || "Untitled",
+      author: "You",
+      authorCourse: "—",
+      authorAvatar: "/placeholder.svg",
+      description: description,
+      imageUrl,
+      reactions: 0,
+      comments: 0,
+      shares: 0,
+      timestamp: "Just now",
+    };
+
+    // prepend post (newest first)
+    setPosts((prev) => [newPost, ...prev]);
+
+    // ensure comment bucket exists for this post
+    setCommentsByPost((prev) => ({
+      ...prev,
+      [newPost.id]: prev[newPost.id] ?? [],
+    }));
+
+    // reset form
+    setForm({
+      title: "",
+      description: "",
+      date: "",
+      time: "",
+      file: undefined,
+    });
+
+    // clear native file input value if present
+    const fileInput = document.getElementById("lf-file-input") as HTMLInputElement | null;
+    if (fileInput) fileInput.value = "";
+
+    // close dialog
+    setIsAnnounceOpen(false);
+  }
 
   return (
     <div className="min-h-screen bg-background-lm animate-fade-in">
@@ -200,6 +261,7 @@ export function LostFound() {
           ))}
         </div>
       </main>
+
       {/* Announce Dialog */}
       <Dialog open={isAnnounceOpen} onOpenChange={setIsAnnounceOpen}>
         <DialogContent className="sm:max-w-xl bg-primary-lm border-stroke-grey text-text-lm">
@@ -253,9 +315,7 @@ export function LostFound() {
             <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr] items-center gap-3">
               <Button
                 className="bg-accent-lm hover:bg-hover-btn-lm text-primary-lm"
-                onClick={() =>
-                  document.getElementById("lf-file-input")?.click()
-                }
+                onClick={() => document.getElementById("lf-file-input")?.click()}
               >
                 Upload Image
               </Button>
@@ -270,7 +330,7 @@ export function LostFound() {
             </div>
             <Button
               className="w-full bg-accent-lm hover:bg-hover-btn-lm text-primary-lm"
-              onClick={() => setIsAnnounceOpen(false)}
+              onClick={handlePost}
             >
               Post
             </Button>
