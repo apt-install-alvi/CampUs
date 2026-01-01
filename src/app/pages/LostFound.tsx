@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Heart, MessageCircle, Share2, MoreVertical, Send } from "lucide-react";
+import { Heart, MessageCircle, Share2, MoreVertical } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogClose,
 } from "@/components/ui/dialog";
 
 import CommentThread, { type Comment as CTComment } from "@/components/CommentThread";
@@ -99,7 +100,8 @@ export function LostFound() {
   const [previewOpen, setPreviewOpen] = useState(false);
 
   // control whether Dialog is allowed to close when onOpenChange(false) arrives.
-  // Only set this true when user explicitly clicks the modal's close button or we decide to close programmatically (Post).
+  // Only set this true when user explicitly clicks the modal's close control (DialogClose)
+  // or we decide to close programmatically (Post).
   const allowCloseRef = useRef(false);
 
   // open comments dialog for a post
@@ -226,21 +228,15 @@ export function LostFound() {
     setIsAnnounceOpen(true);
   }
 
-  // Explicit close requested by user via close button inside dialog
-  function requestCloseAnnounce() {
-    allowCloseRef.current = true;
-    setIsAnnounceOpen(false);
-  }
-
   // Dialog's onOpenChange handler that blocks unsolicited closes
   function handleAnnounceDialogChange(nextOpen: boolean) {
     if (nextOpen) {
-      // opened by dialog (shouldn't happen often), allow but reset flag
+      // dialog opened
       allowCloseRef.current = false;
       setIsAnnounceOpen(true);
       return;
     }
-    // nextOpen === false: a close was requested (overlay click, ESC, programmatic)
+    // nextOpen === false: a close was requested (overlay click, ESC, DialogClose)
     if (allowCloseRef.current) {
       // allowed close
       setIsAnnounceOpen(false);
@@ -281,20 +277,21 @@ export function LostFound() {
         {/* Announce Dialog */}
         <Dialog open={isAnnounceOpen} onOpenChange={handleAnnounceDialogChange}>
           <DialogContent className="sm:max-w-xl bg-primary-lm border-stroke-grey text-text-lm">
-            <div className="relative">
-              <DialogHeader>
-                <DialogTitle>Announce Lost or Found Item</DialogTitle>
-              </DialogHeader>
+            <DialogHeader>
+              <DialogTitle>Announce Lost or Found Item</DialogTitle>
 
-              {/* explicit close button (only this closes the modal unless you Post) */}
-              <button
-                onClick={requestCloseAnnounce}
-                aria-label="Close announce dialog"
+              {/* Use the library's default close control (DialogClose).
+                  Clicking this will set allowCloseRef and then close the dialog. */}
+              <DialogClose
+                onClick={() => {
+                  allowCloseRef.current = true;
+                }}
                 className="absolute top-4 right-4 rounded-full bg-white/90 p-2 border border-stroke-grey"
+                aria-label="Close announce dialog"
               >
                 ✕
-              </button>
-            </div>
+              </DialogClose>
+            </DialogHeader>
 
             <div className="space-y-4 mt-2">
               <div>
