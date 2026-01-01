@@ -177,7 +177,6 @@ export function UserProfile() {
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
-
             <div className="divide-y divide-stroke-grey rounded-xl border border-stroke-grey bg-secondary-lm">
               {skills.map((sk, idx) => (
                 <div
@@ -197,7 +196,6 @@ export function UserProfile() {
               ))}
             </div>
           </div>
-
           {/* Interested In */}
           <div className="p-6">
             <div className="mb-4 flex items-center justify-between">
@@ -209,7 +207,6 @@ export function UserProfile() {
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
-
             <div className="flex flex-wrap gap-3">
               {interests.map((tag) => (
                 <span
@@ -221,7 +218,6 @@ export function UserProfile() {
               ))}
             </div>
           </div>
-
           {/* Contact */}
           <div className="p-6">
             <div className="mb-4 flex items-center justify-between">
@@ -233,7 +229,6 @@ export function UserProfile() {
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
-
             <div className="flex flex-wrap gap-3">
               {contacts
                 .filter((c) => c.id.trim())
@@ -253,7 +248,6 @@ export function UserProfile() {
             </div>
           </div>
         </section>
-
         {/* Sidebar: Upcoming Events */}
         <aside className="flex flex-col justify-start h-fit rounded-2xl border border-stroke-grey bg-primary-lm shadow-sm animate-slide-in">
           <div className="p-7 border-b border-stroke-grey">
