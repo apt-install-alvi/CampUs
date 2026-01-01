@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 
 import userImg from "../../features/feed/assets/placeholderUser.png";
 import { UpcomingEvents } from "./Home";
+import UserProfileUpdate from "@/components/UserProfileUpdate"; // new modal component
 
 type Skill = { title: string; detail?: string };
 
@@ -26,19 +27,30 @@ export function UserProfile() {
     "Arduino",
   ]);
 
-  const addSkill = () => {
-    const title = window.prompt("Add a skill (e.g., UI/UX or Java)")?.trim();
-    if (!title) return;
-    const detail = window
-      .prompt("Optional detail (e.g., Club or Course)")
-      ?.trim();
-    setSkills((prev) => [...prev, { title, detail }]);
+  // modal state
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<"skill" | "interest">("skill");
+
+  const openAddSkill = () => {
+    setModalMode("skill");
+    setModalOpen(true);
   };
 
-  const addInterest = () => {
-    const tag = window.prompt("Add an interest (e.g., ML, CTF)")?.trim();
+  const openAddInterest = () => {
+    setModalMode("interest");
+    setModalOpen(true);
+  };
+
+  const handleSaveSkill = (skill: Skill) => {
+    setSkills((prev) => [...prev, skill]);
+    setModalOpen(false);
+  };
+
+  const handleSaveInterest = (interest: string) => {
+    const tag = interest.trim();
     if (!tag) return;
-    setInterests((prev) => (prev.includes(tag) ? prev : [...prev, tag])); //duplicate  page handel,ui clean
+    setInterests((prev) => (prev.includes(tag) ? prev : [...prev, tag]));
+    setModalOpen(false);
   };
 
   return (
@@ -70,7 +82,6 @@ export function UserProfile() {
                 </Badge>
               </div>
             </div>
-
           </div>
 
           {/* Skills */}
@@ -78,7 +89,7 @@ export function UserProfile() {
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-bold text-text-lm">Skills</h2>
               <Button
-                onClick={addSkill}
+                onClick={openAddSkill}
                 className="h-8 rounded-full bg-accent-lm px-3 text-primary-lm hover:bg-hover-btn-lm"
               >
                 <Plus className="h-4 w-4" />
@@ -99,11 +110,7 @@ export function UserProfile() {
                       </div>
                     )}
                   </div>
-                  <div>
-                    {/* <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-stroke-peach bg-primary-lm text-accent-lm">
-                      <Plus className="h-4 w-4" />
-                    </span> */}
-                  </div>
+                  <div>{/* Placeholder for future controls */}</div>
                 </div>
               ))}
             </div>
@@ -114,7 +121,7 @@ export function UserProfile() {
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-bold text-text-lm">Interested In</h2>
               <Button
-                onClick={addInterest}
+                onClick={openAddInterest}
                 className="h-8 rounded-full bg-accent-lm px-3 text-primary-lm hover:bg-hover-btn-lm"
               >
                 <Plus className="h-4 w-4" />
@@ -136,18 +143,17 @@ export function UserProfile() {
 
         {/* Sidebar */}
         {/* <UpcomingEvents></UpcomingEvents> */}
-        {/* <aside className="h-fit rounded-2xl border border-stroke-grey bg-primary-lm p-4 shadow-sm animate-slide-in">
-          <h3 className="px-2 text-sm font-bold text-slate-700">
-            Upcoming Events
-          </h3>
-          <div className="mt-3 rounded-xl border border-stroke-grey bg-secondary-lm p-4 text-sm text-text-lm">
-            No events added
-          </div>
-          <Button className="mt-3 w-full rounded-full bg-accent-lm text-primary-lm hover:bg-hover-btn-lm">
-            Add More
-          </Button>
-        </aside> */}
       </div>
+
+      <UserProfileUpdate
+        open={modalOpen}
+        mode={modalMode}
+        onClose={() => setModalOpen(false)}
+        onSaveSkill={handleSaveSkill}
+        onSaveInterest={handleSaveInterest}
+      />
     </div>
   );
 }
+
+export default UserProfile;
