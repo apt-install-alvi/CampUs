@@ -98,6 +98,10 @@ export function LostFound() {
   const [imageName, setImageName] = useState<string | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
 
+  // control whether Dialog is allowed to close when onOpenChange(false) arrives.
+  // Only set this true when user explicitly clicks the modal's close button or we decide to close programmatically (Post).
+  const allowCloseRef = useRef(false);
+
   // open comments dialog for a post
   const openComments = (post: LFPost) => {
     setActivePost(post);
@@ -176,8 +180,10 @@ export function LostFound() {
     const fileInput = document.getElementById("lf-file-input") as HTMLInputElement | null;
     if (fileInput) fileInput.value = "";
 
-    setTitleError(false);
+    // allow dialog to close and then close
+    allowCloseRef.current = true;
     setIsAnnounceOpen(false);
+    setTitleError(false);
   }
 
   // Helper: convert LFComment[] -> CTComment[] for CommentThread initialComments
@@ -214,6 +220,38 @@ export function LostFound() {
     );
   }
 
+  // Open announce modal (explicit opener) - ensures no accidental close allowed
+  function openAnnounceModal() {
+    allowCloseRef.current = false;
+    setIsAnnounceOpen(true);
+  }
+
+  // Explicit close requested by user via close button inside dialog
+  function requestCloseAnnounce() {
+    allowCloseRef.current = true;
+    setIsAnnounceOpen(false);
+  }
+
+  // Dialog's onOpenChange handler that blocks unsolicited closes
+  function handleAnnounceDialogChange(nextOpen: boolean) {
+    if (nextOpen) {
+      // opened by dialog (shouldn't happen often), allow but reset flag
+      allowCloseRef.current = false;
+      setIsAnnounceOpen(true);
+      return;
+    }
+    // nextOpen === false: a close was requested (overlay click, ESC, programmatic)
+    if (allowCloseRef.current) {
+      // allowed close
+      setIsAnnounceOpen(false);
+      allowCloseRef.current = false;
+      setTitleError(false);
+    } else {
+      // ignore the close request (re-open)
+      setIsAnnounceOpen(true);
+    }
+  }
+
   return (
     <>
       <div className="min-h-screen bg-background-lm animate-fade-in">
@@ -223,7 +261,7 @@ export function LostFound() {
             <Input
               placeholder="Tap to announce what has been lost or found"
               readOnly
-              onClick={() => setIsAnnounceOpen(true)}
+              onClick={openAnnounceModal}
               className="cursor-pointer rounded-lg bg-primary-lm border-stroke-peach placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
             />
           </div>
@@ -241,12 +279,24 @@ export function LostFound() {
         </main>
 
         {/* Announce Dialog */}
-        <Dialog open={isAnnounceOpen} onOpenChange={(v) => { setIsAnnounceOpen(v); if(!v) { setTitleError(false); setImageDataUrl(null); setImageName(null); setForm((f)=>({ ...f, file: undefined })); } }}>
+        <Dialog open={isAnnounceOpen} onOpenChange={handleAnnounceDialogChange}>
           <DialogContent className="sm:max-w-xl bg-primary-lm border-stroke-grey text-text-lm">
-            <DialogHeader>
-              <DialogTitle>Announce Lost or Found Item</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
+            <div className="relative">
+              <DialogHeader>
+                <DialogTitle>Announce Lost or Found Item</DialogTitle>
+              </DialogHeader>
+
+              {/* explicit close button (only this closes the modal unless you Post) */}
+              <button
+                onClick={requestCloseAnnounce}
+                aria-label="Close announce dialog"
+                className="absolute top-4 right-4 rounded-full bg-white/90 p-2 border border-stroke-grey"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-4 mt-2">
               <div>
                 <label className="text-sm text-text-lighter-lm">Title</label>
                 <Input
