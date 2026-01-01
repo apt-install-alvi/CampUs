@@ -10,7 +10,7 @@ import { Home } from "./pages/Home";
 import { CollabHub } from "./pages/CollabHub";
 import  Events  from "./pages/Events";
 import QnA from "./pages/QnA";
-import { Study } from "./pages/Study";
+import { Study } from "./pages/Study/Study";
 import { LostFound } from "./pages/LostFound";
 import { UserProfile } from "./pages/UserProfile";
 import { NotFound } from "./pages/Error_NotFound";

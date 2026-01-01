@@ -17,7 +17,7 @@ const user=placeholderUser;
 export function Home()
 {
   return (
-    <div className="flex gap-10 h-full p-10">
+    <div className="flex gap-10 mx-10 px-4 h-full p-10">
       <div className="flex flex-col gap-10 w-3/4 h-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey">
         <PostBody title={title} content={content} user={user}/>
         <PostBody title={title} content={content} user={user}/>

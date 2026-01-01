@@ -11,12 +11,12 @@ export function Layout() {
 
   return (
     <>
-      <div className="fixed w-full">
+      <div className="fixed w-full h-screen">
         {!hideNav && <TopNav />}
         {!hideNav && <BotNav />}
       </div>
 
-      <main className={`${hideNav ? "min-h-screen h-100vh flex items-center justify-center" : "flex items-center justify-center"} mx-10 px-4 py-30`}>
+      <main className={`${hideNav ? "min-h-screen h-screen flex items-center justify-center" : "flex items-center justify-center"} py-30`}>
         <Outlet />
       </main>
     </>

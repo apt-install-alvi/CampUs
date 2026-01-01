@@ -1,14 +1,12 @@
 "use client";
 
 import { useState, Suspense } from "react";
-import type { ChangeEvent, KeyboardEvent } from "react";
 import {
   Search,
   Heart,
   MessageCircle,
   Share2,
   MoreVertical,
-  ArrowLeft,
   Tag as TagIcon,
   Check,
 } from "lucide-react";
@@ -21,7 +19,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { PostDetail } from "@/components/post-detail";
