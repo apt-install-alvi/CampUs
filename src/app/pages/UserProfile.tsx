@@ -4,8 +4,7 @@ import { Plus, Mail, Github, Linkedin, Facebook } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router-dom";
-import { ButtonCTA } from "@/components/ButtonCTA";
+import { UpcomingEvents } from "@/components/UpcomingEvents";
 import userImg from "../../features/feed/assets/placeholderUser.png";
 import UserProfileUpdate from "@/components/UserProfileUpdate"; // new modal component
 type Skill = { title: string; detail?: string };
@@ -30,53 +29,34 @@ export function UserProfile() {
     { type: "github", id: "" },
     { type: "linkedin", id: "" },
   ]);
-
-  // Placeholder events: replace with real data source when available
-  const events: { title: string; date: Date }[] = [
-    { title: "MCSC CyberVoid'25", date: new Date(2025, 11, 27) },
-  ];
-  const now = new Date();
-  const oneWeekLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-  const upcomingEvents = events.filter(
-    (e) =>
-      e.date.getTime() > now.getTime() &&
-      e.date.getTime() <= oneWeekLater.getTime()
-  );
-  const eventCount = upcomingEvents.length;
-
+  // Upcoming events will be sourced from CollabHub preferences in future.
   // modal state
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"skill" | "interest" | "contact">(
     "skill"
   );
-
   const openAddSkill = () => {
     setModalMode("skill");
     setModalOpen(true);
   };
-
   const openAddInterest = () => {
     setModalMode("interest");
     setModalOpen(true);
   };
-
   const openAddContact = () => {
     setModalMode("contact");
     setModalOpen(true);
   };
-
   const handleSaveSkill = (skill: Skill) => {
     setSkills((prev) => [...prev, skill]);
     setModalOpen(false);
   };
-
   const handleSaveInterest = (interest: string) => {
     const tag = interest.trim();
     if (!tag) return;
     setInterests((prev) => (prev.includes(tag) ? prev : [...prev, tag]));
     setModalOpen(false);
   };
-
   const handleSaveContact = (contact: Contact) => {
     const key = `${contact.type}:${contact.id.trim()}`;
     if (!contact.id.trim()) return;
@@ -85,7 +65,6 @@ export function UserProfile() {
     );
     setModalOpen(false);
   };
-
   const contactLink = (c: Contact) => {
     const id = c.id.trim();
     const isUrl = /^https?:\/\//i.test(id);
@@ -103,7 +82,6 @@ export function UserProfile() {
         return "#";
     }
   };
-
   const contactDisplayText = (c: Contact) => {
     const id = c.id.trim();
     if (!id) return "";
@@ -119,7 +97,6 @@ export function UserProfile() {
       return id;
     }
   };
-
   const ContactIcon = ({ type }: { type: Contact["type"] }) => {
     switch (type) {
       case "gmail":
@@ -134,7 +111,6 @@ export function UserProfile() {
         return null;
     }
   };
-
   return (
     <div className="min-h-[70vh] bg-background-lm text-text-lm animate-fade-in">
       {/* Page-level Navbar to match the provided design */}
@@ -151,7 +127,6 @@ export function UserProfile() {
                 </Avatar>
               </div>
             </div>
-
             <div className="flex-1">
               <h1 className="text-xl font-extrabold tracking-tight text-text-lm">
                 Alvi Binte Zamil
@@ -165,7 +140,6 @@ export function UserProfile() {
               </div>
             </div>
           </div>
-
           {/* Skills */}
           <div className="border-b border-stroke-grey p-6">
             <div className="mb-4 flex items-center justify-between">
@@ -248,33 +222,8 @@ export function UserProfile() {
             </div>
           </div>
         </section>
-        {/* Sidebar: Upcoming Events */}
-        <aside className="flex flex-col justify-start h-fit rounded-2xl border border-stroke-grey bg-primary-lm shadow-sm animate-slide-in">
-          <div className="p-7 border-b border-stroke-grey">
-            <h6 className="font-[Poppins] font-semibold text-text-lm">
-              Upcoming Events
-            </h6>
-          </div>
-          <div className="p-8 flex flex-col justify-start">
-            {eventCount === 0 ? (
-              <p className="text-text-lighter-lm text-md">No events added</p>
-            ) : (
-              // events will be mapped to number of events that are interested by the user ONLY WITHIN 1 week of the current date
-              //will be wrapped in a <Link> where to=/(link of post)
-              <div className="flex flex-col py-2 px-3 hover:bg-secondary-lm hover:w-full hover:rounded-lg">
-                <p className="font-medium text-md text-text-lm">
-                  MCSC CyberVoid'25
-                </p>
-                <p className="text-text-lighter-lm">Saturday, 27 Dec 2025</p>
-              </div>
-            )}
-          </div>
-          <div className="flex justify-end p-3">
-            <Link to="/events">
-              <ButtonCTA label={"Add More"} />
-            </Link>
-          </div>
-        </aside>
+        {/* Sidebar: Upcoming Events (shared component) */}
+        <UpcomingEvents />
       </div>
 
       <UserProfileUpdate
