@@ -2,16 +2,14 @@
 "use client";
 
 import { useState, Suspense } from "react";
-import type { ChangeEvent } from "react";
 import {
   Search,
   Heart as HeartIcon,
   MessageCircle as MessageIcon,
   Share2 as ShareIcon,
   MoreVertical,
-  ArrowLeft,
-  Tag as TagIcon,
   Check,
+  Tag as TagIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,7 +40,6 @@ type Post = {
 };
 
 const categoryStyles = {
-  // Use theme tokens from index.css
   Question: "bg-secondary-lm text-accent-lm border-stroke-peach",
   Advice: "bg-secondary-lm text-accent-lm border-stroke-peach",
   Resource: "bg-secondary-lm text-accent-lm border-stroke-peach",
@@ -102,7 +99,6 @@ function QAPageContent() {
     tags: [] as string[],
     category: "Question" as Post["category"],
   });
-  const [tagInput, setTagInput] = useState("");
 
   // posts are stateful so we can update reactions/comments etc.
   const [posts, setPosts] = useState<Post[]>(initialMockPosts);
@@ -117,15 +113,12 @@ function QAPageContent() {
     if (tag.trim() && !newPost.tags.includes(tag.trim())) {
       setNewPost({ ...newPost, tags: [...newPost.tags, tag.trim()] });
     }
-    setTagInput("");
   }
 
-  // Like handler: toggles +1 / -1 locally for the clicked post (simple behavior)
+  // Like handler: increment reaction count (simple behavior)
   function toggleLike(postId: string) {
     setPosts((prev) =>
-      prev.map((p) =>
-        p.id === postId ? { ...p, reactions: p.reactions + 1 } : p
-      )
+      prev.map((p) => (p.id === postId ? { ...p, reactions: p.reactions + 1 } : p))
     );
   }
 
@@ -226,7 +219,8 @@ function QAPageContent() {
                     <MoreVertical className="h-5 w-5 text-accent-lm" />
                   </div>
 
-                  <h3 className="text-lg font-semibold text-text-lm mb-2">
+                  {/* Title: ensure word wrapping */}
+                  <h3 className="text-lg font-semibold text-text-lm mb-2 break-words whitespace-normal max-w-full">
                     {post.title}
                   </h3>
 
@@ -243,40 +237,50 @@ function QAPageContent() {
                     </span>
                   </div>
 
-                  <p className="text-text-lm leading-relaxed mb-4">{post.content}</p>
+                  {/* Content: ensure wrapping so long text doesn't overflow */}
+                  <p className="text-text-lm leading-relaxed mb-4 break-words whitespace-normal max-w-full">
+                    {post.content}
+                  </p>
 
                   <div className="flex gap-4">
                     {/* Like button — stops propagation so it doesn't open detail */}
-                    <IconButton
-                      Icon={HeartIcon}
+                    <button
+                      type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleLike(post.id);
                       }}
-                      label={String(post.reactions)}
-                    />
+                      className="flex items-center gap-2 px-3 py-1 rounded-full border border-stroke-peach text-accent-lm bg-secondary-lm hover:bg-hover-lm"
+                    >
+                      <HeartIcon className="h-4 w-4" />
+                      <span className="text-sm font-bold">{post.reactions}</span>
+                    </button>
 
                     {/* Comment button — allows propagation so parent click opens detail */}
-                    <IconButton
-                      Icon={MessageIcon}
-                      onClick={(e) => {
-                        // don't stop propagation — let it bubble to open detail
-                        // optional: you could also call setSelectedPost(post) here instead
+                    <button
+                      type="button"
+                      onClick={() => {
+                        /* intentionally noop here so click bubbles to parent and opens detail */
                       }}
-                      label={String(post.comments)}
-                      stopPropagation={false}
-                    />
+                      className="flex items-center gap-2 px-3 py-1 rounded-full border border-stroke-peach text-accent-lm bg-secondary-lm hover:bg-hover-lm"
+                    >
+                      <MessageIcon className="h-4 w-4" />
+                      <span className="text-sm font-bold">{post.comments}</span>
+                    </button>
 
                     {/* Share — keep inside feed */}
-                    <IconButton
-                      Icon={ShareIcon}
+                    <button
+                      type="button"
                       onClick={(e) => {
                         e.stopPropagation();
-                        // implement share logic if you want; placeholder
+                        // placeholder share logic
                         alert("Share clicked (implement share logic)");
                       }}
-                      label={String(post.shares)}
-                    />
+                      className="flex items-center gap-2 px-3 py-1 rounded-full border border-stroke-peach text-accent-lm bg-secondary-lm hover:bg-hover-lm"
+                    >
+                      <ShareIcon className="h-4 w-4" />
+                      <span className="text-sm font-bold">{post.shares}</span>
+                    </button>
                   </div>
                 </div>
               ))}
@@ -286,18 +290,22 @@ function QAPageContent() {
       </main>
 
       {/* New Post Dialog */}
+      {/* KEY FIXES: DialogContent constrained and scrollable via max-h and overflow */}
       <Dialog open={isNewPostOpen} onOpenChange={setIsNewPostOpen}>
-        <DialogContent className="sm:max-w-lg bg-primary-lm border-stroke-grey text-text-lm">
+        <DialogContent
+          className="sm:max-w-lg bg-primary-lm border-stroke-grey text-text-lm max-h-[80vh] overflow-y-auto"
+        >
           <DialogHeader>
             <DialogTitle>New Post</DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-4">
+          {/* inner content will shrink/scroll within DialogContent */}
+          <div className="space-y-4 px-0">
             <Input
               placeholder="Title"
               value={newPost.title}
               onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
-              className="bg-primary-lm border-stroke-grey text-text-lm placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
+              className="w-full bg-primary-lm border-stroke-grey text-text-lm placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
             />
 
             <Textarea
@@ -307,7 +315,7 @@ function QAPageContent() {
               onChange={(e) =>
                 setNewPost({ ...newPost, description: e.target.value })
               }
-              className="bg-primary-lm border-stroke-grey text-text-lm placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
+              className="w-full bg-primary-lm border-stroke-grey text-text-lm placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
             />
 
             {/* Tag chips (Question/Advice/Resource) */}
@@ -338,48 +346,17 @@ function QAPageContent() {
               </div>
             </div>
 
-            <Button
-              className="w-full bg-accent-lm hover:bg-hover-btn-lm text-primary-lm"
-              onClick={submitNewPost}
-            >
-              Post
-            </Button>
+            <div className="pt-2">
+              <Button
+                className="w-full bg-accent-lm hover:bg-hover-btn-lm text-primary-lm"
+                onClick={submitNewPost}
+              >
+                Post
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
     </div>
-  );
-}
-
-/**
- * Small reusable icon button used in the feed cards.
- * By default it calls stopPropagation() to prevent opening post detail;
- * set stopPropagation={false} to allow the click to bubble (used for comment).
- */
-function IconButton({
-  Icon,
-  onClick,
-  label,
-  stopPropagation = true,
-}: {
-  Icon: React.ComponentType<{ className?: string }>;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  label?: string;
-  stopPropagation?: boolean;
-}) {
-  function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
-    if (stopPropagation) e.stopPropagation();
-    onClick?.(e);
-  }
-
-  return (
-    <button
-      type="button"
-      onClick={handleClick}
-      className="flex items-center gap-2 px-3 py-1 rounded-full border border-stroke-peach text-accent-lm bg-secondary-lm hover:bg-hover-lm"
-    >
-      <Icon className="h-4 w-4" />
-      <span className="text-sm font-bold">{label}</span>
-    </button>
   );
 }
