@@ -1,6 +1,16 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { placeholderUser } from "../../features/feed/api/placeholderUser";
-import { LikeButton, CommentButton, ShareButton } from "../../features/feed/components/PostButtons";
+import {
+  LikeButton,
+  CommentButton,
+  ShareButton,
+} from "../../features/feed/components/PostButtons";
+import {
+  addInterested,
+  removeInterested,
+  getInterested,
+  subscribe,
+} from "../../features/feed/api/interestedStore";
 
 // Types
 type Category = "all" | "research" | "competition" | "project";
@@ -62,11 +72,44 @@ export function CollabHub() {
     return initialPosts.filter((p) => p.category === filter);
   }, [filter]);
 
+  // Track which posts are currently marked interested
+  const [interestedIds, setInterestedIds] = useState<Set<string>>(
+    () => new Set(getInterested().map((i) => i.id))
+  );
+
+  // Keep local state in sync with store changes
+  useEffect(() => {
+    const unsub = subscribe((items) => {
+      setInterestedIds(new Set(items.map((i) => i.id)));
+    });
+    return unsub;
+  }, []);
+
+  const handleInterestedToggle = (p: CollabPost) => {
+    if (interestedIds.has(p.id)) {
+      // Remove if already interested
+      removeInterested(p.id);
+      return;
+    }
+    // Add if not yet interested
+    addInterested({
+      id: p.id,
+      title: p.title,
+      category: p.category,
+      tags: p.tags,
+      userName: p.user.name,
+      content: p.content,
+      createdAt: Date.now(),
+    });
+  };
+
   return (
     <div className="flex gap-10 h-full w-full p-10 bg-white">
       {/* LEFT: Categories */}
       <div className="flex flex-col gap-4 w-48 h-fit bg-primary-lm p-4 rounded-2xl border-2 border-stroke-grey">
-        <h6 className="font-[Poppins] font-semibold text-text-lm mb-2">Categories</h6>
+        <h6 className="font-[Poppins] font-semibold text-text-lm mb-2">
+          Categories
+        </h6>
         {categories.map((cat) => (
           <button
             key={cat}
@@ -86,8 +129,10 @@ export function CollabHub() {
       <div className="flex flex-col gap-10 flex-1">
         <div className="flex flex-col gap-10">
           {filteredPosts.length === 0 ? (
-            <div className="bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey flex items-center justify-center min-h-[200px]">
-              <p className="text-text-lighter-lm text-lg">No posts in this category</p>
+            <div className="bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey flex items-center justify-center min-h-50">
+              <p className="text-text-lighter-lm text-lg">
+                No posts in this category
+              </p>
             </div>
           ) : (
             filteredPosts.map((p) => (
@@ -111,7 +156,7 @@ export function CollabHub() {
                       {p.user.name}
                     </span>
                     <span className="text-text-lighter-lm text-sm">
-                      2 days ago • {p.user.batch|| "Student"}
+                      2 days ago • {p.user.batch || "Student"}
                     </span>
                   </div>
                 </div>
@@ -122,7 +167,9 @@ export function CollabHub() {
                 </h3>
 
                 {/* Post Content */}
-                <p className="text-text-lighter-lm text-lg leading-relaxed">{p.content}</p>
+                <p className="text-text-lighter-lm text-lg leading-relaxed">
+                  {p.content}
+                </p>
 
                 {/* Tags */}
                 <div className="flex gap-2 flex-wrap">
@@ -141,7 +188,17 @@ export function CollabHub() {
                   <LikeButton />
                   <CommentButton />
                   <ShareButton />
-                  <button className="ml-auto px-4 py-2 border border-[#C23D00] rounded-full text-[#C23D00] font-medium hover:bg-[#C23D00] hover:text-[#FFFFFF] transition-colors duration-200">
+                  <button
+                    onClick={() => handleInterestedToggle(p)} // toggle interested state
+                    className={
+                      `ml-auto px-4 py-2 rounded-full font-medium transition-colors duration-200 ` +
+                      (interestedIds.has(p.id)
+                        ? "bg-[#C23D00] text-[#FFFFFF] border border-[#C23D00] hover:opacity-90"
+                        : "border border-[#C23D00] text-[#C23D00] hover:bg-[#C23D00] hover:text-[#FFFFFF]")
+                    }
+                    aria-label="Toggle interested"
+                    aria-pressed={interestedIds.has(p.id)}
+                  >
                     Interested
                   </button>
                 </div>
