@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, Mail, Github, Linkedin, Facebook } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { UpcomingEvents } from "@/components/UpcomingEvents";
 import userImg from "../../features/feed/assets/placeholderUser.png";
 import UserProfileUpdate from "@/components/UserProfileUpdate"; // new modal component
+import { InterestedPosts } from "@/components/InterestedPosts";
+import {
+  getInterested,
+  subscribe,
+} from "../../features/feed/api/interestedStore";
+import type { InterestedItem } from "../../features/feed/api/interestedStore";
 type Skill = { title: string; detail?: string };
 type Contact = {
   type: "gmail" | "linkedin" | "github" | "facebook";
@@ -35,6 +41,16 @@ export function UserProfile() {
   const [modalMode, setModalMode] = useState<"skill" | "interest" | "contact">(
     "skill"
   );
+  // Interested posts state (from CollabHub)
+  const [interestedPosts, setInterestedPosts] = useState<InterestedItem[]>(() =>
+    getInterested()
+  );
+
+  // Keep in sync with store
+  useEffect(() => {
+    const unsub = subscribe((items) => setInterestedPosts(items));
+    return unsub;
+  }, []);
   const openAddSkill = () => {
     setModalMode("skill");
     setModalOpen(true);
@@ -222,8 +238,11 @@ export function UserProfile() {
             </div>
           </div>
         </section>
-        {/* Sidebar: Upcoming Events (shared component) */}
-        <UpcomingEvents />
+        {/* Sidebar: Upcoming Events (shared component) + Interested Posts */}
+        <div className="flex flex-col gap-6">
+          <UpcomingEvents />
+          <InterestedPosts items={interestedPosts} />
+        </div>
       </div>
 
       <UserProfileUpdate
