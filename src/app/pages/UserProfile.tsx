@@ -1,9 +1,25 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Plus, Mail, Github, Linkedin, Facebook } from "lucide-react";
+import {
+  Plus,
+  Mail,
+  Github,
+  Linkedin,
+  Facebook,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 import { UpcomingEvents } from "@/components/UpcomingEvents";
 import userImg from "../../features/feed/assets/placeholderUser.png";
 import UserProfileUpdate from "@/components/UserProfileUpdate"; // new modal component
@@ -35,6 +51,10 @@ export function UserProfile() {
     { type: "github", id: "" },
     { type: "linkedin", id: "" },
   ]);
+  // Bio state
+  const [bio, setBio] = useState<string>("");
+  const [bioOpen, setBioOpen] = useState(false);
+  const [bioDraft, setBioDraft] = useState("");
   // Upcoming events will be sourced from CollabHub preferences in future.
   // modal state
   const [modalOpen, setModalOpen] = useState(false);
@@ -80,6 +100,18 @@ export function UserProfile() {
       prev.some((c) => `${c.type}:${c.id}` === key) ? prev : [...prev, contact]
     );
     setModalOpen(false);
+  };
+  // Bio handlers
+  const openBioEditor = () => {
+    setBioDraft(bio);
+    setBioOpen(true);
+  };
+  const saveBio = () => {
+    setBio(bioDraft.trim());
+    setBioOpen(false);
+  };
+  const removeBio = () => {
+    setBio("");
   };
   const contactLink = (c: Contact) => {
     const id = c.id.trim();
@@ -153,6 +185,41 @@ export function UserProfile() {
                 <Badge className="bg-secondary-lm text-accent-lm border border-stroke-peach rounded-full px-3 py-2">
                   An AI enthusiast
                 </Badge>
+              </div>
+              {/* Bio Section */}
+              <div className="mt-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-semibold text-text-lm">Bio</h3>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      onClick={openBioEditor}
+                      className="h-8 rounded-full border border-stroke-peach bg-primary-lm px-3 text-accent-lm hover:bg-hover-btn-lm"
+                    >
+                      <Pencil className="h-4 w-4" />
+                      {bio ? "Edit" : "Add"}
+                    </Button>
+                    {bio && (
+                      <Button
+                        size="sm"
+                        onClick={removeBio}
+                        className="h-8 rounded-full bg-accent-lm px-3 text-primary-lm hover:bg-hover-btn-lm"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+                </div>
+                {bio ? (
+                  <p className="mt-2 text-sm text-text-lighter-lm whitespace-pre-wrap">
+                    {bio}
+                  </p>
+                ) : (
+                  <p className="mt-2 text-sm text-text-lighter-lm italic">
+                    No bio yet.
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -253,6 +320,37 @@ export function UserProfile() {
         onSaveInterest={handleSaveInterest}
         onSaveContact={handleSaveContact}
       />
+
+      {/* Bio Edit Dialog */}
+      <Dialog open={bioOpen} onOpenChange={setBioOpen}>
+        <DialogContent className="bg-primary-lm border border-stroke-grey text-text-lm">
+          <DialogHeader>
+            <DialogTitle>{bio ? "Edit Bio" : "Add Bio"}</DialogTitle>
+          </DialogHeader>
+          <div>
+            <Textarea
+              value={bioDraft}
+              onChange={(e) => setBioDraft(e.target.value)}
+              placeholder="Write a short bio..."
+              className="border-stroke-grey bg-primary-lm text-text-lm placeholder:text-text-lighter-lm"
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              onClick={() => setBioOpen(false)}
+              className="px-4 py-2 rounded-md border border-stroke-grey bg-primary-lm text-text-lm"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={saveBio}
+              className="px-4 py-2 rounded-md bg-accent-lm text-primary-lm hover:bg-hover-btn-lm"
+            >
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
