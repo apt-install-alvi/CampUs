@@ -1,14 +1,19 @@
 // src/components/UserProfileUpdate.tsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 type Skill = { title: string; detail?: string };
+type Contact = {
+  type: "gmail" | "linkedin" | "github" | "facebook";
+  id: string;
+};
 
 interface Props {
   open: boolean;
-  mode: "skill" | "interest";
+  mode: "skill" | "interest" | "contact";
   onClose: () => void;
   onSaveSkill: (skill: Skill) => void;
   onSaveInterest: (interest: string) => void;
+  onSaveContact: (contact: Contact) => void;
 }
 
 export default function UserProfileUpdate({
@@ -17,10 +22,13 @@ export default function UserProfileUpdate({
   onClose,
   onSaveSkill,
   onSaveInterest,
+  onSaveContact,
 }: Props) {
   const [title, setTitle] = useState("");
   const [detail, setDetail] = useState("");
   const [interest, setInterest] = useState("");
+  const [contactType, setContactType] = useState<Contact["type"]>("github");
+  const [contactId, setContactId] = useState("");
   const [error, setError] = useState("");
 
   // Reset inputs when modal opens/closes or mode changes
@@ -29,6 +37,8 @@ export default function UserProfileUpdate({
       setTitle("");
       setDetail("");
       setInterest("");
+      setContactType("github");
+      setContactId("");
       setError("");
     }
   }, [open, mode]);
@@ -36,7 +46,12 @@ export default function UserProfileUpdate({
   useEffect(() => {
     if (!open) return;
     // Focus first input (optional, improves UX)
-    const id = mode === "skill" ? "up-title" : "up-interest";
+    const id =
+      mode === "skill"
+        ? "up-title"
+        : mode === "interest"
+        ? "up-interest"
+        : "up-contact-id";
     setTimeout(() => {
       const el = document.getElementById(id) as HTMLInputElement | null;
       el?.focus();
@@ -53,12 +68,18 @@ export default function UserProfileUpdate({
         return;
       }
       onSaveSkill({ title: title.trim(), detail: detail.trim() || undefined });
-    } else {
+    } else if (mode === "interest") {
       if (!interest.trim()) {
         setError("Interest is required.");
         return;
       }
       onSaveInterest(interest.trim());
+    } else {
+      if (!contactId.trim()) {
+        setError("Contact ID is required.");
+        return;
+      }
+      onSaveContact({ type: contactType, id: contactId.trim() });
     }
   }
 
@@ -84,7 +105,11 @@ export default function UserProfileUpdate({
         >
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold text-text-lm">
-              {mode === "skill" ? "Add Skill" : "Add Interest"}
+              {mode === "skill"
+                ? "Add Skill"
+                : mode === "interest"
+                ? "Add Interest"
+                : "Add Contact"}
             </h3>
             <button
               aria-label="Close"
@@ -99,7 +124,9 @@ export default function UserProfileUpdate({
             {mode === "skill" ? (
               <>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Skill</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Skill
+                  </label>
                   <input
                     id="up-title"
                     value={title}
@@ -113,7 +140,9 @@ export default function UserProfileUpdate({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1">Detail (optional)</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Detail (optional)
+                  </label>
                   <input
                     value={detail}
                     onChange={(e) => setDetail(e.target.value)}
@@ -122,10 +151,12 @@ export default function UserProfileUpdate({
                   />
                 </div>
               </>
-            ) : (
+            ) : mode === "interest" ? (
               <>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Interest</label>
+                  <label className="block text-sm font-medium mb-1">
+                    Interest
+                  </label>
                   <input
                     id="up-interest"
                     value={interest}
@@ -135,6 +166,40 @@ export default function UserProfileUpdate({
                     }}
                     className="w-full border border-stroke-grey rounded-lg px-3 py-2"
                     placeholder="e.g. ML, CTF"
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Platform
+                  </label>
+                  <select
+                    value={contactType}
+                    onChange={(e) =>
+                      setContactType(e.target.value as Contact["type"])
+                    }
+                    className="w-full border border-stroke-grey rounded-lg px-3 py-2"
+                  >
+                    <option value="gmail">Gmail</option>
+                    <option value="linkedin">LinkedIn</option>
+                    <option value="github">GitHub</option>
+                    <option value="facebook">Facebook</option>
+                        
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">ID</label>
+                  <input
+                    id="up-contact-id"
+                    value={contactId}
+                    onChange={(e) => {
+                      setContactId(e.target.value);
+                      if (error) setError("");
+                    }}
+                    className="w-full border border-stroke-grey rounded-lg px-3 py-2"
+                    placeholder="e.g. username or email"
                   />
                 </div>
               </>

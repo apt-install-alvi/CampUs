@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Heart, MessageCircle, Share2, MoreVertical, Send } from "lucide-react";
+import { Heart, MessageCircle, Share2, MoreVertical } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogClose,
 } from "@/components/ui/dialog";
 
 import CommentThread, { type Comment as CTComment } from "@/components/CommentThread";
@@ -93,6 +94,16 @@ export function LostFound() {
     ],
   });
 
+  // image preview related
+  const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
+  const [imageName, setImageName] = useState<string | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+
+  // control whether Dialog is allowed to close when onOpenChange(false) arrives.
+  // Only set this true when user explicitly clicks the modal's close control (DialogClose)
+  // or we decide to close programmatically (Post).
+  const allowCloseRef = useRef(false);
+
   // open comments dialog for a post
   const openComments = (post: LFPost) => {
     setActivePost(post);
@@ -108,7 +119,21 @@ export function LostFound() {
     return `${prefix}${Date.now().toString(36)}${Math.random().toString(36).slice(2)}`;
   }
 
-  // Post creation: require title, create image URL for preview, prepend post and create empty comment array
+  // When user picks a file: store file, imageName, and read data URL for preview/storage
+  function handleFileInput(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setForm((prev) => ({ ...prev, file }));
+    setImageName(file.name);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImageDataUrl(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Post creation: require title, use imageDataUrl for post.imageUrl, prepend post and create empty comment array
   function handlePost() {
     const title = form.title.trim();
     const description = form.description.trim();
@@ -118,7 +143,7 @@ export function LostFound() {
       return;
     }
 
-    const imageUrl = form.file ? URL.createObjectURL(form.file) : undefined;
+    const imageUrl = imageDataUrl ? imageDataUrl : undefined;
 
     const newPost: LFPost = {
       id: generateId("lf-"),
@@ -142,7 +167,7 @@ export function LostFound() {
       [newPost.id]: prev[newPost.id] ?? [],
     }));
 
-    // reset form
+    // reset form and preview
     setForm({
       title: "",
       description: "",
@@ -150,13 +175,17 @@ export function LostFound() {
       time: "",
       file: undefined,
     });
+    setImageDataUrl(null);
+    setImageName(null);
 
     // reset file input element if present
     const fileInput = document.getElementById("lf-file-input") as HTMLInputElement | null;
     if (fileInput) fileInput.value = "";
 
-    setTitleError(false);
+    // allow dialog to close and then close
+    allowCloseRef.current = true;
     setIsAnnounceOpen(false);
+    setTitleError(false);
   }
 
   // Helper: convert LFComment[] -> CTComment[] for CommentThread initialComments
@@ -193,147 +222,254 @@ export function LostFound() {
     );
   }
 
+  // Open announce modal (explicit opener) - ensures no accidental close allowed
+  function openAnnounceModal() {
+    allowCloseRef.current = false;
+    setIsAnnounceOpen(true);
+  }
+
+  // Dialog's onOpenChange handler that blocks unsolicited closes
+  function handleAnnounceDialogChange(nextOpen: boolean) {
+    if (nextOpen) {
+      // dialog opened
+      allowCloseRef.current = false;
+      setIsAnnounceOpen(true);
+      return;
+    }
+    // nextOpen === false: a close was requested (overlay click, ESC, DialogClose)
+    if (allowCloseRef.current) {
+      // allowed close
+      setIsAnnounceOpen(false);
+      allowCloseRef.current = false;
+      setTitleError(false);
+    } else {
+      // ignore the close request (re-open)
+      setIsAnnounceOpen(true);
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-background-lm animate-fade-in">
-      <main className="mx-auto max-w-4xl px-4 py-6">
-        {/* Composer */}
-        <div className="rounded-xl border border-stroke-grey bg-primary-lm p-4 mb-6">
-          <Input
-            placeholder="Tap to announce what has been lost or found"
-            readOnly
-            onClick={() => setIsAnnounceOpen(true)}
-            className="cursor-pointer rounded-lg bg-primary-lm border-stroke-peach placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
-          />
-        </div>
-
-        {/* Posts */}
-        <div className="space-y-4">
-          {filtered.map((post) => (
-            <LFPostCard
-              key={post.id}
-              post={post}
-              onOpenComments={() => openComments(post)}
+    <>
+      <div className="min-h-screen bg-background-lm animate-fade-in">
+        <main className="mx-auto max-w-4xl px-4 py-6">
+          {/* Composer */}
+          <div className="rounded-xl border border-stroke-grey bg-primary-lm p-4 mb-6">
+            <Input
+              placeholder="Tap to announce what has been lost or found"
+              readOnly
+              onClick={openAnnounceModal}
+              className="cursor-pointer rounded-lg bg-primary-lm border-stroke-peach placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
             />
-          ))}
-        </div>
-      </main>
-
-      {/* Announce Dialog */}
-      <Dialog open={isAnnounceOpen} onOpenChange={(v) => { setIsAnnounceOpen(v); if(!v) setTitleError(false); }}>
-        <DialogContent className="sm:max-w-xl bg-primary-lm border-stroke-grey text-text-lm">
-          <DialogHeader>
-            <DialogTitle>Announce Lost or Found Item</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm text-text-lighter-lm">Title</label>
-              <Input
-                placeholder="Title"
-                value={form.title}
-                onChange={(e) => {
-                  setForm({ ...form, title: e.target.value });
-                  if (titleError && e.target.value.trim()) setTitleError(false);
-                }}
-                className="mt-1 bg-primary-lm border-stroke-grey text-text-lm placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
-              />
-              {titleError && (
-                <p className="text-sm text-red-600 mt-1">Title is required.</p>
-              )}
-            </div>
-
-            <div>
-              <label className="text-sm text-text-lighter-lm">
-                Description
-              </label>
-              <Textarea
-                placeholder="Describe the item and context"
-                rows={5}
-                value={form.description}
-                onChange={(e) =>
-                  setForm({ ...form, description: e.target.value })
-                }
-                className="mt-1 bg-primary-lm border-stroke-grey text-text-lm placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="text-sm text-text-lighter-lm">Date</label>
-                <Input
-                  type="date"
-                  value={form.date}
-                  onChange={(e) => setForm({ ...form, date: e.target.value })}
-                  className="mt-1 bg-primary-lm border-stroke-grey text-text-lm placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
-                />
-              </div>
-              <div>
-                <label className="text-sm text-text-lighter-lm">Time</label>
-                <Input
-                  type="time"
-                  value={form.time}
-                  onChange={(e) => setForm({ ...form, time: e.target.value })}
-                  className="mt-1 bg-primary-lm border-stroke-grey text-text-lm placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr] items-center gap-3">
-              <Button
-                className="bg-accent-lm hover:bg-hover-btn-lm text-primary-lm"
-                onClick={() => document.getElementById("lf-file-input")?.click()}
-              >
-                Upload Image
-              </Button>
-              <Input
-                id="lf-file-input"
-                type="file"
-                onChange={(e) =>
-                  setForm({ ...form, file: e.target.files?.[0] })
-                }
-                className="bg-primary-lm border-stroke-grey text-text-lm file:text-text-lm"
-              />
-            </div>
-
-            <Button
-              className="w-full bg-accent-lm hover:bg-hover-btn-lm text-primary-lm"
-              onClick={handlePost}
-            >
-              Post
-            </Button>
           </div>
-        </DialogContent>
-      </Dialog>
 
-      {/* Comments Dialog (uses your CommentThread) */}
-      <Dialog open={isCommentsOpen} onOpenChange={(v) => setIsCommentsOpen(v)}>
-        <DialogContent className="sm:max-w-xl bg-primary-lm border-stroke-grey text-text-lm">
-          {activePost && (
-            <div className="space-y-4">
-              <DialogHeader>
-                <DialogTitle className="text-text-lm">
-                  {activePost.author}
-                </DialogTitle>
-              </DialogHeader>
+          {/* Posts */}
+          <div className="space-y-4">
+            {filtered.map((post) => (
+              <LFPostCard
+                key={post.id}
+                post={post}
+                onOpenComments={() => openComments(post)}
+              />
+            ))}
+          </div>
+        </main>
 
+        {/* Announce Dialog */}
+        <Dialog open={isAnnounceOpen} onOpenChange={handleAnnounceDialogChange}>
+          <DialogContent className="sm:max-w-xl bg-primary-lm border-stroke-grey text-text-lm">
+            <DialogHeader>
+              <DialogTitle>Announce Lost or Found Item</DialogTitle>
+
+              {/* Use the library's default close control (DialogClose).
+                  Clicking this will set allowCloseRef and then close the dialog. */}
+              <DialogClose
+                onClick={() => {
+                  allowCloseRef.current = true;
+                }}
+                className="absolute top-4 right-4 rounded-full bg-white/90 p-2 border border-stroke-grey"
+                aria-label="Close announce dialog"
+              >
+                ✕
+              </DialogClose>
+            </DialogHeader>
+
+            <div className="space-y-4 mt-2">
               <div>
-                <h3 className="text-lg font-bold text-text-lm">
-                  {activePost.title}
-                </h3>
-                <p className="text-text-lighter-lm mt-1">
-                  {activePost.description}
-                </p>
+                <label className="text-sm text-text-lighter-lm">Title</label>
+                <Input
+                  placeholder="Title"
+                  value={form.title}
+                  onChange={(e) => {
+                    setForm({ ...form, title: e.target.value });
+                    if (titleError && e.target.value.trim()) setTitleError(false);
+                  }}
+                  className="mt-1 bg-primary-lm border-stroke-grey text-text-lm placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
+                />
+                {titleError && (
+                  <p className="text-sm text-red-600 mt-1">Title is required.</p>
+                )}
               </div>
 
-              <CommentThread
-                initialComments={mapLFToCTComments(commentsByPost[activePost.id])}
-                currentUser={{ name: "You", avatar: "/placeholder.svg", course: "—" }}
-                onChange={(newComments) => handleCommentsChangeForActivePost(newComments)}
-              />
+              <div>
+                <label className="text-sm text-text-lighter-lm">
+                  Description
+                </label>
+                <Textarea
+                  placeholder="Describe the item and context"
+                  rows={5}
+                  value={form.description}
+                  onChange={(e) =>
+                    setForm({ ...form, description: e.target.value })
+                  }
+                  className="mt-1 bg-primary-lm border-stroke-grey text-text-lm placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-sm text-text-lighter-lm">Date</label>
+                  <Input
+                    type="date"
+                    value={form.date}
+                    onChange={(e) => setForm({ ...form, date: e.target.value })}
+                    className="mt-1 bg-primary-lm border-stroke-grey text-text-lm placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm text-text-lighter-lm">Time</label>
+                  <Input
+                    type="time"
+                    value={form.time}
+                    onChange={(e) => setForm({ ...form, time: e.target.value })}
+                    className="mt-1 bg-primary-lm border-stroke-grey text-text-lm placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
+                  />
+                </div>
+              </div>
+
+              {/* File upload + preview */}
+              <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr] items-center gap-3">
+                <Button
+                  className="bg-accent-lm hover:bg-hover-btn-lm text-primary-lm"
+                  onClick={() => document.getElementById("lf-file-input")?.click()}
+                >
+                  Upload Image
+                </Button>
+
+                <div className="flex items-center gap-3">
+                  <input
+                    id="lf-file-input"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileInput}
+                    className="hidden"
+                  />
+
+                  <div className="flex-1 border border-stroke-grey rounded-lg px-3 py-2 flex items-center">
+                    {!imageDataUrl ? (
+                      <div className="text-sm text-text-lighter-lm">No file chosen</div>
+                    ) : (
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setPreviewOpen(true)}
+                          className="inline-block rounded-md overflow-hidden border border-stroke-grey"
+                          aria-label="Open image preview"
+                        >
+                          <img
+                            src={imageDataUrl}
+                            alt={imageName ?? "Selected image"}
+                            className="h-20 w-28 object-cover"
+                          />
+                        </button>
+
+                        <div className="flex flex-col">
+                          <div className="text-sm font-medium text-text-lm">
+                            {imageName ?? "Image selected"}
+                          </div>
+                          <div className="text-xs text-text-lighter-lm">Click to expand</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <Button
+                className="w-full bg-accent-lm hover:bg-hover-btn-lm text-primary-lm"
+                onClick={handlePost}
+              >
+                Post
+              </Button>
             </div>
-          )}
-        </DialogContent>
-      </Dialog>
-    </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Expanded image preview lightbox (global, appears when clicking thumbnail inside dialog) */}
+        {previewOpen && imageDataUrl && (
+          <>
+            <div
+              className="fixed inset-0 z-60"
+              onClick={() => setPreviewOpen(false)}
+              style={{ backgroundColor: "rgba(0,0,0,0.6)" }}
+            />
+            <div className="fixed inset-0 z-70 flex items-center justify-center p-6 pointer-events-none">
+              <div
+                className="pointer-events-auto max-w-[90vw] max-h-[90vh] relative"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  onClick={() => setPreviewOpen(false)}
+                  className="absolute top-2 right-2 z-80 rounded-full bg-white/90 p-2 border border-stroke-grey"
+                  aria-label="Close preview"
+                >
+                  ✕
+                </button>
+                <img
+                  src={imageDataUrl}
+                  alt={imageName ?? "Selected image preview"}
+                  className="max-w-full max-h-[80vh] object-contain rounded-md shadow-lg"
+                />
+                {imageName && (
+                  <div className="mt-2 text-sm text-center text-text-lighter-lm">
+                    {imageName}
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Comments Dialog (uses your CommentThread) */}
+        <Dialog open={isCommentsOpen} onOpenChange={(v) => setIsCommentsOpen(v)}>
+          <DialogContent className="sm:max-w-xl bg-primary-lm border-stroke-grey text-text-lm">
+            {activePost && (
+              <div className="space-y-4">
+                <DialogHeader>
+                  <DialogTitle className="text-text-lm">
+                    {activePost.author}
+                  </DialogTitle>
+                </DialogHeader>
+
+                <div>
+                  <h3 className="text-lg font-bold text-text-lm">
+                    {activePost.title}
+                  </h3>
+                  <p className="text-text-lighter-lm mt-1">
+                    {activePost.description}
+                  </p>
+                </div>
+
+                <CommentThread
+                  initialComments={mapLFToCTComments(commentsByPost[activePost.id])}
+                  currentUser={{ name: "You", avatar: "/placeholder.svg", course: "—" }}
+                  onChange={(newComments) => handleCommentsChangeForActivePost(newComments)}
+                />
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+      </div>
+    </>
   );
 }
 
