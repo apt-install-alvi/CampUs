@@ -30,6 +30,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import userImg from "../../features/feed/assets/placeholderUser.png";
+import MessageDrawer from "@/components/MessageDrawer";
+import { useNavigate } from "react-router-dom";
+import { openChatWith } from "@/features/messages/api/chatStore";
 import UserProfileUpdate from "@/components/UserProfileUpdate"; // new modal component
 import { InterestedPosts } from "@/components/InterestedPosts";
 import {
@@ -43,6 +46,8 @@ type Contact = {
   id: string;
 };
 export function UserProfile() {
+  const [messageOpen, setMessageOpen] = useState(false);
+  const [chatTarget, setChatTarget] = useState<{ id: string; name: string } | null>(null);
   const [skills, setSkills] = useState<Skill[]>([
     { title: "UI/UX", detail: "MIST INNOVATION CLUB" },
     { title: "Java, MySQL, C++", detail: "MIST Academic Courses" },
@@ -56,7 +61,7 @@ export function UserProfile() {
     "Arduino",
   ]);
   const [contacts, setContacts] = useState<Contact[]>([
-    { type: "github", id: "" },
+    { type: "github", id: "alvi" },
     { type: "linkedin", id: "" },
   ]);
   // Bio state
@@ -317,9 +322,24 @@ export function UserProfile() {
               </div>
             </div>
             <div className="flex-1">
-              <h1 className="text-xl font-extrabold tracking-tight text-text-lm">
-                Alvi Binte Zamil
-              </h1>
+              <div className="flex items-center gap-3">
+                <h1 className="text-xl font-extrabold tracking-tight text-text-lm">
+                  Alvi Binte Zamil
+                </h1>
+                <Button
+                  size="sm"
+                  className="h-8 rounded-full bg-accent-lm px-3 text-primary-lm hover:bg-hover-btn-lm"
+                  onClick={() => {
+                    const profileUserId =
+                      contacts.find((c) => c.type === "github" && c.id.trim())?.id ||
+                      "alvi";
+                    setChatTarget({ id: profileUserId, name: "Alvi Binte Zamil" });
+                    setMessageOpen(true);
+                  }}
+                >
+                  Message
+                </Button>
+              </div>
               <div className="mt-1 text-sm text-text-lighter-lm">CSE-23</div>
               <div className="text-sm text-text-lighter-lm">LEVEL-3</div>
               <div className="mt-3">
@@ -798,6 +818,17 @@ export function UserProfile() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Slide-in Message Drawer */}
+      {chatTarget && (
+        <MessageDrawer
+          open={messageOpen}
+          onOpenChange={setMessageOpen}
+          userId={chatTarget.id}
+          userName={chatTarget.name}
+          avatarSrc={userImg}
+        />
+      )}
     </div>
   );
 }
