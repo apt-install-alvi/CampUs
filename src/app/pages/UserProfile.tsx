@@ -20,7 +20,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { UpcomingEvents } from "@/components/UpcomingEvents";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import userImg from "../../features/feed/assets/placeholderUser.png";
 import UserProfileUpdate from "@/components/UserProfileUpdate"; // new modal component
 import { InterestedPosts } from "@/components/InterestedPosts";
@@ -55,6 +63,43 @@ export function UserProfile() {
   const [bio, setBio] = useState<string>("");
   const [bioOpen, setBioOpen] = useState(false);
   const [bioDraft, setBioDraft] = useState("");
+  // Badges state (multiple)
+  const [badges, setBadges] = useState<string[]>([]);
+  const [badgeOpen, setBadgeOpen] = useState(false);
+  const [badgeDraft, setBadgeDraft] = useState("");
+  const [editingBadgeIndex, setEditingBadgeIndex] = useState<number | null>(
+    null
+  );
+  // Badge inline actions visibility
+  const [activeBadgeIndex, setActiveBadgeIndex] = useState<number | null>(null);
+  // Skill inline actions visibility + edit dialog state
+  const [activeSkillIndex, setActiveSkillIndex] = useState<number | null>(null);
+  const [skillOpen, setSkillOpen] = useState(false);
+  const [editingSkillIndex, setEditingSkillIndex] = useState<number | null>(
+    null
+  );
+  const [skillDraftTitle, setSkillDraftTitle] = useState("");
+  const [skillDraftDetail, setSkillDraftDetail] = useState("");
+  // Interest inline actions visibility + edit dialog state
+  const [activeInterestIndex, setActiveInterestIndex] = useState<number | null>(
+    null
+  );
+  const [interestOpen, setInterestOpen] = useState(false);
+  const [editingInterestIndex, setEditingInterestIndex] = useState<
+    number | null
+  >(null);
+  const [interestDraft, setInterestDraft] = useState("");
+  // Contact inline actions visibility + edit dialog state
+  const [activeContactIndex, setActiveContactIndex] = useState<number | null>(
+    null
+  );
+  const [contactOpen, setContactOpen] = useState(false);
+  const [editingContactIndex, setEditingContactIndex] = useState<number | null>(
+    null
+  );
+  const [contactDraftType, setContactDraftType] =
+    useState<Contact["type"]>("github");
+  const [contactDraftId, setContactDraftId] = useState("");
   // Upcoming events will be sourced from CollabHub preferences in future.
   // modal state
   const [modalOpen, setModalOpen] = useState(false);
@@ -112,6 +157,102 @@ export function UserProfile() {
   };
   const removeBio = () => {
     setBio("");
+  };
+  // Badge handlers
+  const openBadgeEditor = (index: number | null = null) => {
+    setEditingBadgeIndex(index);
+    setBadgeDraft(index !== null ? badges[index] : "");
+    setBadgeOpen(true);
+  };
+  const saveBadge = () => {
+    const text = badgeDraft.trim();
+    if (!text) {
+      setBadgeOpen(false);
+      return;
+    }
+    if (editingBadgeIndex === null) {
+      setBadges((prev) => [...prev, text]);
+    } else {
+      setBadges((prev) =>
+        prev.map((b, i) => (i === editingBadgeIndex ? text : b))
+      );
+    }
+    setBadgeOpen(false);
+  };
+  const removeBadge = (index: number) => {
+    setBadges((prev) => prev.filter((_, i) => i !== index));
+  };
+  // Skill handlers
+  const openSkillEditor = (index: number) => {
+    setEditingSkillIndex(index);
+    const s = skills[index];
+    setSkillDraftTitle(s?.title ?? "");
+    setSkillDraftDetail(s?.detail ?? "");
+    setSkillOpen(true);
+  };
+  const saveSkillEdit = () => {
+    const title = skillDraftTitle.trim();
+    const detail = skillDraftDetail.trim();
+    if (editingSkillIndex === null || !title) {
+      setSkillOpen(false);
+      return;
+    }
+    setSkills((prev) =>
+      prev.map((s, i) => (i === editingSkillIndex ? { title, detail } : s))
+    );
+    setSkillOpen(false);
+    setActiveSkillIndex(null);
+  };
+  const removeSkill = (index: number) => {
+    setSkills((prev) => prev.filter((_, i) => i !== index));
+    setActiveSkillIndex(null);
+  };
+  // Interest handlers
+  const openInterestEditor = (index: number) => {
+    setEditingInterestIndex(index);
+    setInterestDraft(interests[index] ?? "");
+    setInterestOpen(true);
+  };
+  const saveInterestEdit = () => {
+    const text = interestDraft.trim();
+    if (editingInterestIndex === null || !text) {
+      setInterestOpen(false);
+      return;
+    }
+    setInterests((prev) =>
+      prev.map((t, i) => (i === editingInterestIndex ? text : t))
+    );
+    setInterestOpen(false);
+    setActiveInterestIndex(null);
+  };
+  const removeInterest = (index: number) => {
+    setInterests((prev) => prev.filter((_, i) => i !== index));
+    setActiveInterestIndex(null);
+  };
+  // Contact handlers
+  const openContactEditor = (index: number) => {
+    setEditingContactIndex(index);
+    const c = contacts[index];
+    setContactDraftType(c?.type ?? "github");
+    setContactDraftId(c?.id ?? "");
+    setContactOpen(true);
+  };
+  const saveContactEdit = () => {
+    const id = contactDraftId.trim();
+    if (editingContactIndex === null || !id) {
+      setContactOpen(false);
+      return;
+    }
+    const type = contactDraftType;
+    setContacts((prev) =>
+      prev.map((c, i) => (i === editingContactIndex ? { type, id } : c))
+    );
+    setContactOpen(false);
+    setActiveContactIndex(null);
+  };
+  const removeContact = (index: number) => {
+    setContacts((prev) => prev.filter((_, i) => i !== index));
+    setActiveContactIndex(null);
   };
   const contactLink = (c: Contact) => {
     const id = c.id.trim();
@@ -182,9 +323,68 @@ export function UserProfile() {
               <div className="mt-1 text-sm text-text-lighter-lm">CSE-23</div>
               <div className="text-sm text-text-lighter-lm">LEVEL-3</div>
               <div className="mt-3">
-                <Badge className="bg-secondary-lm text-accent-lm border border-stroke-peach rounded-full px-3 py-2">
-                  An AI enthusiast
-                </Badge>
+                {/* Header row: title + add button */}
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-semibold text-text-lm">
+                    Badge
+                  </h3>
+                  <Button
+                    size="sm"
+                    onClick={() => openBadgeEditor(null)}
+                    className="h-8 rounded-full border border-stroke-peach bg-primary-lm px-3 text-accent-lm hover:bg-hover-btn-lm"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Add
+                  </Button>
+                </div>
+                {/* Content row: badges or empty state left-aligned */}
+                <div className="mt-2">
+                  {badges.length ? (
+                    <div className="flex flex-wrap items-center gap-2">
+                      {badges.map((text, idx) => (
+                        <div
+                          key={`${text}-${idx}`}
+                          className="inline-flex items-center gap-2"
+                        >
+                          <Badge
+                            className="bg-secondary-lm text-accent-lm border border-stroke-peach rounded-full px-3 py-2 cursor-pointer"
+                            onClick={() =>
+                              setActiveBadgeIndex(
+                                activeBadgeIndex === idx ? null : idx
+                              )
+                            }
+                          >
+                            {text}
+                          </Badge>
+                          {activeBadgeIndex === idx && (
+                            <>
+                              <Button
+                                size="icon-sm"
+                                onClick={() => openBadgeEditor(idx)}
+                                className="rounded-full border border-stroke-peach bg-primary-lm text-accent-lm hover:bg-hover-btn-lm"
+                                aria-label="Edit badge"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                size="icon-sm"
+                                onClick={() => removeBadge(idx)}
+                                className="rounded-full bg-accent-lm text-primary-lm hover:bg-hover-btn-lm"
+                                aria-label="Remove badge"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-text-lighter-lm italic">
+                      No badges yet.
+                    </p>
+                  )}
+                </div>
               </div>
               {/* Bio Section */}
               <div className="mt-4">
@@ -238,7 +438,10 @@ export function UserProfile() {
               {skills.map((sk, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center justify-between gap-4 px-4 py-4"
+                  className="flex items-center justify-between gap-4 px-4 py-4 cursor-pointer"
+                  onClick={() =>
+                    setActiveSkillIndex(activeSkillIndex === idx ? null : idx)
+                  }
                 >
                   <div>
                     <div className="font-semibold text-text-lm">{sk.title}</div>
@@ -248,7 +451,34 @@ export function UserProfile() {
                       </div>
                     )}
                   </div>
-                  <div>{/* Placeholder for future controls */}</div>
+                  <div className="flex items-center gap-2">
+                    {activeSkillIndex === idx && (
+                      <>
+                        <Button
+                          size="icon-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openSkillEditor(idx);
+                          }}
+                          className="rounded-full border border-stroke-peach bg-primary-lm text-accent-lm hover:bg-hover-btn-lm"
+                          aria-label="Edit skill"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="icon-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeSkill(idx);
+                          }}
+                          className="rounded-full bg-accent-lm text-primary-lm hover:bg-hover-btn-lm"
+                          aria-label="Remove skill"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -265,13 +495,48 @@ export function UserProfile() {
               </Button>
             </div>
             <div className="flex flex-wrap gap-3">
-              {interests.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full border border-stroke-peach bg-primary-lm px-4 py-1.5 text-sm font-semibold text-accent-lm shadow-sm"
+              {interests.map((tag, idx) => (
+                <div
+                  key={`${tag}-${idx}`}
+                  className="inline-flex items-center gap-2"
                 >
-                  {tag}
-                </span>
+                  <span
+                    className="rounded-full border border-stroke-peach bg-primary-lm px-4 py-1.5 text-sm font-semibold text-accent-lm shadow-sm cursor-pointer"
+                    onClick={() =>
+                      setActiveInterestIndex(
+                        activeInterestIndex === idx ? null : idx
+                      )
+                    }
+                  >
+                    {tag}
+                  </span>
+                  {activeInterestIndex === idx && (
+                    <>
+                      <Button
+                        size="icon-sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openInterestEditor(idx);
+                        }}
+                        className="rounded-full border border-stroke-peach bg-primary-lm text-accent-lm hover:bg-hover-btn-lm"
+                        aria-label="Edit interest"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="icon-sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeInterest(idx);
+                        }}
+                        className="rounded-full bg-accent-lm text-primary-lm hover:bg-hover-btn-lm"
+                        aria-label="Remove interest"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </>
+                  )}
+                </div>
               ))}
             </div>
           </div>
@@ -290,17 +555,53 @@ export function UserProfile() {
               {contacts
                 .filter((c) => c.id.trim())
                 .map((c, idx) => (
-                  <a
+                  <div
                     key={`${c.type}-${c.id}-${idx}`}
-                    href={contactLink(c)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full border border-stroke-peach bg-primary-lm px-4 py-1.5 text-sm font-semibold text-accent-lm shadow-sm hover:bg-hover-btn-lm"
-                    aria-label={`${c.type} profile`}
+                    className="inline-flex items-center gap-2"
                   >
-                    <ContactIcon type={c.type} />
-                    <span>{contactDisplayText(c)}</span>
-                  </a>
+                    <a
+                      href={contactLink(c)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full border border-stroke-peach bg-primary-lm px-4 py-1.5 text-sm font-semibold text-accent-lm shadow-sm hover:bg-hover-btn-lm cursor-pointer"
+                      aria-label={`${c.type} profile`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setActiveContactIndex(
+                          activeContactIndex === idx ? null : idx
+                        );
+                      }}
+                    >
+                      <ContactIcon type={c.type} />
+                      <span>{contactDisplayText(c)}</span>
+                    </a>
+                    {activeContactIndex === idx && (
+                      <>
+                        <Button
+                          size="icon-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openContactEditor(idx);
+                          }}
+                          className="rounded-full border border-stroke-peach bg-primary-lm text-accent-lm hover:bg-hover-btn-lm"
+                          aria-label="Edit contact"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="icon-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeContact(idx);
+                          }}
+                          className="rounded-full bg-accent-lm text-primary-lm hover:bg-hover-btn-lm"
+                          aria-label="Remove contact"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 ))}
             </div>
           </div>
@@ -344,6 +645,152 @@ export function UserProfile() {
             </Button>
             <Button
               onClick={saveBio}
+              className="px-4 py-2 rounded-md bg-accent-lm text-primary-lm hover:bg-hover-btn-lm"
+            >
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Badge Edit Dialog */}
+      <Dialog open={badgeOpen} onOpenChange={setBadgeOpen}>
+        <DialogContent className="bg-primary-lm border border-stroke-grey text-text-lm">
+          <DialogHeader>
+            <DialogTitle>
+              {editingBadgeIndex !== null ? "Edit Badge" : "Add Badge"}
+            </DialogTitle>
+          </DialogHeader>
+          <div>
+            <Input
+              value={badgeDraft}
+              onChange={(e) => setBadgeDraft(e.target.value)}
+              placeholder="Badge text..."
+              className="border-stroke-grey bg-primary-lm text-text-lm placeholder:text-text-lighter-lm"
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              onClick={() => setBadgeOpen(false)}
+              className="px-4 py-2 rounded-md border border-stroke-grey bg-primary-lm text-text-lm"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={saveBadge}
+              className="px-4 py-2 rounded-md bg-accent-lm text-primary-lm hover:bg-hover-btn-lm"
+            >
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Skill Edit Dialog */}
+      <Dialog open={skillOpen} onOpenChange={setSkillOpen}>
+        <DialogContent className="bg-primary-lm border border-stroke-grey text-text-lm">
+          <DialogHeader>
+            <DialogTitle>{"Edit Skill"}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <Input
+              value={skillDraftTitle}
+              onChange={(e) => setSkillDraftTitle(e.target.value)}
+              placeholder="Skill title..."
+              className="border-stroke-grey bg-primary-lm text-text-lm placeholder:text-text-lighter-lm"
+            />
+            <Input
+              value={skillDraftDetail}
+              onChange={(e) => setSkillDraftDetail(e.target.value)}
+              placeholder="Detail (optional)"
+              className="border-stroke-grey bg-primary-lm text-text-lm placeholder:text-text-lighter-lm"
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              onClick={() => setSkillOpen(false)}
+              className="px-4 py-2 rounded-md border border-stroke-grey bg-primary-lm text-text-lm"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={saveSkillEdit}
+              className="px-4 py-2 rounded-md bg-accent-lm text-primary-lm hover:bg-hover-btn-lm"
+            >
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Interest Edit Dialog */}
+      <Dialog open={interestOpen} onOpenChange={setInterestOpen}>
+        <DialogContent className="bg-primary-lm border border-stroke-grey text-text-lm">
+          <DialogHeader>
+            <DialogTitle>{"Edit Interest"}</DialogTitle>
+          </DialogHeader>
+          <div>
+            <Input
+              value={interestDraft}
+              onChange={(e) => setInterestDraft(e.target.value)}
+              placeholder="Interest text..."
+              className="border-stroke-grey bg-primary-lm text-text-lm placeholder:text-text-lighter-lm"
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              onClick={() => setInterestOpen(false)}
+              className="px-4 py-2 rounded-md border border-stroke-grey bg-primary-lm text-text-lm"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={saveInterestEdit}
+              className="px-4 py-2 rounded-md bg-accent-lm text-primary-lm hover:bg-hover-btn-lm"
+            >
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Contact Edit Dialog */}
+      <Dialog open={contactOpen} onOpenChange={setContactOpen}>
+        <DialogContent className="bg-primary-lm border border-stroke-grey text-text-lm">
+          <DialogHeader>
+            <DialogTitle>{"Edit Contact"}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <Select
+              value={contactDraftType}
+              onValueChange={(v: Contact["type"]) => setContactDraftType(v)}
+            >
+              <SelectTrigger className="border-stroke-grey bg-primary-lm text-text-lm">
+                <SelectValue placeholder="Select type" />
+              </SelectTrigger>
+              <SelectContent className="bg-primary-lm text-text-lm border border-stroke-grey">
+                <SelectItem value="gmail">Gmail</SelectItem>
+                <SelectItem value="linkedin">LinkedIn</SelectItem>
+                <SelectItem value="github">GitHub</SelectItem>
+                <SelectItem value="facebook">Facebook</SelectItem>
+              </SelectContent>
+            </Select>
+            <Input
+              value={contactDraftId}
+              onChange={(e) => setContactDraftId(e.target.value)}
+              placeholder="Email, handle or URL"
+              className="border-stroke-grey bg-primary-lm text-text-lm placeholder:text-text-lighter-lm"
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              onClick={() => setContactOpen(false)}
+              className="px-4 py-2 rounded-md border border-stroke-grey bg-primary-lm text-text-lm"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={saveContactEdit}
               className="px-4 py-2 rounded-md bg-accent-lm text-primary-lm hover:bg-hover-btn-lm"
             >
               Save
