@@ -1,21 +1,19 @@
-"use client";
-
 import { useState, useEffect, useRef } from "react";
 import { Heart, MessageCircle, Share2, MoreVertical } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import cycleImg from "@/assets/images/cycle.png";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "../../../components/ui/input";
+import { Button } from "../../../components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar";
+import cycleImg from "../../../assets/images/cycle.png";
+import { Textarea } from "../../../components/ui/textarea";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogClose,
-} from "@/components/ui/dialog";
+} from "../../../components/ui/dialog";
 
-import CommentThread, { type Comment as CTComment } from "@/components/CommentThread";
+import CommentThread, { type Comment as CTComment } from "./components/CommentThread";
 
 type LFPost = {
   id: string;

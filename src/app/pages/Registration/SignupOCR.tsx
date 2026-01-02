@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
-import {SignupLoginBox} from "../../components/SignupLoginBox";
+import {SignupLoginBox} from "./components/SignupLoginBox";
 // import Illustration from "../../assets/images/Signup_img.svg";
-import { extractTextFromImage } from "../../features/auth/api/OCR";
-import type { OCRResult } from "../../features/auth/api/OCR";
+import { extractTextFromImage } from "./backend/OCR";
+import type { OCRResult } from "./backend/OCR";
 
 /**
  * SignupOCR page:

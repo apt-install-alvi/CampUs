@@ -1,9 +1,14 @@
 import { Link } from "react-router-dom";
 import { ButtonCTA } from "./ButtonCTA";
+import { useState } from "react";
 
-export function UpcomingEvents({ eventCount = 1 }: { eventCount?: number }) {
+export function UpcomingEvents() {
+  const [eventCount, setEventCount] = useState(1);//placeholder value
+
+  //setEventCount will be manipulated by a handler that will fetch the current
+  // interested events count (only those whose upcoming date is within 1 week of current date)
   return (
-    <div className="flex flex-col justify-between w-full min-h-50 bg-primary-lm border-2 border-stroke-grey rounded-2xl">
+    <div className="flex flex-col justify-between w-[50vw] h-fit bg-primary-lm border-2 border-stroke-grey rounded-2xl">
       <div className="p-3 border border-t-0 border-l-0 border-r-0 border-b-stroke-grey">
         <h6 className="font-[Poppins] font-semibold text-text-lm">
           Upcoming Events

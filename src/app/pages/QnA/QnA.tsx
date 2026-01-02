@@ -1,6 +1,3 @@
-// src/app/pages/QnA.tsx
-"use client";
-
 import { useState, Suspense, useEffect, useRef } from "react";
 import {
   Search,
@@ -11,18 +8,18 @@ import {
   Check,
   Tag as TagIcon,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { PostDetail } from "@/components/post-detail";
+} from "../../../components/ui/dialog";
+import { Textarea } from "../../../components/ui/textarea";
+import { Badge } from "../../../components/ui/badge";
+import { PostDetail } from "./components/PostDetail";
 
 type Post = {
   id: string;
@@ -377,7 +374,7 @@ function PostCard({
             e.stopPropagation();
             onOpenDetail();
           }}
-          className="text-lg font-semibold text-text-lm mb-2 break-words whitespace-normal max-w-full"
+          className="text-lg font-semibold text-text-lm mb-2 wrap-break-word whitespace-normal max-w-full"
         >
           {post.title}
         </h3>
@@ -394,7 +391,7 @@ function PostCard({
         {/* CONTENT area: fixed collapsed height so card doesn't grow */}
         <div
           ref={contentRef}
-          className="text-text-lm mb-2 break-words whitespace-normal max-w-full"
+          className="text-text-lm mb-2 wrap-break-word whitespace-normal max-w-full"
           style={
             collapsed
               ? { maxHeight: "6rem", overflow: "hidden" } // fixed collapsed height

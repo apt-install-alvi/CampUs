@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { ButtonCTA } from "./ButtonCTA";
-import type { InterestedItem } from "../features/feed/api/interestedStore";
+import { ButtonCTA } from "@/components/ButtonCTA";
+import type { InterestedItem } from "../backend/interestedStore";
 
 export function InterestedPosts({ items }: { items: InterestedItem[] }) {
   return (

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {SignupLoginBox} from "../../components/SignupLoginBox";
+import {SignupLoginBox} from "./components/SignupLoginBox";
 // import Illustration from "../../assets/images/Signup_img.svg";
 
 export function Login2FA() {

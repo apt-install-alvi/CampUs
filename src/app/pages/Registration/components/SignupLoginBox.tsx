@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import signupIllustration from "../assets/images/SignupImg.svg";
+import signupIllustration from "@/assets/images/SignupImg.svg";
 
 export function SignupLoginBox({
   children,
@@ -13,7 +13,7 @@ export function SignupLoginBox({
     <div className="min-h-screen flex items-center justify-center">
       
       {/* Your original box — width preserved */}
-      <div className="flex flex-row mx-10 my-8 bg-secondary-lm rounded-3xl shadow-lg shadow-stroke-grey w-[85vw] max-w-[1400px]">
+      <div className="flex flex-row mx-10 my-8 bg-secondary-lm rounded-3xl shadow-lg shadow-stroke-grey w-[85vw] max-w-350">
         
         {/* Left section */}
         <div className="px-12 py-8 flex flex-col justify-center gap-3 w-1/2">

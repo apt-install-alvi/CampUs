@@ -3,7 +3,7 @@ import { NavLink } from "react-router";
 export function Sidebar({batch}:{batch:string})
 {
   return(
-    <aside className="flex flex-col bg-primary-lm w-[25vw] h-full px-8 py-3">
+    <aside className="flex flex-col fixed bg-primary-lm w-[20vw] h-full px-4 py-3">
       <h4 className="text-text-lm font-semibold mb-2">{batch}</h4>
       <hr className="border-stroke-grey"></hr>
       <div className="flex flex-col gap-2 mt-4">

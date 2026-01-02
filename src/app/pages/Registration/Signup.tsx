@@ -1,11 +1,11 @@
 // src/app/pages/Signup.tsx
 import React, { useRef, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {SignupLoginBox} from "../../components/SignupLoginBox";
-import {Password} from "../../features/auth/components/Password"; // Direct import
+import {SignupLoginBox} from "./components/SignupLoginBox";
+import {Password} from "./components/Password"; // Direct import
 import { useLocation } from "react-router";
-import { InputField } from "../../components/InputField";
-import { ButtonCTA } from "../../components/ButtonCTA";
+import { InputField } from "../../../components/InputField";
+import { ButtonCTA } from "../../../components/ButtonCTA";
 const DEPTS = ["CSE", "EECE", "CE", "ME", "NSE", "NAME", "EWCE", "PME", "BME", "ARCH"];
 const LEVELS = ["1", "2", "3", "4"];
 

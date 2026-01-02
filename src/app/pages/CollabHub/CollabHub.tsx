@@ -1,16 +1,16 @@
 import { useState, useMemo, useEffect } from "react";
-import { placeholderUser } from "../../features/feed/api/placeholderUser";
+import { placeholderUser } from "../../../lib/placeholderUser";
 import {
   LikeButton,
   CommentButton,
   ShareButton,
-} from "../../features/feed/components/PostButtons";
+} from "../../../components/PostButtons";
 import {
   addInterested,
   removeInterested,
   getInterested,
   subscribe,
-} from "../../features/feed/api/interestedStore";
+} from "../UserProfile/backend/interestedStore";
 
 // Types
 type Category = "all" | "research" | "competition" | "project";

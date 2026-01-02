@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { InputField } from "../../../components/InputField";
+import { InputField } from "@/components/InputField";
 
 interface PasswordProps {
   value: string;

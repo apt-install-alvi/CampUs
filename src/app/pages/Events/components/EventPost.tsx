@@ -1,7 +1,7 @@
 // src/features/feed/components/EventPost.tsx
 import React from "react";
-import { PostBody } from "./PostBody";
-import userImg from "../assets/placeholderUser.png";
+import { PostBody } from "@/components/PostBody";
+import userImg from "@/assets/images/placeholderUser.png";
 // don't render buttons here — PostBody already renders the Like/Comment/Share components
 // if ShareModal is used by your ShareButton internally, it will open from there
 

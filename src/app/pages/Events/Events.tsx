@@ -1,17 +1,11 @@
-// src/app/pages/Events.tsx
 import React, { useMemo, useState } from "react";
-import postImg from "../../features/feed/assets/placeholderPostImg.png";
+import postImg from "@/assets/images/placeholderPostImg.png";
+import CategorySelection, { type CategoryKey } from "../../../components/CategorySelection";
+import EventPost from "./components/EventPost";
+import CreateEventModal from "./components/CreateEventModal";
+import EventPostDetail from "./components/EventPostDetail";
 
-import CategorySelection, { type CategoryKey } from "../../components/CategorySelection";
 
-// Use your feed EventPost composer that relies on PostBody/PostButtons/ShareModal
-import EventPost from "../../features/feed/components/EventPost";
-import CreateEventModal from "../../components/CreateEventModal";
-import EventPostDetail from "@/components/EventPostDetail";
-
-/**
- * Local Segment & EventPostType (keep in sync with what your EventPost expects)
- */
 type Segment = {
   id: string;
   name?: string;

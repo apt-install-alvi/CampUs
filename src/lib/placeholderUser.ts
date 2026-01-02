@@ -1,4 +1,4 @@
-import placeholderImg from "../assets/placeholderUser.png";
+import placeholderImg from "@/assets/images/placeholderUser.png";
 
 export const placeholderUser={
   name: "Alvi Binte Zamil",

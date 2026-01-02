@@ -1,16 +1,17 @@
-import { PostBody } from "../../features/feed/components/PostBody";
-// Removed local UpcomingEvents; using shared component instead
+import { PostBody } from "@/components/PostBody.tsx";
+import { UpcomingEvents } from "@/components/UpcomingEvents.tsx";
+
+import { placeholderUser } from "@/lib/placeholderUser.ts";
+import placeholderPostImg from "@/assets/images/placeholderPostImg.png";
+
 //placeholder data
-import { placeholderUser } from "../../features/feed/api/placeholderUser.ts";
-import placeholderPostImg from "../../features/feed/assets/placeholderPostImg.png";
-// import { useState } from "react"; // no longer needed
-import { UpcomingEvents } from "../../components/UpcomingEvents.tsx";
 const title = "Announcing CyberVoid 2025 by MCSC. Don’t miss it!";
 const content = {
   text: "For the first time, MIST Cyber Security Club is hosting a 3-in-1 event exclusively for MIST students! CyberVoid'25 kicks off on Dec 10, 2025, and wraps up on Dec 12. Don't miss out on this incredible 3-day experience! Register now and secure your spot! Featu...",
   img: placeholderPostImg,
 };
 const user = placeholderUser;
+
 
 export function Home() {
   return (

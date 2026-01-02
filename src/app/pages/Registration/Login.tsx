@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
-import {SignupLoginBox} from "../../components/SignupLoginBox";
-import {Password} from "../../features/auth/components/Password";
-import { InputField } from "../../components/InputField";
+import {SignupLoginBox} from "./components/SignupLoginBox";
+import {Password} from "./components/Password";
+import { InputField } from "../../../components/InputField";
 
 export function Login() {
   const navigate = useNavigate();
@@ -32,7 +32,8 @@ export function Login() {
       <form onSubmit={handleSubmit} className="space-y-2 max-w-xl">
         <InputField
         type="text"
-        label="UserID"
+        label="User ID"
+        name="userid"
         value={userId}
         changeHandler={(e)=>setUserId(e.target.value)}
         >

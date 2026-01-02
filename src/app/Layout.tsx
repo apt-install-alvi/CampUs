@@ -11,7 +11,7 @@ export function Layout() {
 
   return (
     <>
-      <div className="fixed w-full h-screen">
+      <div className="fixed w-full">
         {!hideNav && <TopNav />}
         {!hideNav && <BotNav />}
       </div>

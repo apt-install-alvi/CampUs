@@ -5,14 +5,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { UpcomingEvents } from "@/components/UpcomingEvents";
-import userImg from "../../features/feed/assets/placeholderUser.png";
-import UserProfileUpdate from "@/components/UserProfileUpdate"; // new modal component
-import { InterestedPosts } from "@/components/InterestedPosts";
+import userImg from "@/assets/images/placeholderUser.png";
+import UserProfileUpdate from "./components/UserProfileUpdate";
+import { InterestedPosts } from "./components/InterestedPosts";
 import {
   getInterested,
   subscribe,
-} from "../../features/feed/api/interestedStore";
-import type { InterestedItem } from "../../features/feed/api/interestedStore";
+} from "./backend/interestedStore";
+import type { InterestedItem } from "./backend/interestedStore";
 type Skill = { title: string; detail?: string };
 type Contact = {
   type: "gmail" | "linkedin" | "github" | "facebook";
