@@ -6,6 +6,7 @@ export type ChatMessage = {
   from: "me" | "other";
   text: string;
   ts: number;
+  status?: "pending" | "sent" | "delivered" | "failed";
 };
 
 export type ChatThread = {
@@ -80,6 +81,7 @@ export function sendMessage(text: string) {
     from: "me",
     text: msg,
     ts: Date.now(),
+    status: "pending",
   });
   notify();
 }

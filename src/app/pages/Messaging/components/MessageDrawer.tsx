@@ -63,10 +63,23 @@ export default function MessageDrawer({
     setText("");
   };
 
+  // Combined navbar height (TopNav + BotNav) approx. 96px; adjust if needed.
+  const NAVBAR_HEIGHT = 105;
+  // Extra spacing below navbar so the drawer sits a bit lower
+  const NAVBAR_SPACING = 15; // px
+
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction="right">
-      <DrawerContent className="bg-primary-lm text-text-lm">
-        <DrawerHeader className="flex items-center justify-between p-4 border-b border-stroke-grey">
+      <DrawerContent
+        className={
+          "bg-primary-lm text-text-lm fixed right-0 w-[380px] sm:w-[380px] sm:max-w-[380px] border-l border-stroke-grey"
+        }
+        style={{
+          top: NAVBAR_HEIGHT + NAVBAR_SPACING,
+          height: `calc(100vh - ${NAVBAR_HEIGHT + NAVBAR_SPACING}px)`,
+        }}
+      >
+        <DrawerHeader className="flex-row flex items-center justify-between p-4 border-b border-stroke-grey">
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8">
               {avatarSrc ? <AvatarImage src={avatarSrc} /> : null}
@@ -85,8 +98,8 @@ export default function MessageDrawer({
           </DrawerClose>
         </DrawerHeader>
 
-        <div className="flex flex-col h-[70vh]">
-          <div className="flex-1 p-3 space-y-2 overflow-auto">
+        <div className="flex flex-col h-full">
+          <div className="flex-1 p-3 space-y-2 overflow-y-auto">
             {activeThread && activeThread.messages.length > 0 ? (
               activeThread.messages.map((m) => (
                 <div
@@ -99,6 +112,11 @@ export default function MessageDrawer({
                   )}
                 >
                   {m.text}
+                  {"status" in m && m.from === "me" ? (
+                    <div className="mt-1 text-[10px] text-text-lighter-lm">
+                      pending
+                    </div>
+                  ) : null}
                 </div>
               ))
             ) : (
