@@ -1,9 +1,12 @@
 import React, { useMemo, useState } from "react";
 import postImg from "@/assets/images/placeholderPostImg.png";
 import CategorySelection, { type CategoryKey } from "../../../components/CategorySelection";
-import EventPost from "./components/EventPost";
 import CreateEventModal from "./components/CreateEventModal";
 import EventPostDetail from "./components/EventPostDetail";
+import { PostBody } from "@/components/PostBody";
+import { LikeButton, CommentButton, ShareButton } from "@/components/PostButtons";
+
+
 
 
 type Segment = {
@@ -127,17 +130,51 @@ export function Events() {
               </button>
             </div>
 
-            <div className="mt-6 space-y-6">
+            <div className="mt-6">
               {selectedPost ? (
-                // Render the detail view
                 <EventPostDetail post={selectedPost} onBack={closeDetail} />
               ) : (
-                // Render the feed
-                filtered.map((p) => (
-                  <EventPost key={p.id} post={p as any} onClick={() => openDetail(p)} />
-                ))
+                <div className="flex flex-col gap-10 h-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey">
+                  {filtered.map((p) => {
+                        const content = {
+                          text: p.excerpt ?? p.body ?? "",
+                          img: p.image ?? undefined,
+                        };
+
+                        const user = {
+                          name: p.author,
+                          batch: p.dept ?? "",
+                          imgURL: "/default-user.png", // fallback if no author image
+                        };
+
+                        return (
+                          <div
+                            key={p.id}
+                            onClick={() => openDetail(p)}
+                            className="cursor-pointer flex flex-col gap-4"
+                          >
+                            <PostBody
+                              title={p.title}
+                              user={user}
+                              content={content}
+                              tags={p.tags}
+                              category={p.category}
+                            />
+
+                            {/* Engagement buttons from your EventPostButtons */}
+                            <div className="flex gap-3">
+                              <LikeButton />
+                              <CommentButton />
+                              <ShareButton />
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                </div>
               )}
             </div>
+
           </div>
         </div>
       </div>
