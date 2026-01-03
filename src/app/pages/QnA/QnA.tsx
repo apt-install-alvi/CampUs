@@ -47,7 +47,7 @@ const initialMockPosts: Post[] = [
     authorAvatar: "/abstract-geometric-shapes.png",
     authorCourse: "NSE-18",
     content:
-      "Hello! I recently decided to write a research paper inspired by my seniors. My interests include cybersecurity and AI, but I’m a newbie. Can anyone guide me? (This demo post includes a fairly long body to show wrapping and read-more behavior.)",
+      "Hello! I recently decided to write a research paper inspired by my seniors. My interests include cybersecurity and AI, but I’m a newbie. I tried learning about Machine Learning, Pattern Recognition, LLMs and other jargon but it's all still very confusing to me. Like it just straight up flies over my head. As for cybersecurity, I find OSINT problems fun to solve, but Web Hacking is my absolute weak spot. Can anyone guide me?",
     category: "Advice",
     tags: ["Research", "Academic"],
     reactions: 54,
@@ -324,12 +324,23 @@ function PostCard({
       tabIndex={0}
       onClick={onOpenDetail}
       className="
+        relative
         bg-secondary-lm p-8 rounded-2xl
         border-2 border-stroke-grey
         hover:bg-hover-lm hover:border-stroke-peach
         transition cursor-pointer
       "
     >
+      <span
+      className={`
+        absolute top-4 right-4
+        px-3 py-1 font-semibold rounded-full border
+        ${categoryStyles[post.category]}
+      `}
+    >
+      {post.category}
+    </span>
+
       {/* USER */}
       <UserInfo
         userImg={post.authorAvatar}
@@ -338,14 +349,14 @@ function PostCard({
       />
 
       {/* TITLE */}
-      <h3 className="font-[Poppins] font-semibold text-xl text-text-lm mt-2">
+      <h5 className="font-[Poppins] font-semibold text-text-lm mt-2">
         {post.title}
-      </h3>
+      </h5>
 
       {/* CONTENT */}
       <div
         ref={contentRef}
-        className="text-text-lighter-lm text-lg leading-relaxed mt-2"
+        className="text-text-lighter-lm text-md leading-relaxed mt-2"
         style={collapsed ? { maxHeight: "6rem", overflow: "hidden" } : {}}
       >
         {post.content}

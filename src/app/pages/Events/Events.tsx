@@ -120,11 +120,11 @@ export function Events() {
             </button>
          
 
-          <div className="mt-6">
+          <div className="mt-6 flex items-center justify-center">
             {selectedPost ? (
               <EventPostDetail post={selectedPost} onBack={closeDetail} />
             ) : (
-              <div className="flex flex-col gap-10 h-full w-full">
+              <div className="flex flex-col gap-10 h-full w-[60vw]">
                 {filtered.length === 0 ? (
                   <div className="flex items-center justify-center">
                     <p className="text-text-lighter-lm text-lg">
