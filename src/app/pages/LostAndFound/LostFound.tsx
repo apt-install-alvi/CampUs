@@ -57,7 +57,7 @@ const mockPosts: LFPost[] = [
     description:
       "Bhai amar cycle churi hoye gese MIST theke please bhai keu dekhle boliyen...",
     imageUrl: cycleImg,
-    reactions: 46,
+    reactions: 4,
     comments: 2,
     shares: 2,
     timestamp: "2h ago",
@@ -88,6 +88,28 @@ export function LostFound() {
 
   // posts state (initialized from mockPosts)
   const [posts, setPosts] = useState<LFPost[]>(mockPosts);
+
+  // track whether current user liked each post
+  const [likedByMe, setLikedByMe] = useState<Record<string, boolean>>({});
+
+  // toggle like/unlike and update reactions count accordingly
+  const toggleLike = (postId: string) => {
+    setLikedByMe((prevLiked) => {
+      const wasLiked = !!prevLiked[postId];
+      // update reactions count based on previous like state
+      setPosts((prevPosts) =>
+        prevPosts.map((p) =>
+          p.id === postId
+            ? {
+                ...p,
+                reactions: Math.max(0, p.reactions + (wasLiked ? -1 : 1)),
+              }
+            : p
+        )
+      );
+      return { ...prevLiked, [postId]: !wasLiked };
+    });
+  };
 
   type LFComment = {
     id: string;
@@ -372,6 +394,8 @@ export function LostFound() {
                 onOpenComments={() => openComments(post)}
                 onEdit={() => openEdit(post)}
                 onRemove={() => requestRemove(post.id)}
+                isLiked={!!likedByMe[post.id]}
+                onToggleLike={() => toggleLike(post.id)}
               />
             ))}
           </div>
@@ -698,11 +722,15 @@ function LFPostCard({
   onOpenComments,
   onEdit,
   onRemove,
+  isLiked,
+  onToggleLike,
 }: {
   post: LFPost;
   onOpenComments: () => void;
   onEdit: () => void;
   onRemove: () => void;
+  isLiked: boolean;
+  onToggleLike: () => void;
 }) {
   const descRef = useRef<HTMLDivElement | null>(null);
   const [collapsed, setCollapsed] = useState(true);
@@ -817,8 +845,16 @@ function LFPostCard({
       )}
 
       <div className="mt-4 flex items-center gap-3">
-        <button className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-stroke-peach bg-secondary-lm text-accent-lm">
-          <Heart className="h-4 w-4" />
+        <button
+          onClick={onToggleLike}
+          className={
+            "flex items-center gap-1.5 px-3 py-1 rounded-full border " +
+            (isLiked
+              ? "border-stroke-peach bg-accent-lm text-primary-lm"
+              : "border-stroke-peach bg-secondary-lm text-accent-lm")
+          }
+        >
+          <Heart className="h-4 w-4" fill={isLiked ? "currentColor" : "none"} />
           <span className="text-sm font-bold">{post.reactions}</span>
         </button>
 
