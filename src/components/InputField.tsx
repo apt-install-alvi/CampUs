@@ -7,7 +7,9 @@ interface InputProps
   placeholder?:string, 
 	type: string,
   value: string,
-  changeHandler?: ChangeEventHandler<HTMLInputElement>
+  changeHandler: (e: React.ChangeEvent<HTMLInputElement>) => void; 
+  onPaste?: (e: React.ClipboardEvent<HTMLInputElement>) => void;
+  onCopy?: (e: React.ClipboardEvent<HTMLInputElement>) => void;
 }
 
 export function InputField({label, placeholder, value, type, name, changeHandler}:InputProps)

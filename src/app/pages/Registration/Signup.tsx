@@ -2,7 +2,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {SignupLoginBox} from "./components/SignupLoginBox";
-import {Password} from "./components/Password"; // Direct import
+
+import { Password, checkPasswordStrength } from "./components/Password";
 import { useLocation } from "react-router";
 import { InputField } from "../../../components/InputField";
 import { ButtonCTA } from "../../../components/ButtonCTA";
@@ -38,6 +39,10 @@ export function Signup() {
     password: "",
     confirmPassword: "",
   });
+ const isValidEmail = (email: string) => {
+  // Simple regex for common email formats
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
 
 // Handle OCR data when returning from scanning
 useEffect(() => {
@@ -91,6 +96,15 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
   };
   reader.readAsDataURL(f);
 }
+  const [isFormValid, setIsFormValid] = useState(false);
+
+  useEffect(() => {
+  const allFilled = Object.values(formData).every(val => val.trim() !== "");
+  const passwordStrong = checkPasswordStrength(formData.password).score >= 4; // Strong or Very Strong
+  const emailValid = isValidEmail(formData.email);
+  setIsFormValid(allFilled && passwordsMatch && passwordStrong && emailValid);
+}, [formData, passwordsMatch]);
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -202,7 +216,7 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
               type="text"
               value={formData.batch} 
               onChange={handleInputChange}
-              placeholder="e.g CSE-23"
+              placeholder="e.g 23"
               className="px-2 bg-primary-lm border border-stroke-grey rounded-lg w-32 h-10 text-base text-text-lighter-lm font-normal focus:outline-accent-lm"
             />
           </div>
@@ -241,17 +255,39 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
           onMatchChange={setPasswordsMatch}
         />
 
-        <div className="flex items-center gap-4 pt-2">
-          <input type="submit" className="bg-accent-lm hover:bg-hover-btn-lm transition text-primary-lm text-base font-medium px-4 py-2 rounded-lg cursor-pointer">
-          </input>
+        <div className="flex flex-col gap-2 pt-2">
+  <div className="flex items-center gap-4">
+    <input
+      type="submit"
+      disabled={!isFormValid}
+      className={`bg-accent-lm hover:bg-hover-btn-lm transition text-primary-lm text-base font-medium px-4 py-2 rounded-lg cursor-pointer ${
+        !isFormValid ? "opacity-50 cursor-not-allowed" : ""
+      }`}
+    />
 
-          <span className="text-sm text-text-lighter-lm">
-            Already have an account?{" "}
-            <Link to="/login" className="underline text-accent-lm">
-              Login
-            </Link>
-          </span>
-        </div>
+      <span className="text-sm text-text-lighter-lm">
+        Already have an account?{" "}
+        <Link to="/login" className="underline text-accent-lm">
+          Login
+        </Link>
+      </span>
+    </div>
+
+      {!isFormValid && (
+        <p className="text-accent-lm">
+          {!passwordsMatch
+            ? "Passwords must match."
+            : checkPasswordStrength(formData.password).score < 4
+              ? "Password must be strong."
+              : !isValidEmail(formData.email)
+                ? "Please enter a valid email address."
+                : "Please fill in all fields."}
+        </p>
+      )}
+
+
+  </div>
+
       </form>
   </SignupLoginBox>
   );

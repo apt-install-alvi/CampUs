@@ -10,7 +10,7 @@ interface PasswordProps {
   onMatchChange?: (matches: boolean) => void;
 }
 
-const checkPasswordStrength = (password: string) => {
+export const checkPasswordStrength = (password: string) => {
   if (!password) return { score: 0, messages: [], strength: "" };
   
   let score:number = 0;
@@ -87,12 +87,16 @@ export function Password({
     <>
       {/* Password Input with Toggle */}
       <div className="relative">
-        <InputField
+       <InputField
+          name="password"
           label={label}
           type={showPassword ? "text" : "password"}
           value={value}
           changeHandler={handleInputChange}
-        ></InputField>
+          onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => e.preventDefault()}
+          onCopy={(e: React.ClipboardEvent<HTMLInputElement>) => e.preventDefault()}
+        />
+
         
         {/* View/Hide Toggle Button */}
         <button
