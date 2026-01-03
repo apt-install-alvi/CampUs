@@ -29,7 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import userImg from "../../features/feed/assets/placeholderUser.png";
+import userImg from "../../../assets/images/placeholderUser.png";
 import MessageDrawer from "@/app/pages/Messaging/components/MessageDrawer";
 import { useNavigate } from "react-router-dom";
 import { openChatWith } from "@/app/pages/Messaging/backend/chatStore";
