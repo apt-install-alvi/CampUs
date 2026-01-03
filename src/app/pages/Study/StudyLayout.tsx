@@ -1,6 +1,6 @@
-import { NavLink, Outlet, useParams } from "react-router";
+import { NavLink, Outlet, useParams, useLocation } from "react-router";
 import { Sidebar } from "./components/Sidebar";
-import { getNotes } from "@/lib/studyMock";
+import { getNotes, getResources } from "@/lib/studyMock";
 import { useMemo } from "react";
 import { placeholderUser } from "@/lib/placeholderUser";
 
@@ -12,8 +12,21 @@ export function StudyLayout() {
   const resourcesPath = `/study/${level}/${term}/resources`;
   
   const notes = getNotes(level, term);
-  const courses = useMemo(() => Array.from(new Set(notes.map((n) => n.courseCode))), [notes]);
-  const uploaders = useMemo(() => Array.from(new Set(notes.map((n) => n.uploadedBy))), [notes]);
+  const resources = getResources(level, term);
+  const location = useLocation();
+  const viewingResources = location.pathname.includes("/resources");
+
+  const courses = useMemo(() => {
+    return viewingResources
+      ? Array.from(new Set(resources.map((r) => r.course)))
+      : Array.from(new Set(notes.map((n) => n.courseCode)));
+  }, [viewingResources, resources, notes]);
+
+  const uploaders = useMemo(() => {
+    return viewingResources
+      ? Array.from(new Set(resources.map((r) => r.user.name)))
+      : Array.from(new Set(notes.map((n) => n.uploadedBy)));
+  }, [viewingResources, resources, notes]);
   
   return(
     <main className="w-full h-screen flex">
@@ -79,8 +92,8 @@ function TabLink({ linktxt, dest }: { linktxt: string; dest: string })
       className={({ isActive }) => [
         "px-3 py-2 rounded-md font-medium text-center h-fit w-fit",
         isActive
-          ? "bg-accent-lm text-primary-lm hover:bg-hover-btn-lm"
-          : "bg-primary-lm text-accent-lm hover:bg-hover-lm",
+          ? "bg-accent-lm text-primary-lm hover:bg-hover-btn-lm transition"
+          : "bg-primary-lm text-accent-lm border border-stroke-grey hover:bg-hover-lm transition",
       ].join(" ")}
     >
       {linktxt}

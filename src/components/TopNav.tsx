@@ -25,9 +25,9 @@ export function TopNav()
         <img src={Logo} className="scale-90"></img>
       </Link>
       <div className="flex justify-center gap-4">
-        <button>
+        {/* <button>
           <img src={moonIcon} className="size-6 cursor-pointer"></img>
-        </button>
+        </button> */}
 
         <button>
           <img src={bellIcon} className="size-8 cursor-pointer"></img>
