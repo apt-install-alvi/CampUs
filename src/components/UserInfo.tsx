@@ -11,7 +11,7 @@ export function UserInfo({userImg, userName, userBatch, disableClick}:UserDetail
   return (
     <>
     {disableClick? 
-      (<div className="flex gap-2 pointer-events-none">
+      (<div className="flex gap-2 pointer-events-none w-fit">
         <div className="user-img">
           <img src={userImg} className="rounded-full size-9 border-[1.5px] border-accent-lm"></img>
         </div>
@@ -21,7 +21,7 @@ export function UserInfo({userImg, userName, userBatch, disableClick}:UserDetail
         </div>
       </div>)
       :
-      (<Link to="/profile" className="flex gap-2 cursor-pointer"> {/*need to fix this to Link to the relevant user's profile instead*/}
+      (<Link to="/profile" className="flex gap-2 cursor-pointer w-fit"> {/*need to fix this to Link to the relevant user's profile instead*/}
         <div className="user-img">
           <img src={userImg} className="rounded-full size-9 border-[1.5px] border-accent-lm"></img>
         </div>

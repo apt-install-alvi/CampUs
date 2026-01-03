@@ -110,7 +110,7 @@ export function Events() {
     <div className="min-h-screen bg-background-lm">
       <div className="flex gap-10 h-full w-full p-10">
         {/* LEFT: Posts */}
-        <div className="flex flex-col gap-10 h-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey">
+        <div className="flex flex-col gap-10 h-full w-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey">
           <div className="rounded-xl bg-secondary-lm border border-stroke-grey p-4">
             <button
               onClick={() => setModalOpen(true)}
@@ -120,11 +120,11 @@ export function Events() {
             </button>
           </div>
 
-          <div className="mt-6">
+          <div className="mt-6 flex items-center justify-center">
             {selectedPost ? (
               <EventPostDetail post={selectedPost} onBack={closeDetail} />
             ) : (
-              <div className="flex flex-col gap-10 h-full w-full">
+              <div className="flex flex-col gap-10 h-full w-[60vw]">
                 {filtered.length === 0 ? (
                   <div className="flex items-center justify-center">
                     <p className="text-text-lighter-lm text-lg">

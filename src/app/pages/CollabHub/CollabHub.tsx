@@ -74,7 +74,7 @@ const initialPosts: CollabPost[] = [
   }, [filter, posts]);
 
   return (
-    <div className="flex gap-10 h-full w-full p-10 bg-background-lm">
+    <div className="flex gap-10 h-full w-full p-10 bg-background-lm animate-slide-in">
       {/* LEFT: Posts */}
       <div className="flex-1">
         <div className="flex flex-col gap-10 h-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey">
@@ -96,25 +96,27 @@ const initialPosts: CollabPost[] = [
           ) : (
             filteredPosts.map((p) => (
      
-              <div key={p.id} className="bg-secondary-lm p-8 rounded-xl border border-stroke-grey hover:bg-hover-lm transition border-2 border-stroke-grey hover:border-stroke-peach p-8 rounded-2xl">
+              <div key={p.id} className="bg-secondary-lm hover:bg-hover-lm transition border-2 border-stroke-grey hover:border-stroke-peach p-8 rounded-2xl">
                 <UserInfo
                   userImg={p.user.imgURL}
                   userName={p.user.name}
                   userBatch={p.user.batch || "Student"}
                 />
-                <h3 className="font-[Poppins] font-semibold text-xl text-text-lm">
+                <h3 className="mt-2 font-[Poppins] font-semibold text-xl text-text-lm">
                   {p.title}
                 </h3>
-                <p className="text-text-lighter-lm text-lg leading-relaxed">
+                <p className="text-text-lighter-lm text-md leading-relaxed">
                   {p.content}
                 </p>
-                <div className="flex gap-2 flex-wrap">
+
+                 <div className="my-4 mb-10 flex gap-2 flex-wrap">
                   {p.tags.map((tag) => (
-                    <span key={tag} className="font-bold bg-[#C23D00] text-[#FFFFFF] px-3 py-1.5 rounded-full text-sm">
+                    <span key={tag} className="font-bold text-accent-lm border border-accent-lm px-3 py-1.5 rounded-full text-sm">
                       {tag}
                     </span>
                   ))}
                 </div>
+
                 <div className="flex gap-4 items-center mt-2">
                   <LikeButton />
                   <CommentButton />

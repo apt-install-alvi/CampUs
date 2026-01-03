@@ -65,9 +65,9 @@ export function StudyLayout() {
   }
   
   return(
-    <main className="w-full h-screen flex">
+    <main className="w-full h-screen flex ">
       <Sidebar batch={batch} />
-      <div className="w-full h-full flex flex-col ml-[20vw] px-10">
+      <div className="w-full h-full flex flex-col ml-[20vw] px-10 animate-slide-in">
         <div className="flex w-full gap-5 justify-center mt-6">
           <TabLink linktxt="Notes" dest={notesPath} />
           <TabLink linktxt="Resources" dest={resourcesPath} />
