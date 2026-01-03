@@ -75,58 +75,68 @@ export function CollabHub() {
     {/* LEFT: Posts */}
     <div className="flex-1">
       <div className="flex flex-col gap-10 h-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey">
-        {filteredPosts.length === 0 ? (
-          <div className="flex items-center justify-center min-h-50">
-            <p className="text-text-lighter-lm text-lg">
-              No posts in this category
-            </p>
-          </div>
-        ) : (
-          filteredPosts.map((p) => (
-            <div
-              key={p.id}
-              className="bg-secondary-lm p-8 rounded-xl border border-stroke-grey flex flex-col gap-6"
+  {/* Announce collaboration*/}
+ 
+    <button
+      className="w-full rounded-md border border-stroke-grey bg-secondary-lm px-4 py-3 text-left text-sm text-accent-lm  hover:bg-hover-lm transition border-2 border-stroke-grey hover:border-stroke-peach p-8 rounded-2xl "
+    >
+      Click to announce a collaboration here
+    </button>
+ 
+
+  {/* Posts */}
+  {filteredPosts.length === 0 ? (
+    <div className="flex items-center justify-center min-h-50 ">
+      <p className="text-text-lighter-lm text-lg">
+        No posts in this category
+      </p>
+    </div>
+  ) : (
+    filteredPosts.map((p) => (
+      <div
+        key={p.id}
+        className="bg-secondary-lm p-8 rounded-xl border border-stroke-grey flex flex-col gap-6  hover:bg-hover-lm transition border-2 border-stroke-grey hover:border-stroke-peach p-8 rounded-2xl"
+      >
+        {/* User Info */}
+        <UserInfo
+          userImg={p.user.imgURL}
+          userName={p.user.name}
+          userBatch={p.user.batch || "Student"}
+        />
+
+        {/* Post Title */}
+        <h3 className="font-[Poppins] font-semibold text-xl text-text-lm">
+          {p.title}
+        </h3>
+
+        {/* Post Content */}
+        <p className="text-text-lighter-lm text-lg leading-relaxed">
+          {p.content}
+        </p>
+
+        {/* Tags */}
+        <div className="flex gap-2 flex-wrap">
+          {p.tags.map((tag) => (
+            <span
+              key={tag}
+              className="font-bold bg-[#C23D00] text-[#FFFFFF] px-3 py-1.5 rounded-full text-sm"
             >
-              {/* User Info */}
-             <UserInfo 
-             userImg={p.user.imgURL} 
-             userName={p.user.name} 
-             userBatch={p.user.batch || "Student"} 
-             />
+              {tag}
+            </span>
+          ))}
+        </div>
 
-              {/* Post Title */}
-              <h3 className="font-[Poppins] font-semibold text-xl text-text-lm">
-                {p.title}
-              </h3>
-
-              {/* Post Content */}
-              <p className="text-text-lighter-lm text-lg leading-relaxed">
-                {p.content}
-              </p>
-
-              {/* Tags */}
-              <div className="flex gap-2 flex-wrap">
-                {p.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="font-bold bg-[#C23D00] text-[#FFFFFF] px-3 py-1.5 rounded-full text-sm"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              {/* Interaction Buttons */}
-              <div className="flex gap-4 items-center mt-2">
-                <LikeButton />
-                <CommentButton />
-                <ShareButton />
-  
-              </div>
-            </div>
-          ))
-        )}
+        {/* Interaction Buttons */}
+        <div className="flex gap-4 items-center mt-2">
+          <LikeButton />
+          <CommentButton />
+          <ShareButton />
+        </div>
       </div>
+    ))
+  )}
+</div>
+
     </div>
 
     <CategoryFilter

@@ -5,7 +5,6 @@ import type { Category } from "@/components/Category_Events_CollabHub/Category";
 import CreateEventModal from "./components/CreateEventModal";
 import EventPostDetail from "./components/EventPostDetail";
 import { PostBody } from "@/components/PostBody";
-import { LikeButton, CommentButton, ShareButton } from "@/components/PostButtons";
 import { placeholderUser } from "../../../lib/placeholderUser";
 type Segment = {
   id: string;
@@ -140,7 +139,7 @@ export function Events() {
                     };
 
                     const user = {
-                          ...placeholderUser, // start with the placeholder avatar
+                          ...placeholderUser, 
                           name: p.author,
                           batch: p.dept ?? "Student",
                         };
@@ -152,13 +151,14 @@ export function Events() {
                         onClick={() => openDetail(p)}
                         className="cursor-pointer flex flex-col gap-4"
                       >
-                        {/* Post Body with user included */}
+                        
                         <PostBody
                           title={p.title}
                           content={content}
                           user={user}
                           tags={p.tags}
                           category={p.category}
+                          
                         />
 
                       
