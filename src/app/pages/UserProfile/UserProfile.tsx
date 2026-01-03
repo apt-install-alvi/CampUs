@@ -31,8 +31,9 @@ import {
 } from "@/components/ui/select";
 import userImg from "@/assets/images/placeholderUser.png";
 import MessageDrawer from "@/app/pages/Messaging/components/MessageDrawer";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { openChatWith } from "@/app/pages/Messaging/backend/chatStore";
+import { mockUsers, mockLoggedInUser } from "@/lib/mockUsers";
 import UserProfileUpdate from "./components/UserProfileUpdate"; // new modal component
 import { InterestedPosts } from "./components/InterestedPosts";
 import { getInterested, subscribe } from "./backend/interestedStore";
@@ -43,6 +44,18 @@ type Contact = {
   id: string;
 };
 export function UserProfile() {
+  const navigate = useNavigate();
+  const { userId: routeUserId } = useParams();
+  const loggedIn = mockLoggedInUser;
+  const viewedUser = routeUserId
+    ? mockUsers.find((u) => u.id === routeUserId) || loggedIn
+    : loggedIn;
+  // Redirect to /profile if trying to view own param route
+  useEffect(() => {
+    if (routeUserId && routeUserId === loggedIn.id) {
+      navigate("/profile", { replace: true });
+    }
+  }, [routeUserId, loggedIn.id, navigate]);
   const [messageOpen, setMessageOpen] = useState(false);
   const [chatTarget, setChatTarget] = useState<{
     id: string;
@@ -317,7 +330,7 @@ export function UserProfile() {
               <div className="relative">
                 <div className="rounded-full border-4 border-stroke-peach p-1">
                   <Avatar className="h-24 w-24">
-                    <AvatarImage src={userImg} />
+                    <AvatarImage src={viewedUser.avatar || userImg} />
                     <AvatarFallback>TT</AvatarFallback>
                   </Avatar>
                 </div>
@@ -325,26 +338,28 @@ export function UserProfile() {
               <div className="flex-1">
                 <div className="flex items-center gap-3">
                   <h1 className="text-xl font-extrabold tracking-tight text-text-lm">
-                    Alvi Binte Zamil
+                    {viewedUser.name}
                   </h1>
-                  <Button
-                    size="sm"
-                    className="h-8 rounded-full bg-accent-lm px-3 text-primary-lm hover:bg-hover-btn-lm"
-                    onClick={() => {
-                      const profileUserId =
-                        contacts.find((c) => c.type === "github" && c.id.trim())
-                          ?.id || "alvi";
-                      setChatTarget({
-                        id: profileUserId,
-                        name: "Alvi Binte Zamil",
-                      });
-                      setMessageOpen(true);
-                    }}
-                  >
-                    Message
-                  </Button>
+                  {viewedUser.id !== loggedIn.id && (
+                    <Button
+                      size="sm"
+                      className="h-8 rounded-full bg-accent-lm px-3 text-primary-lm hover:bg-hover-btn-lm"
+                      onClick={() => {
+                        openChatWith(viewedUser.id, viewedUser.name);
+                        setChatTarget({
+                          id: viewedUser.id,
+                          name: viewedUser.name,
+                        });
+                        setMessageOpen(true);
+                      }}
+                    >
+                      Message
+                    </Button>
+                  )}
                 </div>
-                <div className="mt-1 text-sm text-text-lighter-lm">CSE-23</div>
+                <div className="mt-1 text-sm text-text-lighter-lm">
+                  {viewedUser.department}
+                </div>
                 <div className="text-sm text-text-lighter-lm">LEVEL-3</div>
                 <div className="mt-3">
                   {/* Header row: title + add button */}
@@ -836,7 +851,7 @@ export function UserProfile() {
             onOpenChange={setMessageOpen}
             userId={chatTarget.id}
             userName={chatTarget.name}
-            avatarSrc={userImg}
+            avatarSrc={viewedUser.avatar || userImg}
           />
         )}
       </div>

@@ -97,3 +97,30 @@ export function receiveMessage(fromUserId: string, text: string) {
   });
   notify();
 }
+
+// ---- Conversation helpers (min/max id pair) ----
+export type ConversationMessage = {
+  conversationId: string;
+  senderId: string;
+  text: string;
+  timestamp: number;
+};
+
+const convMessages: ConversationMessage[] = [];
+
+export function getConversationId(a: string, b: string) {
+  const [minId, maxId] = [a, b].sort();
+  return `${minId}_${maxId}`;
+}
+
+export function addConversationMessage(
+  conversationId: string,
+  senderId: string,
+  text: string
+) {
+  convMessages.push({ conversationId, senderId, text, timestamp: Date.now() });
+}
+
+export function getConversationMessages(conversationId: string) {
+  return convMessages.filter((m) => m.conversationId === conversationId);
+}

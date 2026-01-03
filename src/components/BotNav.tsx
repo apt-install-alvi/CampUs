@@ -1,8 +1,12 @@
+<<<<<<< HEAD
 import { NavLink, useLocation } from "react-router";
 import searchIcon from "../assets/icons/search_icon.svg";
+=======
+import { NavLink } from "react-router";
+import { SearchAnything } from "./SearchAnything";
+>>>>>>> qnaUIandprofile
 
-export function BotNav()
-{
+export function BotNav() {
   return (
     <nav className="bg-primary-lm border-t-0 border-b border-stroke-grey flex items-center justify-center gap-2 h-14">
       <NavbarLinks linktxt="Home" dest="/home" />
@@ -11,11 +15,12 @@ export function BotNav()
       <NavbarLinks linktxt="QnA" dest="/qna" />
       <NavbarLinks linktxt="Study" dest="/study/1/1" activeMatch="/study" />
       <NavbarLinks linktxt="Lost & Found" dest="/lost-and-found" />
-      <SearchBar />
+      <SearchAnything />
     </nav>
   );
 }
 
+<<<<<<< HEAD
 function NavbarLinks({linktxt, dest, activeMatch}: {linktxt: string, dest: string, activeMatch?: string})
 {
   const location = useLocation();
@@ -29,11 +34,25 @@ function NavbarLinks({linktxt, dest, activeMatch}: {linktxt: string, dest: strin
           active && "bg-hover-lm"
         ].join(" ");
       }}>
+=======
+function NavbarLinks({ linktxt, dest }: { linktxt: string; dest: string }) {
+  return (
+    <NavLink
+      to={dest}
+      className={({ isActive }) =>
+        [
+          "relative text-accent-lm text-md font-medium h-full flex items-center justify-center px-3 hover:after:w-full hover:after:h-0.5 hover:after:bg-accent-lm hover:after:absolute hover:after:bottom-0 hover:after:animate-fade-in",
+          isActive && "bg-hover-lm",
+        ].join(" ")
+      }
+    >
+>>>>>>> qnaUIandprofile
       {linktxt}
     </NavLink>
   );
 }
 
+<<<<<<< HEAD
 function SearchBar()
 {
   return (
@@ -44,3 +63,6 @@ function SearchBar()
     
   );
 }
+=======
+// Search handled by SearchAnything component
+>>>>>>> qnaUIandprofile
