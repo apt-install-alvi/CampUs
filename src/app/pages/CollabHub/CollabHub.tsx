@@ -96,7 +96,12 @@ const initialPosts: CollabPost[] = [
           ) : (
             filteredPosts.map((p) => (
      
-              <div key={p.id} className="bg-secondary-lm hover:bg-hover-lm transition border-2 border-stroke-grey hover:border-stroke-peach p-8 rounded-2xl">
+              <div key={p.id} className="relative bg-secondary-lm hover:bg-hover-lm transition border-2 border-stroke-grey hover:border-stroke-peach p-8 rounded-2xl">
+                
+                {/* CATEGORY TAG */}
+                <span className="absolute top-4 right-4 font-bold bg-accent-lm text-primary-lm px-3 py-1 rounded-full text-m uppercase tracking-wide">
+                  {p.category}
+                </span>
                 <UserInfo
                   userImg={p.user.imgURL}
                   userName={p.user.name}

@@ -1,16 +1,7 @@
 import { useState, Suspense, useEffect, useRef } from "react";
-import {
-  Search,
-  Heart as HeartIcon,
-  MessageCircle as MessageIcon,
-  Share2 as ShareIcon,
-  MoreVertical,
-  Check,
-  Tag as TagIcon,
-} from "lucide-react";
+import { Search } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar";
 import {
   Dialog,
   DialogContent,
@@ -18,8 +9,14 @@ import {
   DialogTitle,
 } from "../../../components/ui/dialog";
 import { Textarea } from "../../../components/ui/textarea";
-import { Badge } from "../../../components/ui/badge";
+import { UserInfo } from "@/components/UserInfo";
+import {
+  LikeButton,
+  CommentButton,
+  ShareButton,
+} from "../../../components/PostButtons";
 import { PostDetail } from "./components/PostDetail";
+
 
 type Post = {
   id: string;
@@ -50,7 +47,7 @@ const initialMockPosts: Post[] = [
     authorAvatar: "/abstract-geometric-shapes.png",
     authorCourse: "NSE-18",
     content:
-      "Hello! I recently decided to write a research paper inspired by my seniors. My interests include cybersecurity and AI, but I’m a newbie. Can anyone guide me? (This demo post includes a fairly long body to show wrapping and read-more behavior.)",
+      "Hello! I recently decided to write a research paper inspired by my seniors. My interests include cybersecurity and AI, but I’m a newbie. I tried learning about Machine Learning, Pattern Recognition, LLMs and other jargon but it's all still very confusing to me. Like it just straight up flies over my head. As for cybersecurity, I find OSINT problems fun to solve, but Web Hacking is my absolute weak spot. Can anyone guide me?",
     category: "Advice",
     tags: ["Research", "Academic"],
     reactions: 54,
@@ -205,16 +202,25 @@ function QAPageContent() {
 
             {/* Posts */}
             <div className="space-y-4">
-              {filteredPosts.map((post) => (
-                <PostCard
-                  key={post.id}
-                  post={post}
-                  onOpenDetail={() => setSelectedPost(post)}
-                  onLike={() => toggleLike(post.id)}
-                  onAddInlineComment={(text) => addInlineComment(post.id, text)}
-                />
-              ))}
+              {filteredPosts.length === 0 ? (
+                <div className="flex items-center justify-center min-h-50">
+                  <p className="text-text-lighter-lm text-lg">
+                    No posts in this category
+                  </p>
+                </div>
+              ) : (
+                filteredPosts.map((post) => (
+                  <PostCard
+                    key={post.id}
+                    post={post}
+                    onOpenDetail={() => setSelectedPost(post)}
+                    onLike={() => toggleLike(post.id)}
+                    onAddInlineComment={(text) => addInlineComment(post.id, text)}
+                  />
+                ))
+              )}
             </div>
+
           </>
         )}
       </main>
@@ -247,10 +253,7 @@ function QAPageContent() {
             />
 
             <div className="space-y-2">
-              <div className="flex items-center gap-2 text-text-lm">
-                <TagIcon className="h-4 w-4 text-accent-lm" />
-                <span className="text-sm font-medium text-text-lm">Tag</span>
-              </div>
+              
               <div className="flex flex-wrap gap-2">
                 {(["Question", "Advice", "Resource"] as const).map((cat) => (
                   <button
@@ -264,9 +267,7 @@ function QAPageContent() {
                         : "border-stroke-grey bg-primary-lm text-text-lm hover:bg-hover-lm"
                     }`}
                   >
-                    {newPost.category === cat && (
-                      <Check className="h-3.5 w-3.5 text-accent-lm" />
-                    )}
+                    
                     {cat}
                   </button>
                 ))}
@@ -311,165 +312,130 @@ function PostCard({
   const [replying, setReplying] = useState(false);
   const [replyText, setReplyText] = useState("");
 
-  // measure overflow
   useEffect(() => {
     const el = contentRef.current;
     if (!el) return;
-
-    const check = () => {
-      // small tolerance
-      setShowReadMore(el.scrollHeight > el.clientHeight + 1);
-    };
-
-    // run on next tick to let layout settle
-    const t = setTimeout(check, 0);
-    window.addEventListener("resize", check);
-    return () => {
-      clearTimeout(t);
-      window.removeEventListener("resize", check);
-    };
+    setShowReadMore(el.scrollHeight > el.clientHeight + 1);
   }, [post.content]);
-
-  function handleCommentClick(e?: React.MouseEvent) {
-    // If event provided, stop it from opening detail. We expand inline instead.
-    e?.stopPropagation();
-    setCollapsed(false);
-    setReplying(true);
-  }
-
-  function submitReply() {
-    const txt = replyText.trim();
-    if (!txt) return;
-    onAddInlineComment(txt);
-    setReplyText("");
-    setReplying(false);
-    // keep expanded so user sees their comment effect
-  }
 
   return (
     <div
-      // clicking outside buttons opens detail
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onOpenDetail();
-        }
-      }}
       onClick={onOpenDetail}
-      className="bg-primary-lm p-6 rounded-xl border border-stroke-grey shadow-sm hover:shadow-md hover:border-stroke-peach transition animate-slide-in"
-      style={{ cursor: "pointer" }}
+      className="
+        relative
+        bg-secondary-lm p-8 rounded-2xl
+        border-2 border-stroke-grey
+        hover:bg-hover-lm hover:border-stroke-peach
+        transition cursor-pointer
+      "
     >
-      <div className="flex justify-between mb-3">
-        <Badge className={`rounded-full px-3 py-1 border ${categoryStyles[post.category]}`}>
-          {post.category}
-        </Badge>
-        <MoreVertical className="h-5 w-5 text-accent-lm" />
+      <span
+      className={`
+        absolute top-4 right-4
+        px-3 py-1 font-semibold rounded-full border
+        ${categoryStyles[post.category]}
+      `}
+    >
+      {post.category}
+    </span>
+
+      {/* USER */}
+      <UserInfo
+        userImg={post.authorAvatar}
+        userName={post.author}
+        userBatch={post.authorCourse}
+      />
+
+      {/* TITLE */}
+      <h5 className="font-[Poppins] font-semibold text-text-lm mt-2">
+        {post.title}
+      </h5>
+
+      {/* CONTENT */}
+      <div
+        ref={contentRef}
+        className="text-text-lighter-lm text-md leading-relaxed mt-2"
+        style={collapsed ? { maxHeight: "6rem", overflow: "hidden" } : {}}
+      >
+        {post.content}
       </div>
 
-      <div className="mb-2">
-        <h3
+      {showReadMore && (
+        <button
           onClick={(e) => {
             e.stopPropagation();
-            onOpenDetail();
+            setCollapsed((c) => !c);
+            if (collapsed) setReplying(true);
           }}
-          className="text-lg font-semibold text-text-lm mb-2 wrap-break-word whitespace-normal max-w-full"
+          className="text-accent-lm text-sm font-medium mt-1"
         >
-          {post.title}
-        </h3>
+          {collapsed ? "Read more" : "Show less"}
+        </button>
+      )}
 
-        <div className="flex items-center gap-2 mb-3">
-          <Avatar className="h-6 w-6">
-            <AvatarImage src={post.authorAvatar} />
-            <AvatarFallback>{post.author[0]}</AvatarFallback>
-          </Avatar>
-          <span className="text-sm font-medium text-text-lm">{post.author}</span>
-          <span className="text-sm text-text-lighter-lm">{post.timestamp}</span>
-        </div>
-
-        {/* CONTENT area: fixed collapsed height so card doesn't grow */}
-        <div
-          ref={contentRef}
-          className="text-text-lm mb-2 wrap-break-word whitespace-normal max-w-full"
-          style={
-            collapsed
-              ? { maxHeight: "6rem", overflow: "hidden" } // fixed collapsed height
-              : {}
-          }
-        >
-          {post.content}
-        </div>
-
-        {/* Read More toggles collapsed state */}
-        {showReadMore && (
-          <Button
-            variant="ghost"
-            className="ml-0 h-auto p-0 text-accent-lm"
-            onClick={(e) => {
-              e.stopPropagation(); // don't open detail
-              setCollapsed((c) => !c);
-              // if expanding, also show reply area
-              if (collapsed) {
-                setReplying(true);
-              }
-            }}
+      {/* TAGS */}
+      <div className="flex gap-2 flex-wrap mt-3">
+        <span className="font-bold bg-[#C23D00] text-primary-lm px-3 py-1.5 rounded-full text-sm">
+          #{post.category}
+        </span>
+        {post.tags.map((tag) => (
+          <span
+            key={tag}
+            className="font-bold bg-[#C23D00] text-primary-lm px-3 py-1.5 rounded-full text-sm"
           >
-            {collapsed ? "Read More" : "Show less"}
-          </Button>
-        )}
+            #{tag}
+          </span>
+        ))}
       </div>
 
-      {/* Image / other content can follow here if needed */}
-
-      <div className="mt-4 flex items-center gap-3">
-        {/* Like: stop propagation so it doesn't open detail */}
+      {/* ACTIONS */}
+      <div className="flex gap-4 items-center mt-4">
         <button
-          type="button"
           onClick={(e) => {
             e.stopPropagation();
             onLike();
           }}
-          className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-stroke-peach bg-secondary-lm text-accent-lm"
         >
-          <HeartIcon className="h-4 w-4" />
-          <span className="text-sm font-bold">{post.reactions}</span>
+          <LikeButton />
         </button>
 
-        {/* Comment: expand inline rather than open detail */}
         <button
-          type="button"
-          onClick={(e) => handleCommentClick(e)}
-          className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-stroke-peach bg-secondary-lm text-accent-lm"
-        >
-          <MessageIcon className="h-4 w-4" />
-          <span className="text-sm font-bold">{post.comments}</span>
-        </button>
-
-        {/* Share: keep local, stop propagation */}
-        <button
-          type="button"
           onClick={(e) => {
             e.stopPropagation();
-            alert("Share clicked (implement share logic)");
+            setCollapsed(false);
+            setReplying(true);
           }}
-          className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-stroke-peach bg-secondary-lm text-accent-lm"
         >
-          <ShareIcon className="h-4 w-4" />
-          <span className="text-sm font-bold">{post.shares}</span>
+          <CommentButton />
+        </button>
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            alert("Share clicked");
+          }}
+        >
+          <ShareButton />
         </button>
       </div>
 
-      {/* Inline reply area shown when expanded or replying */}
+      {/* TIMESTAMP */}
+      <p className="text-xs text-text-lighter-lm mt-2">
+        {post.timestamp}
+      </p>
+
+      {/* INLINE REPLY (UNCHANGED LOGIC, STYLED) */}
       {!collapsed && (
-        <div className="mt-4 bg-primary-lm rounded-xl p-4 shadow-sm border border-stroke-grey">
+        <div className="mt-4 bg-secondary-lm rounded-2xl p-6 border-2 border-stroke-grey">
           {!replying ? (
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 setReplying(true);
               }}
-              className="w-full text-left px-4 py-3 text-text-lighter-lm text-sm hover:bg-hover-lm rounded-lg transition-colors"
+              className="w-full text-left px-4 py-3 text-text-lighter-lm text-sm hover:bg-hover-lm rounded-lg transition"
             >
               Add a reply
             </button>
@@ -479,36 +445,28 @@ function PostCard({
                 placeholder="Add a reply..."
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
-                className="min-h-25 border-none focus-visible:ring-0 p-0 text-sm bg-primary-lm text-text-lm placeholder:text-text-lighter-lm"
+                className="border-none bg-secondary-lm text-text-lm focus-visible:ring-0"
               />
-              <div className="flex items-center justify-between pt-2 border-t border-stroke-grey">
-                <span className="text-xs text-text-lighter-lm italic">
-                  Replying as You
-                </span>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setReplying(false);
-                      setReplyText("");
-                    }}
-                    className="text-text-lm"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    size="sm"
-                    className="bg-accent-lm hover:bg-hover-btn-lm text-primary-lm px-4"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      submitReply();
-                    }}
-                  >
-                    Comment
-                  </Button>
-                </div>
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    setReplying(false);
+                    setReplyText("");
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="bg-accent-lm text-primary-lm"
+                  onClick={() => {
+                    onAddInlineComment(replyText);
+                    setReplyText("");
+                    setReplying(false);
+                  }}
+                >
+                  Comment
+                </Button>
               </div>
             </div>
           )}

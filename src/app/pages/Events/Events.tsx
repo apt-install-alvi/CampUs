@@ -110,15 +110,15 @@ export function Events() {
     <div className="min-h-screen bg-background-lm">
       <div className="flex gap-10 h-full w-full p-10">
         {/* LEFT: Posts */}
-        <div className="flex flex-col gap-10 h-full w-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey">
-          <div className="rounded-xl bg-secondary-lm border border-stroke-grey p-4">
+        <div className="flex flex-col gap-10 h-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey">
+          
             <button
               onClick={() => setModalOpen(true)}
-              className="w-full rounded-md border border-stroke-grey bg-primary-lm px-4 py-3 text-left text-sm text-text-lighter-lm hover:bg-[#FFF4EE]"
+              className="w-full rounded-md border border-stroke-grey bg-secondary-lm px-4 py-3 text-left text-sm text-accent-lm hover:bg-[#FFF4EE]"
             >
               Click to announce an event here
             </button>
-          </div>
+         
 
           <div className="mt-6 flex items-center justify-center">
             {selectedPost ? (
