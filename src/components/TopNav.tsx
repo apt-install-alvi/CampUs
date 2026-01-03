@@ -23,15 +23,10 @@ export function TopNav() {
       <Link to="/home">
         <img src={Logo} className="scale-90"></img>
       </Link>
-<<<<<<< HEAD
-      <div className="flex justify-center gap-4">
-        {/* <button>
-=======
       <div className="flex items-center gap-6">
         <button>
->>>>>>> qnaUIandprofile
           <img src={moonIcon} className="size-6 cursor-pointer"></img>
-        </button> */}
+        </button>
 
         <button>
           <img src={bellIcon} className="size-8 cursor-pointer"></img>
