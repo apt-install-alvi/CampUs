@@ -1,22 +1,20 @@
 import { PostBody } from "../../features/feed/components/PostBody";
-import { Link } from "react-router";
+// Removed local UpcomingEvents; using shared component instead
 //placeholder data
-import {placeholderUser} from "../../features/feed/api/placeholderUser.ts";
-import placeholderPostImg from "../../features/feed/assets/placeholderPostImg.png"
-import { useState } from "react";
-import { ButtonCTA } from "../../components/ButtonCTA.tsx";
-const title="Announcing CyberVoid 2025 by MCSC. Don’t miss it!";
-const content={
+import { placeholderUser } from "../../features/feed/api/placeholderUser.ts";
+import placeholderPostImg from "../../features/feed/assets/placeholderPostImg.png";
+// import { useState } from "react"; // no longer needed
+import { UpcomingEvents } from "../../components/UpcomingEvents.tsx";
+const title = "Announcing CyberVoid 2025 by MCSC. Don’t miss it!";
+const content = {
   text: "For the first time, MIST Cyber Security Club is hosting a 3-in-1 event exclusively for MIST students! CyberVoid'25 kicks off on Dec 10, 2025, and wraps up on Dec 12. Don't miss out on this incredible 3-day experience! Register now and secure your spot! Featu...",
-  img: placeholderPostImg
-}
-const user=placeholderUser;
+  img: placeholderPostImg,
+};
+const user = placeholderUser;
 
-
-
-export function Home()
-{
+export function Home() {
   return (
+<<<<<<< HEAD
     <div className="flex gap-10 h-full p-10">
       <div className="flex flex-col gap-10 w-3/4 h-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey">
         <PostBody title={title} content={content} user={user}/>
@@ -58,3 +56,14 @@ export function UpcomingEvents()
     </div>
   );
 }
+=======
+    <div className="flex gap-10 h-full w-full p-10">
+      <div className="flex flex-col gap-10 h-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey">
+        <PostBody title={title} content={content} user={user} />
+        <PostBody title={title} content={content} user={user} />
+      </div>
+      <UpcomingEvents />
+    </div>
+  );
+}
+>>>>>>> 60b5ae10a0a8812181c21ef81729a81f10104b13

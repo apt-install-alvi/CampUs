@@ -1,0 +1,31 @@
+import { Link } from "react-router-dom";
+import { ButtonCTA } from "./ButtonCTA";
+
+export function UpcomingEvents({ eventCount = 1 }: { eventCount?: number }) {
+  return (
+    <div className="flex flex-col justify-between w-full min-h-50 bg-primary-lm border-2 border-stroke-grey rounded-2xl">
+      <div className="p-3 border border-t-0 border-l-0 border-r-0 border-b-stroke-grey">
+        <h6 className="font-[Poppins] font-semibold text-text-lm">
+          Upcoming Events
+        </h6>
+      </div>
+      <div className="p-4 flex flex-col justify-start">
+        {eventCount === 0 ? (
+          <p className="text-text-lighter-lm text-md">No events added</p>
+        ) : (
+          <div className="flex flex-col py-2 px-3 hover:bg-secondary-lm hover:w-full hover:rounded-lg">
+            <p className="font-medium text-md text-text-lm">
+              MCSC CyberVoid'25
+            </p>
+            <p className="text-text-lighter-lm">Saturday, 27 Dec 2025</p>
+          </div>
+        )}
+      </div>
+      <div className="flex justify-end p-3">
+        <Link to="/events">
+          <ButtonCTA label={"Add More"} />
+        </Link>
+      </div>
+    </div>
+  );
+}

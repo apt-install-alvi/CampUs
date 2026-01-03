@@ -8,11 +8,12 @@ import { Login } from "./pages/Login";
 import { Login2FA } from "./pages/Login2FA";
 import { Home } from "./pages/Home";
 import { CollabHub } from "./pages/CollabHub";
-import  Events  from "./pages/Events";
+import Events from "./pages/Events";
 import QnA from "./pages/QnA";
 import { Study } from "./pages/Study";
 import { LostFound } from "./pages/LostFound";
 import { UserProfile } from "./pages/UserProfile";
+import Messages from "./pages/Messages";
 import { NotFound } from "./pages/Error_NotFound";
 
 export const router = createBrowserRouter([
@@ -42,6 +43,7 @@ export const router = createBrowserRouter([
       { path: "/study", element: <Study /> },
       { path: "/lost-and-found", element: <LostFound /> },
       { path: "/profile", element: <UserProfile /> },
+      { path: "/messages", element: <Messages /> },
     ],
   },
 
