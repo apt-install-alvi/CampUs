@@ -18,7 +18,7 @@ interface InputProps
 export function InputField({label, placeholder, value, type, name, changeHandler, rightSlot, required=true}:InputProps)
 {
 	return (
-	<div className="flex flex-col relative w-full">
+	<div className="flex flex-col relative">
 		<label htmlFor={name} className="block text-text-lm text-md font-medium my-0">
 			{label}
 		</label>

@@ -96,7 +96,7 @@ export function Login2FA() {
 
         {/* Countdown */}
         {timeLeft > 0 ? (
-          <p className="text-stroke-peach">
+          <p className="text-accent-lm">
             OTP expires in {Math.floor(timeLeft / 60)}:
             {String(timeLeft % 60).padStart(2, "0")} minutes
           </p>
