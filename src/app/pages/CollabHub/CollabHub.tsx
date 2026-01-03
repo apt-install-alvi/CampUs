@@ -7,9 +7,10 @@ import {
 } from "../../../components/PostButtons";
 
 import { UserInfo } from "@/components/UserInfo";
-import { CategoryFilter} from "@/components/CategoryFilter";
-// Types
-type Category = "all" | "research" | "competition" | "project";
+import { CategoryFilter} from "@/components/Category_Events_CollabHub/CategoryFilter";
+import type { Category } from "@/components/Category_Events_CollabHub/Category";
+
+
 
 type CollabPost = {
   id: string;
@@ -62,6 +63,7 @@ const initialPosts: CollabPost[] = [
 export function CollabHub() {
   const [filter, setFilter] = useState<Category>("all");
   const categories: Category[] = ["all", "research", "competition", "project"];
+
 
   const filteredPosts = useMemo(() => {
     if (filter === "all") return initialPosts;

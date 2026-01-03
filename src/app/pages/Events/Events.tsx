@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import postImg from "@/assets/images/placeholderPostImg.png";
-import CategorySelection, { type CategoryKey } from "../../../components/CategorySelection";
+import { CategoryFilter } from "@/components/Category_Events_CollabHub/CategoryFilter";
+import type { Category } from "@/components/Category_Events_CollabHub/Category";
 import CreateEventModal from "./components/CreateEventModal";
 import EventPostDetail from "./components/EventPostDetail";
 import { PostBody } from "@/components/PostBody";
@@ -86,7 +87,7 @@ const initialPosts: EventPostType[] = [
 
 export function Events() {
   const [posts, setPosts] = useState<EventPostType[]>(initialPosts);
-  const [filter, setFilter] = useState<CategoryKey>("all");
+  const [filter, setFilter] = useState<Category>("all");
   const [modalOpen, setModalOpen] = useState(false);
 
   // selected post for detail view
@@ -114,13 +115,9 @@ export function Events() {
 
   return (
     <div className="min-h-screen bg-background-lm">
-      <div className="mx-auto max-w-7xl px-4 py-10">
-        <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-12 lg:col-span-3">
-            <CategorySelection value={filter} onChange={setFilter} />
-          </div>
-
-          <div className="col-span-12 lg:col-span-9">
+      <div className="flex gap-10 h-full w-full p-10">
+          {/* LEFT: Posts */}
+          <div className="flex flex-col gap-10 h-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey flex-1">
             <div className="rounded-xl bg-secondary-lm border border-stroke-grey p-4">
               <button
                 onClick={() => setModalOpen(true)}
@@ -134,50 +131,61 @@ export function Events() {
               {selectedPost ? (
                 <EventPostDetail post={selectedPost} onBack={closeDetail} />
               ) : (
-                <div className="flex flex-col gap-10 h-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey">
-                  {filtered.map((p) => {
-                        const content = {
-                          text: p.excerpt ?? p.body ?? "",
-                          img: p.image ?? undefined,
-                        };
+                <div className="flex flex-col gap-10 h-full">
+                  {filtered.length === 0 ? (
+                    <div className="flex items-center justify-center min-h-50">
+                      <p className="text-text-lighter-lm text-lg">
+                        No posts in this category
+                      </p>
+                    </div>
+                  ) : (
+                    filtered.map((p) => {
+                      const content = {
+                        text: p.excerpt ?? p.body ?? "",
+                        img: p.image ?? undefined,
+                      };
 
-                        const user = {
-                          name: p.author,
-                          batch: p.dept ?? "",
-                          imgURL: "/default-user.png", // fallback if no author image
-                        };
+                      const user = {
+                        name: p.author,
+                        batch: p.dept ?? "",
+                        imgURL: "/default-user.png",
+                      };
 
-                        return (
-                          <div
-                            key={p.id}
-                            onClick={() => openDetail(p)}
-                            className="cursor-pointer flex flex-col gap-4"
-                          >
-                            <PostBody
-                              title={p.title}
-                              user={user}
-                              content={content}
-                              tags={p.tags}
-                              category={p.category}
-                            />
-
-                            {/* Engagement buttons from your EventPostButtons */}
-                            <div className="flex gap-3">
-                              <LikeButton />
-                              <CommentButton />
-                              <ShareButton />
-                            </div>
+                      return (
+                        <div
+                          key={p.id}
+                          onClick={() => openDetail(p)}
+                          className="cursor-pointer flex flex-col gap-4"
+                        >
+                          <PostBody
+                            title={p.title}
+                            user={user}
+                            content={content}
+                            tags={p.tags}
+                            category={p.category}
+                          />
+                          <div className="flex gap-3">
+                            <LikeButton />
+                            <CommentButton />
+                            <ShareButton />
                           </div>
-                        );
-                      })}
-
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
               )}
             </div>
-
           </div>
+
+          {/* RIGHT: Categories */}
+          <CategoryFilter
+            categories={["all", "workshop", "seminar", "course", "competition"]}
+            selected={filter}
+            onChange={setFilter}
+          />
         </div>
-      </div>
+
 
       <CreateEventModal
         open={modalOpen}

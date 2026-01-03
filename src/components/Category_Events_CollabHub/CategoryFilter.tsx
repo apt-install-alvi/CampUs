@@ -1,12 +1,20 @@
 import React from "react";
 
-export type Category = "all" | "research" | "competition" | "project";
+import type { Category } from "./Category.tsx";
 
 interface CategoryFilterProps {
   categories: Category[];
   selected: Category;
-  onChange: (cat: Category) => void;
+  onChange: React.Dispatch<React.SetStateAction<Category>>;
 }
+
+
+interface CategoryFilterProps {
+  categories: Category[];
+  selected: Category;
+  onChange: React.Dispatch<React.SetStateAction<Category>>;
+}
+
 
 export function CategoryFilter({ categories, selected, onChange }: CategoryFilterProps) {
   return (
