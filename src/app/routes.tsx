@@ -38,7 +38,7 @@ export const router = createBrowserRouter([
     element: <Layout />,
     errorElement: <NotFound />,
     children: [
-      { path: "/home", element: <Home /> },
+      { path: "/home", element: <Home />},
       { path: "/collab", element: <CollabHub /> },
       { path: "/events", element: <Events /> },
       { path: "/qna", element: <QnA /> },
@@ -49,11 +49,13 @@ export const router = createBrowserRouter([
           { index: true, element: <Navigate to="notes" replace /> },
           { path: "notes", element: <Notes /> },
           { path: "resources", element: <Resources /> },
+          { path: "*", element: <NotFound /> }
         ],
       },
       { path: "/lost-and-found", element: <LostFound /> },
       { path: "/profile", element: <UserProfile /> },
       { path: "/messages", element: <Messaging /> },
+      { path: "*", element: <NotFound /> }
     ],
   },
 
