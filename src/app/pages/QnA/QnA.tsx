@@ -324,12 +324,23 @@ function PostCard({
       tabIndex={0}
       onClick={onOpenDetail}
       className="
+        relative
         bg-secondary-lm p-8 rounded-2xl
         border-2 border-stroke-grey
         hover:bg-hover-lm hover:border-stroke-peach
         transition cursor-pointer
       "
     >
+      <span
+      className={`
+        absolute top-4 right-4
+        px-3 py-1 text-m font-semibold rounded-full border
+        ${categoryStyles[post.category]}
+      `}
+    >
+      {post.category}
+    </span>
+
       {/* USER */}
       <UserInfo
         userImg={post.authorAvatar}
