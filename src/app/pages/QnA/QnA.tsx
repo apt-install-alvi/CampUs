@@ -50,9 +50,9 @@ const initialMockPosts: Post[] = [
       "Hello! I recently decided to write a research paper inspired by my seniors. My interests include cybersecurity and AI, but I’m a newbie. I tried learning about Machine Learning, Pattern Recognition, LLMs and other jargon but it's all still very confusing to me. Like it just straight up flies over my head. As for cybersecurity, I find OSINT problems fun to solve, but Web Hacking is my absolute weak spot. Can anyone guide me?",
     category: "Advice",
     tags: ["Research", "Academic"],
-    reactions: 54,
-    comments: 33,
-    shares: 1,
+    reactions:0,
+    comments:3,
+    shares:1,
     timestamp: "2 days ago",
   },
   {
@@ -65,9 +65,9 @@ const initialMockPosts: Post[] = [
       "I want to start a deep fake detection project for my final year. Any suggestions?",
     category: "Question",
     tags: ["AI", "Project"],
-    reactions: 42,
-    comments: 18,
-    shares: 3,
+    reactions: 0,
+    comments: 3,
+    shares: 1,
     timestamp: "3 days ago",
   },
 ];
@@ -145,11 +145,15 @@ function QAPageContent() {
   // add an inline comment to a post (increments comment count)
   function addInlineComment(postId: string, commentText: string) {
     if (!commentText.trim()) return;
-    setPosts((prev) =>
-      prev.map((p) =>
+    // Update comments count, then open detail view with updated post
+    setPosts((prev) => {
+      const next = prev.map((p) =>
         p.id === postId ? { ...p, comments: p.comments + 1 } : p
-      )
-    );
+      );
+      const updated = next.find((p) => p.id === postId) || null;
+      setSelectedPost(updated);
+      return next;
+    });
   }
 
   return (
@@ -322,7 +326,10 @@ function PostCard({
     <div
       role="button"
       tabIndex={0}
-      onClick={onOpenDetail}
+      onClick={() => {
+        // Avoid navigating to detail while composing a reply
+        if (!replying) onOpenDetail();
+      }}
       className="
         relative
         bg-secondary-lm p-8 rounded-2xl
@@ -404,8 +411,7 @@ function PostCard({
         <button
           onClick={(e) => {
             e.stopPropagation();
-            setCollapsed(false);
-            setReplying(true);
+            onOpenDetail();
           }}
         >
           <CommentButton />
