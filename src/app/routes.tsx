@@ -8,7 +8,7 @@ import { Login } from "./pages/Registration/Login";
 import { Login2FA } from "./pages/Registration/Login2FA";
 import { Home } from "./pages/Home/Home";
 import { CollabHub } from "./pages/CollabHub/CollabHub";
-import { Events }  from "./pages/Events/Events";
+import { Events } from "./pages/Events/Events";
 import { QnA } from "./pages/QnA/QnA";
 import { Notes } from "./pages/Study/Notes";
 import { StudyLayout } from "./pages/Study/StudyLayout";
@@ -53,8 +53,8 @@ export const router = createBrowserRouter([
       },
       { path: "/lost-and-found", element: <LostFound /> },
       { path: "/profile", element: <UserProfile /> },
+      { path: "/profile/:userId", element: <UserProfile /> },
       { path: "/messages", element: <Messaging /> },
     ],
   },
-
 ]);
