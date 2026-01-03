@@ -52,7 +52,7 @@ const notesDB: Record<string, Note[]> = {
     {
       id: "n4",
       title: "Organic Chemistry",
-      uploadedBy: "Md Ariful Islam",
+      uploadedBy: "Than Than Thay",
       courseCode: "CHEM-101",
       uploadDate: "03/10/2023",
       uploadTime: "2:30pm",

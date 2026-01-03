@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { InputField } from "@/components/InputField";
 import crossBtn from "@/assets/icons/cross_btn.svg";
 import { ButtonCTA } from "@/components/ButtonCTA";
+import warningIcon from "@/assets/icons/warning_icon.png";
 
 interface NotesAddModalProps {
   onClose: () => void;
@@ -26,6 +27,24 @@ export function NotesAddModal({ onClose, onPost }: NotesAddModalProps) {
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  const [courseCodeError, setCourseCodeError] = useState("");
+
+  function handleCourseCodeChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value;
+
+    if (!/^\d*$/.test(value)) {
+      setCourseCodeError("Only numbers are allowed");
+      return;
+    } else if (value.length > 3) {
+      setCourseCodeError("Course code can have max 3 digits");
+      return;
+    } else {
+      setCourseCodeError("");
+    }
+
+    setCourseCode(value);
+  }
+
   /* Cleanup object URL when modal unmounts */
   useEffect(() => {
     return () => {
@@ -34,6 +53,8 @@ export function NotesAddModal({ onClose, onPost }: NotesAddModalProps) {
       }
     };
   }, [previewUrl]);
+
+
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const selectedFile = e.target.files?.[0];
@@ -100,7 +121,7 @@ export function NotesAddModal({ onClose, onPost }: NotesAddModalProps) {
           </button>
           </div>
 
-          <div className="mt-4 flex flex-col gap-3">
+          <div className="mt-4 flex flex-col gap-3" onFocusCapture={() => setCourseCodeError("")}>
             <InputField
               label="Title"
               name="title"
@@ -118,19 +139,22 @@ export function NotesAddModal({ onClose, onPost }: NotesAddModalProps) {
                 value={course}
                 changeHandler={(e) => setCourse(e.target.value)}
               />
-              <InputField
-              label="Course Code"
-              name="coursecode"
-              type="text"
-              placeholder="E.g: 101"
-              value={courseCode}
-              changeHandler={(e) => {
-                const value = e.target.value.replace(/\D/g, "");
-                if (value.length <= 3) {
-                  setCourseCode(value);
-                }
-               }}
-            ></InputField>
+             <div className="relative">
+                <InputField
+                  label="Course Code"
+                  name="coursecode"
+                  type="text"
+                  placeholder="E.g: 101"
+                  value={courseCode}
+                  changeHandler={handleCourseCodeChange}
+                />
+                {courseCodeError && (
+                  <span className=" flex items-start gap-x-0.5 absolute left-0 top-full mt-1 text-accent-lm text-sm bg-primary-lm px-2 py-0.5 rounded shadow-lg z-10 border border-stroke-grey">
+                    <img src={warningIcon} className="size-4"></img>
+                    {courseCodeError}
+                  </span>
+                )}
+              </div>
             </div>
 
 
