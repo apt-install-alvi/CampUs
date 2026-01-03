@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from "react";
 import postImg from "@/assets/images/placeholderPostImg.png";
-import CategorySelection, { type CategoryKey } from "../../../components/CategorySelection";
-import EventPost from "./components/EventPost";
+import { CategoryFilter } from "@/components/Category_Events_CollabHub/CategoryFilter";
+import type { Category } from "@/components/Category_Events_CollabHub/Category";
 import CreateEventModal from "./components/CreateEventModal";
 import EventPostDetail from "./components/EventPostDetail";
-
-
+import { PostBody } from "@/components/PostBody";
+import { placeholderUser } from "../../../lib/placeholderUser";
 type Segment = {
   id: string;
   name?: string;
@@ -83,10 +83,9 @@ const initialPosts: EventPostType[] = [
 
 export function Events() {
   const [posts, setPosts] = useState<EventPostType[]>(initialPosts);
-  const [filter, setFilter] = useState<CategoryKey>("all");
+  const [filter, setFilter] = useState<Category>("all");
   const [modalOpen, setModalOpen] = useState(false);
 
-  // selected post for detail view
   const [selectedPost, setSelectedPost] = useState<EventPostType | null>(null);
 
   const filtered = useMemo(() => {
@@ -98,10 +97,8 @@ export function Events() {
     setPosts((prev) => [post, ...prev]);
   }
 
-  // when user clicks a post: show detail
   function openDetail(post: EventPostType) {
     setSelectedPost(post);
-    // optionally scroll to top:
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -111,35 +108,76 @@ export function Events() {
 
   return (
     <div className="min-h-screen bg-background-lm">
-      <div className="mx-auto max-w-7xl px-4 py-10">
-        <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-12 lg:col-span-3">
-            <CategorySelection value={filter} onChange={setFilter} />
+      <div className="flex gap-10 h-full w-full p-10">
+        {/* LEFT: Posts */}
+        <div className="flex flex-col gap-10 h-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey">
+          <div className="rounded-xl bg-secondary-lm border border-stroke-grey p-4">
+            <button
+              onClick={() => setModalOpen(true)}
+              className="w-full rounded-md border border-stroke-grey bg-primary-lm px-4 py-3 text-left text-sm text-text-lighter-lm hover:bg-[#FFF4EE]"
+            >
+              Click to announce an event here
+            </button>
           </div>
 
-          <div className="col-span-12 lg:col-span-9">
-            <div className="rounded-xl bg-secondary-lm border border-stroke-grey p-4">
-              <button
-                onClick={() => setModalOpen(true)}
-                className="w-full rounded-md border border-stroke-grey bg-primary-lm px-4 py-3 text-left text-sm text-text-lighter-lm hover:bg-[#FFF4EE]"
-              >
-                Click to announce an event here
-              </button>
-            </div>
+          <div className="mt-6">
+            {selectedPost ? (
+              <EventPostDetail post={selectedPost} onBack={closeDetail} />
+            ) : (
+              <div className="flex flex-col gap-10 h-full w-full">
+                {filtered.length === 0 ? (
+                  <div className="flex items-center justify-center">
+                    <p className="text-text-lighter-lm text-lg">
+                      No posts in this category
+                    </p>
+                  </div>
+                ) : (
+                  filtered.map((p) => {
+                    const content = {
+                      text: p.excerpt ?? p.body ?? "",
+                      img: p.image ?? undefined,
+                    };
 
-            <div className="mt-6 space-y-6">
-              {selectedPost ? (
-                // Render the detail view
-                <EventPostDetail post={selectedPost} onBack={closeDetail} />
-              ) : (
-                // Render the feed
-                filtered.map((p) => (
-                  <EventPost key={p.id} post={p as any} onClick={() => openDetail(p)} />
-                ))
-              )}
-            </div>
+                    const user = {
+                          ...placeholderUser, 
+                          name: p.author,
+                          batch: p.dept ?? "Student",
+                        };
+
+
+                   return (
+                      <div
+                        key={p.id}
+                        onClick={() => openDetail(p)}
+                        className="cursor-pointer flex flex-col gap-4"
+                      >
+                        
+                        <PostBody
+                          title={p.title}
+                          content={content}
+                          user={user}
+                          tags={p.tags}
+                          category={p.category}
+                          
+                        />
+
+                      
+                      </div>
+                    );
+
+                  })
+                )}
+              </div>
+            )}
           </div>
         </div>
+
+        {/* RIGHT: Categories */}
+        <CategoryFilter
+          categories={["all", "workshop", "seminar", "course", "competition"]}
+          selected={filter}
+          onChange={setFilter}
+        />
       </div>
 
       <CreateEventModal

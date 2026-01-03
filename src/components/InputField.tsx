@@ -6,6 +6,9 @@ interface InputProps
 	name: string,
   placeholder?:string, 
 	type: string,
+ 
+  onPaste?: (e: React.ClipboardEvent<HTMLInputElement>) => void;
+  onCopy?: (e: React.ClipboardEvent<HTMLInputElement>) => void;
   value: string | number,
 	required?: boolean | undefined
   changeHandler?: ChangeEventHandler<HTMLInputElement>

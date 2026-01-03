@@ -23,6 +23,11 @@ export function Login() {
 
   navigate(targetPath);
 }
+  const [isFormValid, setIsFormValid] = useState(false);
+
+  React.useEffect(() => {
+    setIsFormValid(userId.trim() !== "" && password.trim() !== "");
+  }, [userId, password]);
 
 
   return (
@@ -41,8 +46,11 @@ export function Login() {
         <Password label="Password" value={password} onChange={setPassword}/>
 
         <div className="flex items-center gap-4 mt-10">
-          <button type="submit" className="px-6 py-2 rounded-lg font-medium bg-accent-lm text-primary-lm cursor-pointer hover:bg-hover-btn-lm transition">
-            Login
+          <button 
+            type="submit" 
+            disabled={!isFormValid}
+            className={`px-6 py-2 rounded-lg font-medium bg-accent-lm text-primary-lm cursor-pointer hover:bg-hover-btn-lm transition
+            ${!isFormValid ? "opacity-50 cursor-not-allowed" : ""}`}>
           </button>
 
           <p className="text-sm text-text-lighter-lm">
@@ -52,6 +60,11 @@ export function Login() {
             </Link>
           </p>
         </div>
+
+        {!isFormValid && (
+          <p className="text-accent-lm text-sm">All fields are required.</p>
+        )}
+
       </form>
     </SignupLoginBox>
   );

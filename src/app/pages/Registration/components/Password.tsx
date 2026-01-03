@@ -10,7 +10,7 @@ interface PasswordProps {
   onMatchChange?: (matches: boolean) => void;
 }
 
-const checkPasswordStrength = (password: string) => {
+export const checkPasswordStrength = (password: string) => {
   if (!password) return { score: 0, messages: [], strength: "" };
   
   let score:number = 0;
@@ -87,7 +87,8 @@ export function Password({
     <>
       {/* Password Input with Toggle */}
       <div className="relative">
-        <InputField
+       <InputField
+          name="password"
           label={label}
           type={showPassword ? "text" : "password"}
           value={value}
@@ -126,7 +127,7 @@ export function Password({
         ></InputField>
       </div>
 
-      {/* Password Strength Indicator */}
+       {/*Password strength*/}
       {showStrength && value && (
         <div className="mt-2 w-full">
           <div className="flex align-center gap-1 w-full text-sm mb-1">
@@ -147,7 +148,7 @@ export function Password({
             />
           </div>
           
-          {/* Requirements List */}
+          
           {passwordStrength.messages.length > 0 && (
             <p className="text-xs text-gray-600 mt-1">
               Requirements: {passwordStrength.messages.join(", ")}
@@ -156,7 +157,7 @@ export function Password({
         </div>
       )}
 
-      {/* Password Match Indicator (only when compareValue is provided) */}
+      {/* Password Match Indicator*/}
       {compareValue && value && (
         <p
           className={`text-sm mt-2 ${passwordsMatch ? "text-text-lighter-lm" : "text-accent-lm"}`}
