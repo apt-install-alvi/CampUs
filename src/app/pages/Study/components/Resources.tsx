@@ -1,5 +1,6 @@
 import { Link, useParams, useOutletContext } from "react-router";
 import { getResources, type ResourceItem } from "@/lib/studyMock";
+import { placeholderUser } from "@/lib/placeholderUser";
 import { useState } from "react";
 import { UserInfo } from "@/components/UserInfo";
 import { ResourceAddModal } from "./ResourcesAddModal";
@@ -44,7 +45,23 @@ export function Resources() {
         </div>
       </div>
 
-      {openModal && <ResourceAddModal onClose={() => setOpenModal(false)}></ResourceAddModal>}
+      {openModal && (
+        <ResourceAddModal
+          onClose={() => setOpenModal(false)}
+          onPost={(data) => {
+            const id = `r_${Date.now()}`;
+            const newResource = {
+              user: { name: placeholderUser.name, batch: placeholderUser.batch, imgURL: placeholderUser.imgURL },
+              title: data.title || "Untitled",
+              course: data.course && data.courseCode ? `${data.course}-${data.courseCode}` : data.courseCode || data.course || "",
+              resourceLink: data.resourceLink || "",
+            };
+
+            outlet?.addResource ? outlet.addResource(newResource) : null;
+            setOpenModal(false);
+          }}
+        ></ResourceAddModal>
+      )}
     </>
   );
 }

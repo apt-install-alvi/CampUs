@@ -5,6 +5,7 @@ import pdfIcon from "@/assets/images/pdfImage.svg";
 import { useParams, useOutletContext } from "react-router";
 
 import { getNotes, type Note } from "@/lib/studyMock";
+import { placeholderUser } from "@/lib/placeholderUser";
 import { ButtonCTA } from "@/components/ButtonCTA";
 import { useState } from "react";
 import { NotesAddModal } from "./NotesAddModal";
@@ -14,9 +15,6 @@ export function Notes() {
 
   const { level, term } = useParams();
   const baseNotes: Note[] = getNotes(level, term);
-
-
-  
   const outlet = useOutletContext<any>();
   const notes: Note[] = outlet?.filteredNotes ?? baseNotes;
 
@@ -39,7 +37,31 @@ export function Notes() {
         </div>
       </div>
 
-      {openAddModal && <NotesAddModal onClose={() => setOpenAddModal(false)}></NotesAddModal>}
+      {openAddModal && (
+        <NotesAddModal
+          onClose={() => setOpenAddModal(false)}
+          onPost={(data) => {
+            const id = `n_${Date.now()}`;
+            const now = new Date();
+            const newNote: Note = {
+              id,
+              title: data.title || "Untitled",
+              uploadedBy: placeholderUser.name,
+              courseCode:
+                data.course && data.courseCode
+                  ? `${data.course}-${data.courseCode}`
+                  : data.courseCode || data.course || "",
+              uploadDate: now.toLocaleDateString(),
+              uploadTime: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              fileLink: data.file ? URL.createObjectURL(data.file) : data.fileLink ?? "",
+            };
+
+            // call addNote from outlet context if provided, otherwise do nothing
+            outlet?.addNote ? outlet.addNote(newNote) : null;
+            setOpenAddModal(false);
+          }}
+        ></NotesAddModal>
+      )}
     </>
   );
 }

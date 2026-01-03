@@ -1,6 +1,6 @@
 import { NavLink, Outlet, useParams, useLocation } from "react-router";
 import { Sidebar } from "./components/Sidebar";
-import { getNotes, getResources } from "@/lib/studyMock";
+import { getNotes, getResources, type Note, type ResourceItem } from "@/lib/studyMock";
 import { useMemo, useState, useEffect } from "react";
 import { placeholderUser } from "@/lib/placeholderUser";
 
@@ -11,8 +11,8 @@ export function StudyLayout() {
   const notesPath = `/study/${level}/${term}/notes`;
   const resourcesPath = `/study/${level}/${term}/resources`;
   
-  const notes = getNotes(level, term);
-  const resources = getResources(level, term);
+  const [notes, setNotes] = useState<Note[]>(() => getNotes(level, term));
+  const [resources, setResources] = useState<ResourceItem[]>(() => getResources(level, term));
   const location = useLocation();
   const viewingResources = location.pathname.includes("/resources");
 
@@ -23,6 +23,9 @@ export function StudyLayout() {
     // Reset filters when navigating to a different level/term
     setSelectedCourse(null);
     setSelectedUploader(null);
+    // reload base data for new level/term
+    setNotes(getNotes(level, term));
+    setResources(getResources(level, term));
   }, [level, term]);
 
   const courses = useMemo(() => {
@@ -52,6 +55,14 @@ export function StudyLayout() {
       return courseMatch && uploaderMatch;
     });
   }, [resources, selectedCourse, selectedUploader]);
+
+  function addNote(n: Note) {
+    setNotes((prev) => [n, ...prev]);
+  }
+
+  function addResource(r: ResourceItem) {
+    setResources((prev) => [r, ...prev]);
+  }
   
   return(
     <main className="w-full h-screen flex">
@@ -104,7 +115,7 @@ export function StudyLayout() {
                     setSelectedCourse(null);
                     setSelectedUploader(null);
                   }}
-                  className="ml-2 px-3 py-1 rounded bg-secondary-lm text-text-lm border border-stroke-grey"
+                  className="ml-2 px-3 py-1 rounded bg-secondary-lm text-accent-lm border border-stroke-grey cursor-pointer hover:bg-stroke-grey transition"
                 >
                   Reset
                 </button>
@@ -119,6 +130,8 @@ export function StudyLayout() {
             baseNotes: notes,
             baseResources: resources,
             viewingResources,
+            addNote,
+            addResource,
           }} />
         </div>
       </div>

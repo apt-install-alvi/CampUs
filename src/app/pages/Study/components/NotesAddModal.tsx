@@ -10,6 +10,7 @@ interface NotesAddModalProps {
     course: string;
     courseCode: string;
     file: File | null;
+    fileLink?: string | null;
   }) => void;
 }
 
@@ -65,6 +66,7 @@ export function NotesAddModal({ onClose, onPost }: NotesAddModalProps) {
       course,
       courseCode,
       file,
+      fileLink: previewUrl ?? null,
     });
 
     onClose();
