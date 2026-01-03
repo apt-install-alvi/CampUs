@@ -1,6 +1,3 @@
-// src/components/CategorySelection.tsx
-import React from "react";
-
 export type CategoryKey = "all" | "workshop" | "seminar" | "course" | "competition";
 
 interface Props {
