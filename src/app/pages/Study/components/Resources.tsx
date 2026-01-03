@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router";
+import { Link, useParams, useOutletContext } from "react-router";
 import { getResources, type ResourceItem } from "@/lib/studyMock";
 import { useState } from "react";
 import { UserInfo } from "@/components/UserInfo";
@@ -6,7 +6,9 @@ import { ResourceAddModal } from "./ResourcesAddModal";
 
 export function Resources() {
   const { level, term } = useParams();
-  const resources = getResources(level, term);
+  const baseResources = getResources(level, term);
+  const outlet = useOutletContext<any>();
+  const resources = outlet?.filteredResources ?? baseResources;
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -20,7 +22,12 @@ export function Resources() {
         </button>
         <div className="w-full h-fit">
           {resources.length === 0 ? (
-            <h5 className="text-text-lighter-lm">No resources for this term yet</h5>
+            // if filtering produced no results but base has items, show "Nothing found"
+            outlet && outlet.baseResources && outlet.baseResources.length > 0 ? (
+              <h5 className="text-text-lighter-lm">Nothing found</h5>
+            ) : (
+              <h5 className="text-text-lighter-lm">No resources for this term yet</h5>
+            )
           ) : (
             <div className="space-y-4">
               {resources.map((r: ResourceItem) => (

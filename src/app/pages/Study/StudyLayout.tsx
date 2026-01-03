@@ -1,7 +1,7 @@
 import { NavLink, Outlet, useParams, useLocation } from "react-router";
 import { Sidebar } from "./components/Sidebar";
 import { getNotes, getResources } from "@/lib/studyMock";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { placeholderUser } from "@/lib/placeholderUser";
 
 export function StudyLayout() {
@@ -16,6 +16,15 @@ export function StudyLayout() {
   const location = useLocation();
   const viewingResources = location.pathname.includes("/resources");
 
+  const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
+  const [selectedUploader, setSelectedUploader] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Reset filters when navigating to a different level/term
+    setSelectedCourse(null);
+    setSelectedUploader(null);
+  }, [level, term]);
+
   const courses = useMemo(() => {
     return viewingResources
       ? Array.from(new Set(resources.map((r) => r.course)))
@@ -27,6 +36,22 @@ export function StudyLayout() {
       ? Array.from(new Set(resources.map((r) => r.user.name)))
       : Array.from(new Set(notes.map((n) => n.uploadedBy)));
   }, [viewingResources, resources, notes]);
+
+  const filteredNotes = useMemo(() => {
+    return notes.filter((n) => {
+      const courseMatch = selectedCourse ? n.courseCode === selectedCourse : true;
+      const uploaderMatch = selectedUploader ? n.uploadedBy === selectedUploader : true;
+      return courseMatch && uploaderMatch;
+    });
+  }, [notes, selectedCourse, selectedUploader]);
+
+  const filteredResources = useMemo(() => {
+    return resources.filter((r) => {
+      const courseMatch = selectedCourse ? r.course === selectedCourse : true;
+      const uploaderMatch = selectedUploader ? r.user.name === selectedUploader : true;
+      return courseMatch && uploaderMatch;
+    });
+  }, [resources, selectedCourse, selectedUploader]);
   
   return(
     <main className="w-full h-screen flex">
@@ -44,7 +69,8 @@ export function StudyLayout() {
                 <select
                   name="course"
                   id="course"
-                  defaultValue={"Course"}
+                  value={selectedCourse ?? "Course"}
+                  onChange={(e) => setSelectedCourse(e.target.value === "Course" ? null : e.target.value)}
                   className="bg-primary-lm border border-stroke-grey rounded-sm px-2 py-0.5 text-stroke-peach focus:border focus:border-stroke-peach"
                 >
                   <option value={"Course"} disabled>
@@ -60,7 +86,8 @@ export function StudyLayout() {
                 <select
                   name="uploadedby"
                   id="uploadedby"
-                  defaultValue={"Uploaded by"}
+                  value={selectedUploader ?? "Uploaded by"}
+                  onChange={(e) => setSelectedUploader(e.target.value === "Uploaded by" ? null : e.target.value)}
                   className="bg-primary-lm border border-stroke-grey rounded-sm px-2 py-0.5 text-stroke-peach"
                 >
                   <option value={"Uploaded by"} disabled>
@@ -72,12 +99,27 @@ export function StudyLayout() {
                     </option>
                   ))}
                 </select>
+                <button
+                  onClick={() => {
+                    setSelectedCourse(null);
+                    setSelectedUploader(null);
+                  }}
+                  className="ml-2 px-3 py-1 rounded bg-secondary-lm text-text-lm border border-stroke-grey"
+                >
+                  Reset
+                </button>
               </>
             );
           })()}
         </div>
         <div className="flex flex-col items-center">
-          <Outlet />
+          <Outlet context={{
+            filteredNotes,
+            filteredResources,
+            baseNotes: notes,
+            baseResources: resources,
+            viewingResources,
+          }} />
         </div>
       </div>
     </main>

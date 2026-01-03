@@ -1,5 +1,8 @@
-import fallbackImg from "@/assets/images/fallbackImage.png";
-import { useParams } from "react-router";
+import imgIcon from "@/assets/images/fallbackImage.svg";
+import docIcon from "@/assets/images/docsImg.svg";
+import pdfIcon from "@/assets/images/pdfImage.svg";
+
+import { useParams, useOutletContext } from "react-router";
 
 import { getNotes, type Note } from "@/lib/studyMock";
 import { ButtonCTA } from "@/components/ButtonCTA";
@@ -10,9 +13,18 @@ export function Notes() {
   const [openAddModal, setOpenAddModal]=useState(false);
 
   const { level, term } = useParams();
-  const notes: Note[] = getNotes(level, term);
+  const baseNotes: Note[] = getNotes(level, term);
+
+
+  
+  const outlet = useOutletContext<any>();
+  const notes: Note[] = outlet?.filteredNotes ?? baseNotes;
 
   if (!notes.length) {
+    // if filtering produced no results but base has items, show "Nothing found"
+    if (outlet && outlet.baseNotes && outlet.baseNotes.length > 0) {
+      return <h5 className="mt-10 text-text-lighter-lm ">Nothing found</h5>;
+    }
     return <h5 className="mt-10 text-text-lighter-lm ">No notes for this term yet.</h5>;
   }
 
@@ -32,11 +44,22 @@ export function Notes() {
   );
 }
 
-function NoteItem({ previewImage, title, uploadedBy, courseCode, uploadDate, uploadTime, fileLink }: Note) {
+
+function NoteItem({title, uploadedBy, courseCode, uploadDate, uploadTime, fileLink }: Note) {
+  const extension = fileLink.split(".").pop()?.toLowerCase();
+  let previewImage: string = imgIcon;
+
+  if (extension === "jpg" || extension === "jpeg" || extension === "png" || extension === "webp" || extension === "svg")
+    previewImage = imgIcon;
+  else if(extension === "doc" || extension === "docx")
+    previewImage = docIcon;
+  else if (extension === "pdf")
+    previewImage = pdfIcon;
+
   return (
     <a href={fileLink} target="_blank" rel="noopener noreferrer">
       <div className="flex flex-col w-70 h-90 rounded-xl bg-primary-lm hover:scale-102 transition duration-300 hover:drop-shadow-lg">
-        <img src={previewImage || fallbackImg} className="object-cover w-full h-2/3 rounded-t-xl rounded-tl-xl" alt={title} />
+        <img src={previewImage} className="object-center object-contain w-full h-2/3 rounded-t-xl rounded-tl-xl" alt={title} />
         <div className="h-full w-full px-5 py-4 bg-linear-to-t from-[#DFE1E5] from-30% via-[#C3A99761] via-100% rounded-b-xl rounded-bl-xl">
           <p className="text-text-lm font-semibold text-md">{title}_{courseCode}</p>
           <p className="text-text-lm font-medium text-base">{uploadedBy}</p>
