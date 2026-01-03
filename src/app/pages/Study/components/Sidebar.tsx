@@ -24,7 +24,7 @@ function LevelButton({level, term}:{level:number, term: number})
 {
   return (
     <NavLink
-      to={`/study/${level}-${term}`}
+      to={`/study/${level}/${term}`}
       className={({ isActive }) => [
         "px-3 py-3 w-full rounded-lg text-md font-medium",
         isActive?

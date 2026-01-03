@@ -75,7 +75,7 @@ const initialMockPosts: Post[] = [
   },
 ];
 
-export default function QnA() {
+export function QnA() {
   return (
     <Suspense fallback={null}>
       <QAPageContent />

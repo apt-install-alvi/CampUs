@@ -8,9 +8,11 @@ import { Login } from "./pages/Registration/Login";
 import { Login2FA } from "./pages/Registration/Login2FA";
 import { Home } from "./pages/Home/Home";
 import { CollabHub } from "./pages/CollabHub/CollabHub";
-import  Events  from "./pages/Events/Events";
-import QnA from "./pages/QnA/QnA";
-import { Study } from "./pages/Study/Study";
+import { Events }  from "./pages/Events/Events";
+import { QnA } from "./pages/QnA/QnA";
+import { Notes } from "./pages/Study/Notes";
+import { StudyLayout } from "./pages/Study/StudyLayout";
+import { Resources } from "./pages/Study/Resources";
 import { LostFound } from "./pages/LostAndFound/LostFound";
 import { UserProfile } from "./pages/UserProfile/UserProfile";
 import { NotFound } from "./pages/Error_NotFound";
@@ -25,7 +27,7 @@ export const router = createBrowserRouter([
     errorElement: <NotFound />, // handle login errors
   },
   {
-    path: "/login/2fa/:userId",
+    path: "/login/2fa/:userId", //should not be able to access without going through login first!!
     element: <Login2FA />,
     errorElement: <NotFound />,
   },
@@ -39,12 +41,18 @@ export const router = createBrowserRouter([
       { path: "/collab", element: <CollabHub /> },
       { path: "/events", element: <Events /> },
       { path: "/qna", element: <QnA /> },
-      { path: "/study", element: <Study /> },
+      {
+        path: "/study/:level/:term",
+        element: <StudyLayout />,
+        children: [
+          { index: true, element: <Navigate to="notes" replace /> },
+          { path: "notes", element: <Notes /> },
+          { path: "resources", element: <Resources /> },
+        ],
+      },
       { path: "/lost-and-found", element: <LostFound /> },
       { path: "/profile", element: <UserProfile /> },
     ],
   },
 
-  // Catch-all route
-  { path: "*", element: <NotFound /> },
 ]);
