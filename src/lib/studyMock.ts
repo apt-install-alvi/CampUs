@@ -15,6 +15,7 @@ export interface Note {
   uploadDate: string;
   uploadTime: string;
   fileLink: string;
+  fileName?: string;
 }
 
 const notesDB: Record<string, Note[]> = {

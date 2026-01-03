@@ -22,6 +22,7 @@ export function NotesAddModal({ onClose, onPost }: NotesAddModalProps) {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [fileRequiredError, setFileRequiredError] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -44,6 +45,7 @@ export function NotesAddModal({ onClose, onPost }: NotesAddModalProps) {
 
     setFile(selectedFile);
     setPreviewUrl(URL.createObjectURL(selectedFile));
+    setFileRequiredError("");
   }
 
   function removeFile() {
@@ -60,6 +62,12 @@ export function NotesAddModal({ onClose, onPost }: NotesAddModalProps) {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    // Require a file to be uploaded before allowing post
+    if (!file && !previewUrl) {
+      setFileRequiredError("Please upload a file before posting");
+      return;
+    }
 
     onPost?.({
       title,
@@ -186,12 +194,20 @@ export function NotesAddModal({ onClose, onPost }: NotesAddModalProps) {
 
             {/* Submit */}
             <div className="flex justify-end mt-4">
-              <button
-                type="submit"
-                className="px-6 py-2 rounded-lg bg-accent-lm text-primary-lm hover:bg-hover-btn-lm transition"
-              >
-                Post
-              </button>
+              <div className="relative">
+                <button
+                  type="submit"
+                  disabled={!file && !previewUrl}
+                  className="px-6 py-2 rounded-lg bg-accent-lm text-primary-lm hover:bg-hover-btn-lm transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Post
+                </button>
+                {fileRequiredError && (
+                  <span className="absolute right-0 -top-8 bg-primary-lm text-accent-lm text-sm px-2 py-1 rounded shadow z-20 border border-stroke-grey">
+                    {fileRequiredError}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </form>

@@ -54,6 +54,7 @@ export function Notes() {
               uploadDate: now.toLocaleDateString(),
               uploadTime: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
               fileLink: data.file ? URL.createObjectURL(data.file) : data.fileLink ?? "",
+              fileName: data.file?.name ?? (data.fileLink ? data.fileLink.split("/").pop() : undefined),
             };
 
             // call addNote from outlet context if provided, otherwise do nothing
@@ -67,8 +68,9 @@ export function Notes() {
 }
 
 
-function NoteItem({title, uploadedBy, courseCode, uploadDate, uploadTime, fileLink }: Note) {
-  const extension = fileLink.split(".").pop()?.toLowerCase();
+function NoteItem({title, uploadedBy, courseCode, uploadDate, uploadTime, fileLink, fileName }: Note) {
+  const getExt = (s?: string) => s ? s.split(/[?#]/)[0].split('.').pop()?.toLowerCase() : undefined;
+  const extension = getExt(fileName) ?? getExt(fileLink);
   let previewImage: string = imgIcon;
 
   if (extension === "jpg" || extension === "jpeg" || extension === "png" || extension === "webp" || extension === "svg")
