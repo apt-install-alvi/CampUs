@@ -6,10 +6,7 @@ import CreateEventModal from "./components/CreateEventModal";
 import EventPostDetail from "./components/EventPostDetail";
 import { PostBody } from "@/components/PostBody";
 import { LikeButton, CommentButton, ShareButton } from "@/components/PostButtons";
-
-
-
-
+import { placeholderUser } from "../../../lib/placeholderUser";
 type Segment = {
   id: string;
   name?: string;
@@ -90,7 +87,6 @@ export function Events() {
   const [filter, setFilter] = useState<Category>("all");
   const [modalOpen, setModalOpen] = useState(false);
 
-  // selected post for detail view
   const [selectedPost, setSelectedPost] = useState<EventPostType | null>(null);
 
   const filtered = useMemo(() => {
@@ -102,10 +98,8 @@ export function Events() {
     setPosts((prev) => [post, ...prev]);
   }
 
-  // when user clicks a post: show detail
   function openDetail(post: EventPostType) {
     setSelectedPost(post);
-    // optionally scroll to top:
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -116,76 +110,75 @@ export function Events() {
   return (
     <div className="min-h-screen bg-background-lm">
       <div className="flex gap-10 h-full w-full p-10">
-          {/* LEFT: Posts */}
-          <div className="flex flex-col gap-10 h-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey flex-1">
-            <div className="rounded-xl bg-secondary-lm border border-stroke-grey p-4">
-              <button
-                onClick={() => setModalOpen(true)}
-                className="w-full rounded-md border border-stroke-grey bg-primary-lm px-4 py-3 text-left text-sm text-text-lighter-lm hover:bg-[#FFF4EE]"
-              >
-                Click to announce an event here
-              </button>
-            </div>
-
-            <div className="mt-6">
-              {selectedPost ? (
-                <EventPostDetail post={selectedPost} onBack={closeDetail} />
-              ) : (
-                <div className="flex flex-col gap-10 h-full">
-                  {filtered.length === 0 ? (
-                    <div className="flex items-center justify-center min-h-50">
-                      <p className="text-text-lighter-lm text-lg">
-                        No posts in this category
-                      </p>
-                    </div>
-                  ) : (
-                    filtered.map((p) => {
-                      const content = {
-                        text: p.excerpt ?? p.body ?? "",
-                        img: p.image ?? undefined,
-                      };
-
-                      const user = {
-                        name: p.author,
-                        batch: p.dept ?? "",
-                        imgURL: "/default-user.png",
-                      };
-
-                      return (
-                        <div
-                          key={p.id}
-                          onClick={() => openDetail(p)}
-                          className="cursor-pointer flex flex-col gap-4"
-                        >
-                          <PostBody
-                            title={p.title}
-                            user={user}
-                            content={content}
-                            tags={p.tags}
-                            category={p.category}
-                          />
-                          <div className="flex gap-3">
-                            <LikeButton />
-                            <CommentButton />
-                            <ShareButton />
-                          </div>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
-              )}
-            </div>
+        {/* LEFT: Posts */}
+        <div className="flex flex-col gap-10 h-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey">
+          <div className="rounded-xl bg-secondary-lm border border-stroke-grey p-4">
+            <button
+              onClick={() => setModalOpen(true)}
+              className="w-full rounded-md border border-stroke-grey bg-primary-lm px-4 py-3 text-left text-sm text-text-lighter-lm hover:bg-[#FFF4EE]"
+            >
+              Click to announce an event here
+            </button>
           </div>
 
-          {/* RIGHT: Categories */}
-          <CategoryFilter
-            categories={["all", "workshop", "seminar", "course", "competition"]}
-            selected={filter}
-            onChange={setFilter}
-          />
+          <div className="mt-6">
+            {selectedPost ? (
+              <EventPostDetail post={selectedPost} onBack={closeDetail} />
+            ) : (
+              <div className="flex flex-col gap-10 h-full w-full">
+                {filtered.length === 0 ? (
+                  <div className="flex items-center justify-center">
+                    <p className="text-text-lighter-lm text-lg">
+                      No posts in this category
+                    </p>
+                  </div>
+                ) : (
+                  filtered.map((p) => {
+                    const content = {
+                      text: p.excerpt ?? p.body ?? "",
+                      img: p.image ?? undefined,
+                    };
+
+                    const user = {
+                          ...placeholderUser, // start with the placeholder avatar
+                          name: p.author,
+                          batch: p.dept ?? "Student",
+                        };
+
+
+                   return (
+                      <div
+                        key={p.id}
+                        onClick={() => openDetail(p)}
+                        className="cursor-pointer flex flex-col gap-4"
+                      >
+                        {/* Post Body with user included */}
+                        <PostBody
+                          title={p.title}
+                          content={content}
+                          user={user}
+                          tags={p.tags}
+                          category={p.category}
+                        />
+
+                      
+                      </div>
+                    );
+
+                  })
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
+        {/* RIGHT: Categories */}
+        <CategoryFilter
+          categories={["all", "workshop", "seminar", "course", "competition"]}
+          selected={filter}
+          onChange={setFilter}
+        />
+      </div>
 
       <CreateEventModal
         open={modalOpen}

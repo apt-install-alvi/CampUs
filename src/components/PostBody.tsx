@@ -67,12 +67,16 @@ export function PostBody({ title, user, content, tags, category }: PostContent)
         userImg={user.imgURL}
       ></UserInfo>
       <p>{content.text}</p>
-      <div className="w-full h-120 overflow-hidden">
-        {content.img &&
-          <img src={content.img} className="object-cover object-center w-full h-full"
+      {content.img && (
+        <div className="w-full h-120 overflow-hidden mt-4">
+          <img
+            src={content.img}
+            alt="post"
+            className="object-cover object-center w-full h-full rounded-lg"
           />
-      }
-      </div>
+        </div>
+      )}
+
       <div className="flex gap-3 justify-start">
         <LikeButton />
         <CommentButton />
