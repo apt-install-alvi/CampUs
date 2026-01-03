@@ -5,15 +5,12 @@ import {
   CommentButton,
   ShareButton,
 } from "../../../components/PostButtons";
-import {
-  addInterested,
-  removeInterested,
-  getInterested,
-  subscribe,
-} from "../UserProfile/backend/interestedStore";
 
-// Types
-type Category = "all" | "research" | "competition" | "project";
+import { UserInfo } from "@/components/UserInfo";
+import { CategoryFilter} from "@/components/Category_Events_CollabHub/CategoryFilter";
+import type { Category } from "@/components/Category_Events_CollabHub/Category";
+import CreateCollabPost from "./components/CreateCollabPost";
+
 
 type CollabPost = {
   id: string;
@@ -63,150 +60,96 @@ const initialPosts: CollabPost[] = [
   },
 ];
 
-export function CollabHub() {
+
+  export function CollabHub() {
+  const [posts, setPosts] = useState<CollabPost[]>(initialPosts);
   const [filter, setFilter] = useState<Category>("all");
+  const [modalOpen, setModalOpen] = useState(false);
+
   const categories: Category[] = ["all", "research", "competition", "project"];
 
   const filteredPosts = useMemo(() => {
-    if (filter === "all") return initialPosts;
-    return initialPosts.filter((p) => p.category === filter);
-  }, [filter]);
-
-  // Track which posts are currently marked interested
-  const [interestedIds, setInterestedIds] = useState<Set<string>>(
-    () => new Set(getInterested().map((i) => i.id))
-  );
-
-  // Keep local state in sync with store changes
-  useEffect(() => {
-    const unsub = subscribe((items) => {
-      setInterestedIds(new Set(items.map((i) => i.id)));
-    });
-    return unsub;
-  }, []);
-
-  const handleInterestedToggle = (p: CollabPost) => {
-    if (interestedIds.has(p.id)) {
-      // Remove if already interested
-      removeInterested(p.id);
-      return;
-    }
-    // Add if not yet interested
-    addInterested({
-      id: p.id,
-      title: p.title,
-      category: p.category,
-      tags: p.tags,
-      userName: p.user.name,
-      content: p.content,
-      createdAt: Date.now(),
-    });
-  };
+    if (filter === "all") return posts;
+    return posts.filter((p) => p.category === filter);
+  }, [filter, posts]);
 
   return (
-    <div className="flex gap-10 h-full w-full p-10 bg-white">
-      {/* LEFT: Categories */}
-      <div className="flex flex-col gap-4 w-48 h-fit bg-primary-lm p-4 rounded-2xl border-2 border-stroke-grey">
-        <h6 className="font-[Poppins] font-semibold text-text-lm mb-2">
-          Categories
-        </h6>
-        {categories.map((cat) => (
+    <div className="flex gap-10 h-full w-full p-10 bg-background-lm">
+      {/* LEFT: Posts */}
+      <div className="flex-1">
+        <div className="flex flex-col gap-10 h-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey">
+          {/* Announce collaboration */}
           <button
-            key={cat}
-            onClick={() => setFilter(cat)}
-            className={`text-left px-3 py-2 rounded-lg font-medium transition-colors duration-200 ${
-              filter === cat
-                ? "bg-[#C23D00] text-[#FFFFFF]"
-                : "hover:bg-secondary-lm text-text-lighter-lm"
-            }`}
+            onClick={() => setModalOpen(true)}
+            className="w-full rounded-md border border-stroke-grey bg-secondary-lm px-4 py-3 text-left text-sm text-accent-lm hover:bg-hover-lm transition "
           >
-            {cat.charAt(0).toUpperCase() + cat.slice(1)}
+            Click to post a collaboration post here.
           </button>
-        ))}
-      </div>
 
-      {/* RIGHT: Posts */}
-      <div className="flex flex-col gap-10 flex-1">
-        <div className="flex flex-col gap-10">
+          {/* Posts */}
           {filteredPosts.length === 0 ? (
-            <div className="bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey flex items-center justify-center min-h-50">
+            <div className="flex items-center justify-center min-h-50 border-stroke-grey">
               <p className="text-text-lighter-lm text-lg">
                 No posts in this category
               </p>
             </div>
           ) : (
             filteredPosts.map((p) => (
-              <div
-                key={p.id}
-                className="bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey flex flex-col gap-6"
-              >
-                {/* User Info - EXACTLY LIKE HOME PAGE */}
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="relative">
-                    <img
-                      src={p.user.imgURL}
-                      alt={p.user.name}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                    {/* Online status indicator - same as Home page */}
-                    <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="font-semibold text-text-lm text-base">
-                      {p.user.name}
-                    </span>
-                    <span className="text-text-lighter-lm text-sm">
-                      2 days ago • {p.user.batch || "Student"}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Post Title */}
+     
+              <div key={p.id} className="bg-secondary-lm p-8 rounded-xl border border-stroke-grey hover:bg-hover-lm transition border-2 border-stroke-grey hover:border-stroke-peach p-8 rounded-2xl">
+                <UserInfo
+                  userImg={p.user.imgURL}
+                  userName={p.user.name}
+                  userBatch={p.user.batch || "Student"}
+                />
                 <h3 className="font-[Poppins] font-semibold text-xl text-text-lm">
                   {p.title}
                 </h3>
-
-                {/* Post Content */}
                 <p className="text-text-lighter-lm text-lg leading-relaxed">
                   {p.content}
                 </p>
-
-                {/* Tags */}
                 <div className="flex gap-2 flex-wrap">
                   {p.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="font-bold bg-[#C23D00] text-[#FFFFFF] px-3 py-1.5 rounded-full text-sm"
-                    >
+                    <span key={tag} className="font-bold bg-[#C23D00] text-[#FFFFFF] px-3 py-1.5 rounded-full text-sm">
                       {tag}
                     </span>
                   ))}
                 </div>
-
-                {/* Interaction Buttons */}
                 <div className="flex gap-4 items-center mt-2">
                   <LikeButton />
                   <CommentButton />
                   <ShareButton />
-                  <button
-                    onClick={() => handleInterestedToggle(p)} // toggle interested state
-                    className={
-                      `ml-auto px-4 py-2 rounded-full font-medium transition-colors duration-200 ` +
-                      (interestedIds.has(p.id)
-                        ? "bg-[#C23D00] text-[#FFFFFF] border border-[#C23D00] hover:opacity-90"
-                        : "border border-[#C23D00] text-[#C23D00] hover:bg-[#C23D00] hover:text-[#FFFFFF]")
-                    }
-                    aria-label="Toggle interested"
-                    aria-pressed={interestedIds.has(p.id)}
-                  >
-                    Interested
-                  </button>
                 </div>
               </div>
             ))
           )}
         </div>
       </div>
+
+      <CategoryFilter
+        categories={categories}
+        selected={filter}
+        onChange={setFilter}
+      />
+
+      <CreateCollabPost
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        onCreate={(payload) => {
+          const newPost: CollabPost = {
+            id: `p${posts.length + 1}`,
+            category: payload.category,
+            title: payload.title,
+            content: payload.description,
+            user: placeholderUser,
+            tags: payload.tags.map((t) => `#${t}`),
+            likes: 0,
+            comments: 0,
+          };
+          setPosts((prev) => [newPost, ...prev]);
+        }}
+      />
+
     </div>
   );
 }
