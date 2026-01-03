@@ -79,7 +79,7 @@ export function Login2FA() {
 
         <button
           type="submit"
-          className="w-20 px-0 py-2 rounded-xl font-medium bg-accent-lm text-primary-lm"
+          className="w-20 px-0 py-2 rounded-lg font-medium bg-accent-lm text-primary-lm hover:bg-hover-btn-lm transition cursor-pointer"
         >
           Confirm
         </button>

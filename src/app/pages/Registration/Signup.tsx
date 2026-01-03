@@ -22,6 +22,8 @@ type FormData = {
 };
 
 export function Signup() {
+  const [step, setStep] = useState<1 | 2>(1);
+
   const location = useLocation();
   const fileRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
@@ -131,28 +133,34 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 
   return (
     <SignupLoginBox title="Sign Up">
-      <h5>Upload your ID</h5>
-      <div
-        className="flex items-center gap-2"
-      >
-
-      <ButtonCTA label="Choose File" clickEvent={chooseFile}></ButtonCTA>
-        <p
-          className="text-sm text-text-lighter-lm"
+      { step === 1 &&
+      <>
+        <h5>Upload your ID</h5>
+        <div
+          className="flex items-center gap-2"
         >
-          {fileName ?? "Upload ID (image/pdf)"}
-        </p>
-      </div>
 
-      <input
-        ref={fileRef}
-        type="file"
-        accept="image/*,application/pdf"
-        onChange={onFileChange}
-        className="hidden"
-      />
-      <h6 className="-mb-2.5 mt-2 text-text-lighter-lm font-light">Or fill up the form below:</h6>
-      <form onSubmit={handleSubmit} className="space-y-2">
+        <ButtonCTA label="Choose File" clickEvent={chooseFile}></ButtonCTA>
+          <p
+            className="text-sm text-text-lighter-lm"
+          >
+            {fileName ?? "Upload ID (image/pdf)"}
+          </p>
+        </div>
+
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*,application/pdf"
+          onChange={onFileChange}
+          className="hidden"
+        />
+        <h6 className="mb-1 mt-2 text-text-lighter-lm font-light">
+          Or fill up the form below:</h6>
+      </>}
+      <form onSubmit={handleSubmit} className="">
+      {step === 1 && (
+      <div className="space-y-3 animate-fade-in">
         <InputField
           label="Name"
           name="name"
@@ -169,7 +177,7 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
           changeHandler={handleInputChange}>
         </InputField>
  
-        <div className="flex flex-row w-3/4 align-middle justify-between">
+        <div className="flex flex-row w-full align-middle justify-between">
           <div className="flex flex-col">
             <label htmlFor="dept" className="text-text-lm text-md font-medium my-0">Department</label>
             <select
@@ -208,6 +216,26 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
           </div>
       </div>
 
+      <div className="flex justify-end pt-4">
+      <button
+        onClick={() => setStep(2)}
+        className="text-md text-accent-lm hover:text-hover-btn-lm cursor-pointer"
+      >
+        Next →
+      </button>
+    </div>
+  </div>
+)}
+
+{step === 2 && (
+   <div className="space-y-2 animate-fade-in">
+      <button
+        type="button"
+        onClick={() => setStep(1)}
+        className="text-md text-accent-lm hover:text-hover-btn-lm cursor-pointer"
+      >
+        ← Back
+      </button>
 
         <InputField 
           label="Email"
@@ -252,7 +280,8 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
             </Link>
           </span>
         </div>
-      </form>
+      </div>)}
+    </form>
   </SignupLoginBox>
   );
 }

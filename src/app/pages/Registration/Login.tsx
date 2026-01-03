@@ -40,8 +40,8 @@ export function Login() {
         </InputField>
         <Password label="Password" value={password} onChange={setPassword}/>
 
-        <div className="flex items-center gap-4">
-          <button type="submit" className="px-6 py-2 rounded-xl font-medium bg-accent-lm text-primary-lm cursor-pointer">
+        <div className="flex items-center gap-4 mt-10">
+          <button type="submit" className="px-6 py-2 rounded-lg font-medium bg-accent-lm text-primary-lm cursor-pointer hover:bg-hover-btn-lm transition">
             Login
           </button>
 
