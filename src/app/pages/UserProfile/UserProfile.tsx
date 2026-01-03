@@ -36,8 +36,12 @@ import { openChatWith } from "@/app/pages/Messaging/backend/chatStore";
 import { mockUsers, mockLoggedInUser } from "@/lib/mockUsers";
 import UserProfileUpdate from "./components/UserProfileUpdate"; // new modal component
 import { InterestedPosts } from "./components/InterestedPosts";
-import { getInterested, subscribe } from "./backend/interestedStore";
 import type { InterestedItem } from "./backend/interestedStore";
+import { mockProfiles } from "@/lib/mockProfiles";
+import {
+  getInterested,
+  subscribe as interestedSubscribe,
+} from "./backend/interestedStore";
 type Skill = { title: string; detail?: string };
 type Contact = {
   type: "gmail" | "linkedin" | "github" | "facebook";
@@ -61,22 +65,9 @@ export function UserProfile() {
     id: string;
     name: string;
   } | null>(null);
-  const [skills, setSkills] = useState<Skill[]>([
-    { title: "UI/UX", detail: "MIST INNOVATION CLUB" },
-    { title: "Java, MySQL, C++", detail: "MIST Academic Courses" },
-  ]);
-  const [interests, setInterests] = useState<string[]>([
-    "Robotics",
-    "UI/UX",
-    "CTF",
-    "Automation",
-    "Hackathon",
-    "Arduino",
-  ]);
-  const [contacts, setContacts] = useState<Contact[]>([
-    { type: "github", id: "alvi" },
-    { type: "linkedin", id: "" },
-  ]);
+  const [skills, setSkills] = useState<Skill[]>([]);
+  const [interests, setInterests] = useState<string[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
   // Bio state
   const [bio, setBio] = useState<string>("");
   const [bioOpen, setBioOpen] = useState(false);
@@ -124,16 +115,37 @@ export function UserProfile() {
   const [modalMode, setModalMode] = useState<"skill" | "interest" | "contact">(
     "skill"
   );
-  // Interested posts state (from CollabHub)
-  const [interestedPosts, setInterestedPosts] = useState<InterestedItem[]>(() =>
-    getInterested()
-  );
+  // Interested posts state (per user)
+  const [interestedPosts, setInterestedPosts] = useState<InterestedItem[]>([]);
 
-  // Keep in sync with store
+  // Load per-user mock profile data; for logged-in user, reflect dynamic interested store
   useEffect(() => {
-    const unsub = subscribe((items) => setInterestedPosts(items));
-    return unsub;
-  }, []);
+    const data = mockProfiles[viewedUser.id];
+    if (data) {
+      setBio(data.bio ?? "");
+      setBadges([...data.badges]);
+      setSkills([...data.skills]);
+      setInterests([...data.interests]);
+      setContacts([...data.contacts]);
+    } else {
+      setBio("");
+      setBadges([]);
+      setSkills([]);
+      setInterests([]);
+      setContacts([]);
+    }
+
+    let unsub: (() => void) | undefined;
+    if (viewedUser.id === loggedIn.id) {
+      setInterestedPosts(getInterested());
+      unsub = interestedSubscribe((items) => setInterestedPosts(items));
+    } else {
+      setInterestedPosts(data ? [...data.interestedPosts] : []);
+    }
+    return () => {
+      if (unsub) unsub();
+    };
+  }, [viewedUser.id, loggedIn.id]);
   const openAddSkill = () => {
     setModalMode("skill");
     setModalOpen(true);
