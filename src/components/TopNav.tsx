@@ -9,7 +9,7 @@ import userIcon from "../assets/icons/user_icon.svg";
 import signoutIcon from "../assets/icons/logout_icon.svg";
 
 import { UserInfo } from "./UserInfo";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import NotificationsDrawer from "./NotificationsDrawer";
 import MessageDrawer from "@/app/pages/Messaging/components/MessageDrawer";
 import {
@@ -86,7 +86,7 @@ export function TopNav() {
           <img src={placeholderDP} className="rounded-full size-8" />
         </button>
 
-        {isOpen && <UserClickModal isOpen={isOpen}></UserClickModal>}
+        {isOpen && <UserClickModal isOpen={isOpen} onClose={()=>setIsOpen(false)}></UserClickModal>}
       </div>
       <NotificationsDrawer open={isNotifOpen} onOpenChange={setIsNotifOpen} />
       {isMsgOpen && (
@@ -102,9 +102,27 @@ export function TopNav() {
   );
 }
 
-function UserClickModal({ isOpen }: { isOpen: boolean }) {
+function UserClickModal({ isOpen, onClose }: { isOpen: boolean, onClose: ()=>void }) {
+    const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(e.target as Node)
+      ) {
+        onClose();
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutside);
+  }, [onClose]);
+
   return (
     <div
+      ref={modalRef}
       className={`bg-primary-lm w-60 px-2 py-3.5 rounded-xl absolute top-12.5 right-8 border border-stroke-grey ${
         isOpen ? "animate-slide-in" : "animate-slide-out"
       }`}

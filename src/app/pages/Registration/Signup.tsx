@@ -146,7 +146,7 @@ function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 
     // TODO: Add more validations
     console.log("Form submitted:", formData);
-      navigate('/login');
+      navigate('/home');
     
   };
 

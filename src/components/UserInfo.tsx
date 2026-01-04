@@ -14,7 +14,7 @@ export function UserInfo({
   disableClick,
 }: UserDetails) {
   return (
-    <>
+    <div className="w-fit">
       {disableClick ? (
         <div className="flex gap-2 pointer-events-none">
           <div className="user-img">
@@ -53,6 +53,6 @@ export function UserInfo({
           </div>
         </Link>
       )}
-    </>
+    </div>
   );
 }

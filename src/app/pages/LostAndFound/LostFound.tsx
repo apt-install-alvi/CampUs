@@ -269,8 +269,8 @@ export function LostFound() {
     const newPost: LFPost = {
       id: generateId("lf-"),
       title: title,
-      author: "You",
-      authorCourse: "—",
+      author: "Alvi Binte Zamil",
+      authorCourse: "CSE-23",
       authorAvatar: "/placeholder.svg",
       description,
       imageUrl,
@@ -619,9 +619,9 @@ export function LostFound() {
                     commentsByPost[activePost.id]
                   )}
                   currentUser={{
-                    name: "You",
+                    name: "Alvi Binte Zamil",
                     avatar: "/placeholder.svg",
-                    course: "—",
+                    course: "CSE-23",
                   }}
                   onChange={(newComments) =>
                     handleCommentsChangeForActivePost(newComments)
