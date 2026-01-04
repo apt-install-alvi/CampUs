@@ -102,6 +102,8 @@ export default function EventPostDetail({ post, onBack }: Props) {
     competition: "bg-purple-100 text-purple-700 border border-purple-200",
   };
 
+  // Normalize category to lowercase before using the map (defensive)
+  const normalizedCategory = (post.category || "").toString().toLowerCase();
   const catLabel = post.category
     ? post.category.charAt(0).toUpperCase() + post.category.slice(1)
     : "";
@@ -175,7 +177,8 @@ export default function EventPostDetail({ post, onBack }: Props) {
         <div className="flex items-start justify-between mb-4">
           <Badge
             variant="secondary"
-            className={`bg-secondary-lm text-accent-lm px-3 py-1 ${catClassMap[post.category] ?? ""}`}
+            // use normalizedCategory for the mapping so capitalization mismatches don't break layout
+            className={`bg-secondary-lm text-accent-lm px-3 py-1 ${catClassMap[normalizedCategory] ?? ""}`}
           >
             {catLabel}
           </Badge>
