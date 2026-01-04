@@ -385,38 +385,36 @@ export function LostFound() {
     <>
       <div className="min-h-screen bg-background-lm animate-fade-in">
         <main className="mx-auto max-w-4xl px-4 py-6">
-          {/* Composer */}
-          <div className="rounded-xl border border-stroke-grey bg-primary-lm p-4 mb-6 w-[60vw]">
-            <Input
-              placeholder="Tap to announce what has been lost or found"
-              readOnly
-              onClick={openAnnounceModal}
-              className="cursor-pointer rounded-lg border-none placeholder:text-accent-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
-            />
-          </div>
-
           {/* Posts */}
           <div className="space-y-4 bg-primary-lm p-10 rounded-xl border-2 border-stroke-grey">
-  {filtered.length === 0 ? (
-    <div className="text-center py-10 text-text-lighter-lm">
-      <p className="text-lg font-medium">No posts available</p>
-      <p className="text-sm mt-1">
-        Be the first to announce a lost or found item.
-      </p>
-    </div>
-  ) : (
-    filtered.map((post) => (
-      <LFPostCard
-        key={post.id}
-        post={post}
-        onOpenComments={() => openComments(post)}
-        onEdit={() => openEdit(post)}
-        onRemove={() => requestRemove(post.id)}
-        isLiked={!!likedByMe[post.id]}
-        onToggleLike={() => toggleLike(post.id)}
-      />
-    ))
-  )}
+            <div className="rounded-lg border border-stroke-grey bg-primary-lm mb-6 w-full hover:bg-hover-lm transition">
+              <Input
+                placeholder="Tap to announce what has been lost or found"
+                readOnly
+                onClick={openAnnounceModal}
+                className="cursor-pointer rounded-lg border-none placeholder:text-accent-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
+              />
+            </div>
+            {filtered.length === 0 ? (
+              <div className="text-center py-10 text-text-lighter-lm">
+                <p className="text-lg font-medium">No posts available</p>
+                <p className="text-sm mt-1">
+                  Be the first to announce a lost or found item.
+                </p>
+              </div>
+            ) : (
+              filtered.map((post) => (
+                <LFPostCard
+                  key={post.id}
+                  post={post}
+                  onOpenComments={() => openComments(post)}
+                  onEdit={() => openEdit(post)}
+                  onRemove={() => requestRemove(post.id)}
+                  isLiked={!!likedByMe[post.id]}
+                  onToggleLike={() => toggleLike(post.id)}
+                />
+              ))
+            )}
           </div>
         </main>
 
@@ -780,7 +778,7 @@ function LFPostCard({
   }, [post.description]);
 
   return (
-    <div className="bg-primary-lm p-6 rounded-xl border border-stroke-grey shadow-sm hover:shadow-md hover:border-stroke-peach transition animate-slide-in">
+    <div className="bg-secondary-lm p-6 rounded-xl border border-stroke-grey hover:border-stroke-peach hover:bg-hover-lm transition animate-slide-in">
       <div className="flex items-start justify-between mb-3">
         <div>
           <h3 className="text-xl font-bold text-text-lm">{post.title}</h3>
