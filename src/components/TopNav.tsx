@@ -58,9 +58,9 @@ export function TopNav() {
         <img src={Logo} className="scale-90"></img>
       </Link>
       <div className="flex items-center gap-6">
-        <button>
+        {/* <button>
           <img src={moonIcon} className="size-6 cursor-pointer"></img>
-        </button>
+        </button> */}
 
         <button onClick={() => setIsNotifOpen(true)} className="relative">
           <img src={bellIcon} className="size-8 cursor-pointer" />
