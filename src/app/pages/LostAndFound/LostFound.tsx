@@ -4,7 +4,6 @@ import {
   MessageCircle,
   Share2,
   MoreVertical,
-  AlertTriangle,
 } from "lucide-react";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
@@ -603,7 +602,7 @@ export function LostFound() {
           open={isCommentsOpen}
           onOpenChange={(v) => setIsCommentsOpen(v)}
         >
-          <DialogOverlay className="bg-stroke-grey z-[100]"></DialogOverlay>
+          <DialogOverlay className="bg-stroke-grey z-100"></DialogOverlay>
           <DialogContent className="sm:max-w-xl bg-primary-lm border-stroke-grey text-text-lm">
             {activePost && (
               <div className="space-y-4">

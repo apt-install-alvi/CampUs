@@ -222,7 +222,7 @@ function QAPageContent() {
           <>
             {/* Search + New Post */}
             <div className="mb-6 flex items-center gap-3">
-              <div className="relative flex-1 min-w-0 w-[60vw]">
+              <div className="relative flex-1 min-w-0 w-[60vw] rounded-md bg-primary-lm">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 text-accent-lm" />
                 <Input
                   placeholder="Search anything"
@@ -233,7 +233,7 @@ function QAPageContent() {
               </div>
 
               {/* New Post button kept same width to avoid reflow */}
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <Button
                   onClick={() => setIsNewPostOpen(true)}
                   className="bg-accent-lm hover:bg-hover-btn-lm text-primary-lm px-4"
@@ -251,7 +251,7 @@ function QAPageContent() {
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     // min-w ensures every button occupies same space; text-center avoids shifts
-                    className={`min-w-[88px] box-border text-center px-3 py-2 rounded-full text-sm font-medium transition focus:outline-none ${
+                    className={`min-w-22 box-border text-center px-3 py-2 rounded-full text-sm font-medium transition focus:outline-none ${
                       activeTab === tab
                         ? "bg-accent-lm text-primary-lm"
                         : "bg-primary-lm text-text-lm hover:bg-hover-lm"
@@ -265,9 +265,9 @@ function QAPageContent() {
             </div>
 
             {/* Posts: reserve a minimum height so switching to empty doesn't collapse layout */}
-            <div className="space-y-4 min-h-[12rem]">
+            <div className="space-y-4 min-h-48">
               {filteredPosts.length === 0 ? (
-                <div className="flex items-center justify-center min-h-[12rem]">
+                <div className="flex items-center justify-center min-h-48">
                   <p className="text-text-lighter-lm text-lg">
                     No posts in this category
                   </p>
@@ -400,7 +400,7 @@ function PostCard({
         border-2 border-stroke-grey
         hover:bg-hover-lm hover:border-stroke-peach
         transition cursor-pointer w-full box-border
-        min-h-[14rem] flex flex-col justify-between
+        min-h-56 flex flex-col justify-between
       "
     >
       <span
@@ -427,7 +427,7 @@ function PostCard({
       </div>
 
       {/* Middle: content + tags (flex-grow so footer stays at bottom) */}
-      <div className="flex-grow mt-3">
+      <div className="grow mt-3">
         <div
           ref={contentRef}
           className="text-text-lighter-lm text-md leading-relaxed"
