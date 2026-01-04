@@ -19,7 +19,7 @@ import { NotFound } from "./pages/Error_NotFound";
 import { Messaging } from "./pages/Messaging/Messaging";
 
 export const router = createBrowserRouter([
-  { path: "/", element: <Navigate to="/login" replace /> },
+  { path: "/", element: <Navigate to="/signup" replace /> },
   { path: "/signup", element: <Signup /> },
   { path: "/signup/ocr", element: <SignupOCR /> },
   {

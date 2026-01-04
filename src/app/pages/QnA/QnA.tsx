@@ -163,15 +163,50 @@ function QAPageContent() {
     });
   }
 
+  // Inject a small style reset to force native scrollbar appearance for this component only.
+  useEffect(() => {
+    // create and append style element
+    const style = document.createElement("style");
+    style.dataset.qna = "reset-scrollbar";
+    style.innerHTML = `
+      /* limit to QnA container so we don't affect other pages */
+      .qna-reset-scrollbar {
+        /* restore platform/native scrollbar behavior */
+        scrollbar-width: auto !important; /* Firefox */
+        -ms-overflow-style: auto !important; /* IE 10+ */
+      }
+
+      /* WebKit browsers: try to restore default thumb/track look */
+      .qna-reset-scrollbar::-webkit-scrollbar {
+        width: auto !important;
+        height: auto !important;
+        background: transparent !important;
+        -webkit-appearance: scrollbar !important;
+      }
+      .qna-reset-scrollbar::-webkit-scrollbar-thumb {
+        background: initial !important;
+        border-radius: initial !important;
+        border: none !important;
+        -webkit-appearance: scrollbarthumb !important;
+      }
+      .qna-reset-scrollbar::-webkit-scrollbar-track {
+        background: initial !important;
+        -webkit-appearance: scrollbartrack !important;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
   return (
+    // add qna-reset-scrollbar class so our injected CSS affects this component only
     <div
-      className="min-h-screen bg-background-lm animate-fade-in"
-      // keep stable vertical scrolling to avoid layout shifts when content height changes
+      className="qna-reset-scrollbar min-h-screen bg-background-lm animate-fade-in"
       style={{
         minHeight: "100vh",
-        overflowY: "scroll",
-        // modern browsers: reserve gutter for scrollbar
-        scrollbarGutter: "stable" as any,
+        overflowY: "auto", // allow native scrollbars when needed (auto instead of forced scroll)
       }}
     >
       <main
