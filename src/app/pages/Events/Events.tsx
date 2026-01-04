@@ -154,15 +154,14 @@ export function Events() {
       <div className="flex gap-10 h-full w-full p-10">
         {/* LEFT: Posts */}
         <div className="flex flex-col gap-10 h-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey">
-          <button
+         { !selectedPost && <button
             onClick={() => setModalOpen(true)}
             className="w-full rounded-md border border-stroke-grey bg-secondary-lm px-4 py-3 text-left text-sm text-accent-lm hover:bg-[#FFF4EE]"
           >
             Click to announce an event here
-          </button>
+          </button>}
 
-          {/* FIX: keep the same width wrapper for both list and detail */}
-          <div className="mt-6 flex items-center justify-center">
+          <div className="flex items-center justify-center">
             <div className="w-[60vw]">
               {selectedPost ? (
                 // detail view is constrained to same width as the list view
@@ -212,7 +211,7 @@ export function Events() {
         </div>
 
         {/* RIGHT: Categories */}
-        <CategoryFilter
+        {!selectedPost && <CategoryFilter
           categories={
             [
               "all",
@@ -224,7 +223,7 @@ export function Events() {
           }
           selected={filter}
           onChange={setFilter}
-        />
+        />}
       </div>
 
       <CreateEventModal

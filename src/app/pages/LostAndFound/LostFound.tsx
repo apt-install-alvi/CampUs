@@ -33,6 +33,7 @@ import CommentThread, {
   type Comment as CTComment,
 } from "./components/CommentThread";
 import { addNotification } from "../../../lib/notifications";
+import { DialogOverlay } from "@radix-ui/react-dialog";
 
 type LFPost = {
   id: string;
@@ -385,28 +386,37 @@ export function LostFound() {
       <div className="min-h-screen bg-background-lm animate-fade-in">
         <main className="mx-auto max-w-4xl px-4 py-6">
           {/* Composer */}
-          <div className="rounded-xl border border-stroke-grey bg-primary-lm p-4 mb-6">
+          <div className="rounded-xl border border-stroke-grey bg-primary-lm p-4 mb-6 w-[60vw]">
             <Input
               placeholder="Tap to announce what has been lost or found"
               readOnly
               onClick={openAnnounceModal}
-              className="cursor-pointer rounded-lg bg-primary-lm border-stroke-peach placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
+              className="cursor-pointer rounded-lg border-none placeholder:text-accent-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
             />
           </div>
 
           {/* Posts */}
-          <div className="space-y-4">
-            {filtered.map((post) => (
-              <LFPostCard
-                key={post.id}
-                post={post}
-                onOpenComments={() => openComments(post)}
-                onEdit={() => openEdit(post)}
-                onRemove={() => requestRemove(post.id)}
-                isLiked={!!likedByMe[post.id]}
-                onToggleLike={() => toggleLike(post.id)}
-              />
-            ))}
+          <div className="space-y-4 bg-primary-lm p-10 rounded-xl border-2 border-stroke-grey">
+  {filtered.length === 0 ? (
+    <div className="text-center py-10 text-text-lighter-lm">
+      <p className="text-lg font-medium">No posts available</p>
+      <p className="text-sm mt-1">
+        Be the first to announce a lost or found item.
+      </p>
+    </div>
+  ) : (
+    filtered.map((post) => (
+      <LFPostCard
+        key={post.id}
+        post={post}
+        onOpenComments={() => openComments(post)}
+        onEdit={() => openEdit(post)}
+        onRemove={() => requestRemove(post.id)}
+        isLiked={!!likedByMe[post.id]}
+        onToggleLike={() => toggleLike(post.id)}
+      />
+    ))
+  )}
           </div>
         </main>
 
@@ -591,11 +601,11 @@ export function LostFound() {
           </>
         )}
 
-        {/* Comments Dialog (uses your CommentThread) */}
         <Dialog
           open={isCommentsOpen}
           onOpenChange={(v) => setIsCommentsOpen(v)}
         >
+          <DialogOverlay className="bg-stroke-grey z-[100]"></DialogOverlay>
           <DialogContent className="sm:max-w-xl bg-primary-lm border-stroke-grey text-text-lm">
             {activePost && (
               <div className="space-y-4">
@@ -690,14 +700,14 @@ export function LostFound() {
         >
           <DialogContent className="sm:max-w-md bg-primary-lm border border-stroke-peach text-text-lm">
             <DialogHeader>
-              <DialogTitle>Remove Post?</DialogTitle>
+              <DialogTitle>Hide Post?</DialogTitle>
             </DialogHeader>
-            <div className="mt-1 flex items-center gap-2 rounded-md bg-secondary-lm border border-stroke-peach p-2">
+            {/* <div className="mt-1 flex items-center gap-2 rounded-md bg-secondary-lm border border-stroke-peach p-2">
               <AlertTriangle className="h-4 w-4 text-accent-lm" />
               <span className="text-sm text-accent-lm">
                 This action cannot be undone.
               </span>
-            </div>
+            </div> */}
             <div className="grid grid-cols-2 gap-3 mt-4">
               <Button
                 variant="outline"
@@ -712,7 +722,7 @@ export function LostFound() {
                   if (pendingRemoveId) removePost(pendingRemoveId);
                 }}
               >
-                Remove
+                Hide
               </Button>
             </div>
           </DialogContent>
@@ -813,7 +823,7 @@ function LFPostCard({
               className="text-accent-lm hover:bg-secondary-lm hover:text-accent-lm focus:bg-secondary-lm"
               onClick={onRemove}
             >
-              Remove
+              Hide
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -222,8 +222,8 @@ function QAPageContent() {
           <>
             {/* Search + New Post */}
             <div className="mb-6 flex items-center gap-3">
-              <div className="relative flex-1 min-w-0">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-accent-lm" />
+              <div className="relative flex-1 min-w-0 w-[60vw]">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 text-accent-lm" />
                 <Input
                   placeholder="Search anything"
                   value={searchQuery}
