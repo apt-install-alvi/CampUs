@@ -143,7 +143,7 @@ function UserClickModal({ isOpen, onClose }: { isOpen: boolean, onClose: ()=>voi
       <ModalButtons
         icon={signoutIcon}
         label="Sign Out"
-        linkto={"/signup"}
+        linkto={"/login"}
       ></ModalButtons>
     </div>
   );

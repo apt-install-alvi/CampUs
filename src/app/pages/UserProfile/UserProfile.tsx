@@ -331,10 +331,11 @@ export function UserProfile() {
     }
   };
   return (
-    <div className="min-h-screen w-full bg-background-lm text-text-lm animate-fade-in pb-8">
+    <div className="min-h-screen  w-full bg-background-lm text-text-lm animate-fade-in pb-8">
       {/* Page-level Navbar to match the provided design */}
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 gap-6 items-start lg:grid-cols-[minmax(0,1fr)_350px]">
+        {/* <div className="grid grid-cols-1 gap-6 items-start lg:grid-cols-[minmax(0,1fr)_350px]"> */}
+        <div className="flex gap-6 items-start justify-center" >
           {/* Main profile card */}
           <section className="rounded-2xl border border-stroke-grey bg-primary-lm shadow-sm animate-slide-in">
             {/* Header */}
@@ -664,7 +665,7 @@ export function UserProfile() {
             </div>
           </section>
           {/* Sidebar: Upcoming Events (shared component) + Interested Posts */}
-          <div className="hidden lg:flex lg:flex-col gap-6 w-[350px] lg:sticky lg:top-[96px] lg:max-h-[calc(100vh-96px)] lg:overflow-hidden">
+          <div className="lg:flex lg:flex-col flex flex-col gap-6 w-[350px] lg:sticky lg:top-[96px] mt-4 lg:max-h-[calc(100vh-96px)] lg:overflow-hidden">
             <UpcomingEvents />
             <InterestedPosts items={interestedPosts} />
           </div>
