@@ -164,8 +164,20 @@ function QAPageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-background-lm animate-fade-in">
-      <main className="mx-auto max-w-4xl px-4 py-6">
+    <div
+      className="min-h-screen bg-background-lm animate-fade-in"
+      // keep stable vertical scrolling to avoid layout shifts when content height changes
+      style={{
+        minHeight: "100vh",
+        overflowY: "scroll",
+        // modern browsers: reserve gutter for scrollbar
+        scrollbarGutter: "stable" as any,
+      }}
+    >
+      <main
+        className="mx-auto max-w-4xl px-4 py-6 w-full box-border"
+        style={{ boxSizing: "border-box" }}
+      >
         {selectedPost ? (
           <PostDetail
             post={{ ...selectedPost, commentsCount: selectedPost.comments }}
@@ -175,35 +187,41 @@ function QAPageContent() {
           <>
             {/* Search + New Post */}
             <div className="mb-6 flex items-center gap-3">
-              <div className="relative flex-1">
+              <div className="relative flex-1 min-w-0">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-accent-lm" />
                 <Input
                   placeholder="Search anything"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-10 pl-9 rounded-full bg-primary-lm border border-stroke-grey placeholder:text-text-lighter-lm focus:ring-2 focus:ring-accent-lm focus:border-accent-lm"
+                  className="h-10 w-full min-w-0 pl-9 rounded-full bg-primary-lm border border-stroke-grey placeholder:text-text-lighter-lm focus:ring-2 focus:ring-accent-lm focus:border-accent-lm"
                 />
               </div>
-              <Button
-                onClick={() => setIsNewPostOpen(true)}
-                className="bg-accent-lm hover:bg-hover-btn-lm text-primary-lm"
-              >
-                New Post
-              </Button>
+
+              {/* New Post button kept same width to avoid reflow */}
+              <div className="flex-shrink-0">
+                <Button
+                  onClick={() => setIsNewPostOpen(true)}
+                  className="bg-accent-lm hover:bg-hover-btn-lm text-primary-lm px-4"
+                >
+                  New Post
+                </Button>
+              </div>
             </div>
 
-            {/* Tabs */}
-            <div className="flex gap-2 mb-6">
+            {/* Tabs: centered and fixed button widths so switching doesn't reflow */}
+            <div className="flex gap-2 mb-6 justify-center">
               {(["All", "Question", "Advice", "Resource"] as const).map(
                 (tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition ${
+                    // min-w ensures every button occupies same space; text-center avoids shifts
+                    className={`min-w-[88px] box-border text-center px-3 py-2 rounded-full text-sm font-medium transition focus:outline-none ${
                       activeTab === tab
                         ? "bg-accent-lm text-primary-lm"
                         : "bg-primary-lm text-text-lm hover:bg-hover-lm"
                     }`}
+                    aria-pressed={activeTab === tab}
                   >
                     {tab}
                   </button>
@@ -211,10 +229,10 @@ function QAPageContent() {
               )}
             </div>
 
-            {/* Posts */}
-            <div className="space-y-4">
+            {/* Posts: reserve a minimum height so switching to empty doesn't collapse layout */}
+            <div className="space-y-4 min-h-[12rem]">
               {filteredPosts.length === 0 ? (
-                <div className="flex items-center justify-center min-h-50">
+                <div className="flex items-center justify-center min-h-[12rem]">
                   <p className="text-text-lighter-lm text-lg">
                     No posts in this category
                   </p>
@@ -341,7 +359,7 @@ function PostCard({
         bg-secondary-lm p-8 rounded-2xl
         border-2 border-stroke-grey
         hover:bg-hover-lm hover:border-stroke-peach
-        transition cursor-pointer
+        transition cursor-pointer w-full box-border
       "
     >
       <span
