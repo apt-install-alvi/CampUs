@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { CategoryFilter } from "@/components/Category_Events_CollabHub/CategoryFilter";
 import type { Category } from "@/components/Category_Events_CollabHub/Category";
 import CreateCollabPost from "./components/CreateCollabPost";
+import { addNotification } from "../../../lib/notifications";
 import {
   addInterested,
   removeInterested,
@@ -214,6 +215,12 @@ export function CollabHub() {
             comments: 0,
           };
           setPosts((prev) => [newPost, ...prev]);
+          addNotification({
+            type: "collab",
+            title: `New Collab: ${newPost.title}`,
+            description: newPost.content,
+            path: "/collab",
+          });
         }}
       />
     </div>

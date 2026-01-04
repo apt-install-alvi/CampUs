@@ -16,7 +16,7 @@ import {
   ShareButton,
 } from "../../../components/PostButtons";
 import { PostDetail } from "./components/PostDetail";
-
+import { addNotification } from "../../../lib/notifications";
 
 type Post = {
   id: string;
@@ -50,9 +50,9 @@ const initialMockPosts: Post[] = [
       "Hello! I recently decided to write a research paper inspired by my seniors. My interests include cybersecurity and AI, but I’m a newbie. I tried learning about Machine Learning, Pattern Recognition, LLMs and other jargon but it's all still very confusing to me. Like it just straight up flies over my head. As for cybersecurity, I find OSINT problems fun to solve, but Web Hacking is my absolute weak spot. Can anyone guide me?",
     category: "Advice",
     tags: ["Research", "Academic"],
-    reactions:0,
-    comments:3,
-    shares:1,
+    reactions: 0,
+    comments: 3,
+    shares: 1,
     timestamp: "2 days ago",
   },
   {
@@ -138,6 +138,13 @@ function QAPageContent() {
       timestamp: "Just now",
     };
     setPosts((p) => [created, ...p]);
+    // Notify: new QnA post created
+    addNotification({
+      type: "qna",
+      title: `New QnA Post: ${title}`,
+      description: newPost.description,
+      path: "/qna",
+    });
     setIsNewPostOpen(false);
     setNewPost({ title: "", description: "", tags: [], category: "Question" });
   }
@@ -219,21 +226,20 @@ function QAPageContent() {
                     post={post}
                     onOpenDetail={() => setSelectedPost(post)}
                     onLike={() => toggleLike(post.id)}
-                    onAddInlineComment={(text) => addInlineComment(post.id, text)}
+                    onAddInlineComment={(text) =>
+                      addInlineComment(post.id, text)
+                    }
                   />
                 ))
               )}
             </div>
-
           </>
         )}
       </main>
 
       {/* New Post Dialog */}
       <Dialog open={isNewPostOpen} onOpenChange={setIsNewPostOpen}>
-        <DialogContent
-          className="sm:max-w-lg bg-primary-lm border-stroke-grey text-text-lm max-h-[80vh] overflow-y-auto"
-        >
+        <DialogContent className="sm:max-w-lg bg-primary-lm border-stroke-grey text-text-lm max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>New Post</DialogTitle>
           </DialogHeader>
@@ -242,7 +248,9 @@ function QAPageContent() {
             <Input
               placeholder="Title"
               value={newPost.title}
-              onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
+              onChange={(e) =>
+                setNewPost({ ...newPost, title: e.target.value })
+              }
               className="w-full bg-primary-lm border-stroke-grey text-text-lm placeholder:text-text-lighter-lm focus-visible:ring-accent-lm focus-visible:border-accent-lm"
             />
 
@@ -257,7 +265,6 @@ function QAPageContent() {
             />
 
             <div className="space-y-2">
-              
               <div className="flex flex-wrap gap-2">
                 {(["Question", "Advice", "Resource"] as const).map((cat) => (
                   <button
@@ -271,7 +278,6 @@ function QAPageContent() {
                         : "border-stroke-grey bg-primary-lm text-text-lm hover:bg-hover-lm"
                     }`}
                   >
-                    
                     {cat}
                   </button>
                 ))}
@@ -339,14 +345,14 @@ function PostCard({
       "
     >
       <span
-      className={`
+        className={`
         absolute top-4 right-4
         px-3 py-1 font-semibold rounded-full border
         ${categoryStyles[post.category]}
       `}
-    >
-      {post.category}
-    </span>
+      >
+        {post.category}
+      </span>
 
       {/* USER */}
       <UserInfo
@@ -428,9 +434,7 @@ function PostCard({
       </div>
 
       {/* TIMESTAMP */}
-      <p className="text-xs text-text-lighter-lm mt-2">
-        {post.timestamp}
-      </p>
+      <p className="text-xs text-text-lighter-lm mt-2">{post.timestamp}</p>
 
       {/* INLINE REPLY (UNCHANGED LOGIC, STYLED) */}
       {!collapsed && (

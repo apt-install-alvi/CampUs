@@ -9,7 +9,13 @@ import userIcon from "../assets/icons/user_icon.svg";
 import signoutIcon from "../assets/icons/logout_icon.svg";
 
 import { UserInfo } from "./UserInfo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import NotificationsDrawer from "./NotificationsDrawer";
+import {
+  subscribe as notiSubscribe,
+  getUnreadCount,
+  markAllRead,
+} from "../lib/notifications";
 
 //Arbitrary placeholder values till db is connected
 const userName: string = "Alvi Binte Zamil";
@@ -17,6 +23,24 @@ const userBatch: string = "CSE-23";
 
 export function TopNav() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [hasUnread, setHasUnread] = useState(false);
+
+  useEffect(() => {
+    // initialize badge and subscribe to changes
+    setHasUnread(getUnreadCount() > 0);
+    const unsub = notiSubscribe(() => {
+      setHasUnread(getUnreadCount() > 0);
+    });
+    return () => unsub();
+  }, []);
+
+  useEffect(() => {
+    if (isNotifOpen) {
+      // mark as read when drawer opens
+      markAllRead();
+    }
+  }, [isNotifOpen]);
 
   return (
     <nav className="bg-primary-lm border border-stroke-grey flex justify-between px-10 py-3">
@@ -28,8 +52,11 @@ export function TopNav() {
           <img src={moonIcon} className="size-6 cursor-pointer"></img>
         </button>
 
-        <button>
-          <img src={bellIcon} className="size-8 cursor-pointer"></img>
+        <button onClick={() => setIsNotifOpen(true)} className="relative">
+          <img src={bellIcon} className="size-8 cursor-pointer" />
+          {hasUnread && (
+            <span className="absolute -top-0.5 -right-0.5 inline-block h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-primary-lm" />
+          )}
         </button>
 
         <button>
@@ -45,6 +72,7 @@ export function TopNav() {
 
         {isOpen && <UserClickModal isOpen={isOpen}></UserClickModal>}
       </div>
+      <NotificationsDrawer open={isNotifOpen} onOpenChange={setIsNotifOpen} />
     </nav>
   );
 }

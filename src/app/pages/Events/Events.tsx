@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import postImg from "@/assets/images/placeholderPostImg.png";
 import { CategoryFilter } from "@/components/Category_Events_CollabHub/CategoryFilter";
 import type { Category } from "@/components/Category_Events_CollabHub/Category";
@@ -6,6 +6,7 @@ import CreateEventModal from "./components/CreateEventModal";
 import EventPostDetail from "./components/EventPostDetail";
 import { PostBody } from "@/components/PostBody";
 import { placeholderUser } from "../../../lib/placeholderUser";
+import { addNotification } from "../../../lib/notifications";
 type Segment = {
   id: string;
   name?: string;
@@ -39,8 +40,7 @@ const initialPosts: EventPostType[] = [
     dept: "CSE-23",
     excerpt:
       "For the first time, MIST Cyber Security Club is hosting a 3-in-1 event exclusively for MIST students! CyberVoid'25 kicks off on Dec 10, 2025...",
-    body:
-      "For the first time, MIST Cyber Security Club is hosting a 3-in-1 event exclusively for MIST students! CyberVoid'25 kicks off on Dec 10, 2025, and wraps up on Dec 12. Don't miss out on this incredible 3-day experience! Register now and secure your spot! Features include cybersecurity quiz, CTF challenges and hands-on workshops.",
+    body: "For the first time, MIST Cyber Security Club is hosting a 3-in-1 event exclusively for MIST students! CyberVoid'25 kicks off on Dec 10, 2025, and wraps up on Dec 12. Don't miss out on this incredible 3-day experience! Register now and secure your spot! Features include cybersecurity quiz, CTF challenges and hands-on workshops.",
     image: postImg,
     segments: [
       {
@@ -70,7 +70,8 @@ const initialPosts: EventPostType[] = [
     title: "Cloud Security Seminar — Industry speakers",
     author: "Cloud Club",
     dept: "EECE",
-    excerpt: "Join industry experts for a seminar on modern cloud security architecture...",
+    excerpt:
+      "Join industry experts for a seminar on modern cloud security architecture...",
     body: "An in-depth seminar with speakers from major cloud providers covering best practices for secure deployments.",
     image: null,
     segments: [],
@@ -95,6 +96,12 @@ export function Events() {
 
   function handleCreate(post: EventPostType) {
     setPosts((prev) => [post, ...prev]);
+    addNotification({
+      type: "event",
+      title: `New Event: ${post.title}`,
+      description: post.excerpt || post.body,
+      path: "/events",
+    });
   }
 
   function openDetail(post: EventPostType) {
@@ -111,14 +118,12 @@ export function Events() {
       <div className="flex gap-10 h-full w-full p-10">
         {/* LEFT: Posts */}
         <div className="flex flex-col gap-10 h-full bg-primary-lm p-10 rounded-2xl border-2 border-stroke-grey">
-          
-            <button
-              onClick={() => setModalOpen(true)}
-              className="w-full rounded-md border border-stroke-grey bg-secondary-lm px-4 py-3 text-left text-sm text-accent-lm hover:bg-[#FFF4EE]"
-            >
-              Click to announce an event here
-            </button>
-         
+          <button
+            onClick={() => setModalOpen(true)}
+            className="w-full rounded-md border border-stroke-grey bg-secondary-lm px-4 py-3 text-left text-sm text-accent-lm hover:bg-[#FFF4EE]"
+          >
+            Click to announce an event here
+          </button>
 
           <div className="mt-6 flex items-center justify-center">
             {selectedPost ? (
@@ -139,32 +144,26 @@ export function Events() {
                     };
 
                     const user = {
-                          ...placeholderUser, 
-                          name: p.author,
-                          batch: p.dept ?? "Student",
-                        };
+                      ...placeholderUser,
+                      name: p.author,
+                      batch: p.dept ?? "Student",
+                    };
 
-
-                   return (
+                    return (
                       <div
                         key={p.id}
                         onClick={() => openDetail(p)}
                         className="cursor-pointer flex flex-col gap-4"
                       >
-                        
                         <PostBody
                           title={p.title}
                           content={content}
                           user={user}
                           tags={p.tags}
                           category={p.category}
-                          
                         />
-
-                      
                       </div>
                     );
-
                   })
                 )}
               </div>
@@ -174,7 +173,15 @@ export function Events() {
 
         {/* RIGHT: Categories */}
         <CategoryFilter
-          categories={["all", "workshop", "seminar", "course", "competition"]}
+          categories={
+            [
+              "all",
+              "workshop",
+              "seminar",
+              "course",
+              "competition",
+            ] as unknown as Category[]
+          }
           selected={filter}
           onChange={setFilter}
         />

@@ -32,6 +32,7 @@ import {
 import CommentThread, {
   type Comment as CTComment,
 } from "./components/CommentThread";
+import { addNotification } from "../../../lib/notifications";
 
 type LFPost = {
   id: string;
@@ -280,6 +281,14 @@ export function LostFound() {
     };
 
     setPosts((prev) => [newPost, ...prev]);
+
+    // Notify: new Lost & Found post created
+    addNotification({
+      type: "lostfound",
+      title: `Lost & Found: ${newPost.title}`,
+      description: newPost.description,
+      path: "/lost-and-found",
+    });
 
     // ensure a comments bucket exists for this post
     setCommentsByPost((prev) => ({
