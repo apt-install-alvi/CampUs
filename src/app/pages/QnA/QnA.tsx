@@ -357,6 +357,11 @@ function QAPageContent() {
  * - Detects overflow and shows "Read More" when needed
  * - Clicking "Read More" or the Comment icon expands the card in-place (revealing full content + inline reply box)
  * - Clicking the card header/title opens the detail view
+ *
+ * Layout notes:
+ * - `min-h-[14rem]` keeps cards visually consistent across tabs
+ * - `flex flex-col` + `justify-between` pins the footer (actions + timestamp) to the bottom
+ * - main content sits in a `flex-grow` container so long text doesn't change the overall card height below the min
  */
 function PostCard({
   post,
@@ -395,6 +400,7 @@ function PostCard({
         border-2 border-stroke-grey
         hover:bg-hover-lm hover:border-stroke-peach
         transition cursor-pointer w-full box-border
+        min-h-[14rem] flex flex-col justify-between
       "
     >
       <span
@@ -407,134 +413,137 @@ function PostCard({
         {post.category}
       </span>
 
-      {/* USER */}
-      <UserInfo
-        userImg={post.authorAvatar}
-        userName={post.author}
-        userBatch={post.authorCourse}
-      />
+      {/* Top: user + title */}
+      <div>
+        <UserInfo
+          userImg={post.authorAvatar}
+          userName={post.author}
+          userBatch={post.authorCourse}
+        />
 
-      {/* TITLE */}
-      <h5 className="font-[Poppins] font-semibold text-text-lm mt-2">
-        {post.title}
-      </h5>
-
-      {/* CONTENT */}
-      <div
-        ref={contentRef}
-        className="text-text-lighter-lm text-md leading-relaxed mt-2"
-        style={collapsed ? { maxHeight: "6rem", overflow: "hidden" } : {}}
-      >
-        {post.content}
+        <h5 className="font-[Poppins] font-semibold text-text-lm mt-2">
+          {post.title}
+        </h5>
       </div>
 
-      {showReadMore && (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setCollapsed((c) => !c);
-            if (collapsed) setReplying(true);
-          }}
-          className="text-accent-lm text-sm font-medium mt-1"
+      {/* Middle: content + tags (flex-grow so footer stays at bottom) */}
+      <div className="flex-grow mt-3">
+        <div
+          ref={contentRef}
+          className="text-text-lighter-lm text-md leading-relaxed"
+          style={collapsed ? { maxHeight: "6rem", overflow: "hidden" } : {}}
         >
-          {collapsed ? "Read more" : "Show less"}
-        </button>
-      )}
-
-      {/* TAGS */}
-      <div className="flex gap-2 flex-wrap mt-3">
-        <span className="font-bold bg-[#C23D00] text-primary-lm px-3 py-1.5 rounded-full text-sm">
-          #{post.category}
-        </span>
-        {post.tags.map((tag) => (
-          <span
-            key={tag}
-            className="font-bold bg-[#C23D00] text-primary-lm px-3 py-1.5 rounded-full text-sm"
-          >
-            #{tag}
-          </span>
-        ))}
-      </div>
-
-      {/* ACTIONS */}
-      <div className="flex gap-4 items-center mt-4">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onLike();
-          }}
-        >
-          <LikeButton />
-        </button>
-
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onOpenDetail();
-          }}
-        >
-          <CommentButton />
-        </button>
-
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            alert("Share clicked");
-          }}
-        >
-          <ShareButton />
-        </button>
-      </div>
-
-      {/* TIMESTAMP */}
-      <p className="text-xs text-text-lighter-lm mt-2">{post.timestamp}</p>
-
-      {/* INLINE REPLY (UNCHANGED LOGIC, STYLED) */}
-      {!collapsed && (
-        <div className="mt-4 bg-secondary-lm rounded-2xl p-6 border-2 border-stroke-grey">
-          {!replying ? (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setReplying(true);
-              }}
-              className="w-full text-left px-4 py-3 text-text-lighter-lm text-sm hover:bg-hover-lm rounded-lg transition"
-            >
-              Add a reply
-            </button>
-          ) : (
-            <div className="space-y-4">
-              <Textarea
-                placeholder="Add a reply..."
-                value={replyText}
-                onChange={(e) => setReplyText(e.target.value)}
-                className="border-none bg-secondary-lm text-text-lm focus-visible:ring-0"
-              />
-              <div className="flex justify-end gap-2">
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    setReplying(false);
-                    setReplyText("");
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="bg-accent-lm text-primary-lm"
-                  onClick={() => {
-                    onAddInlineComment(replyText);
-                    setReplyText("");
-                    setReplying(false);
-                  }}
-                >
-                  Comment
-                </Button>
-              </div>
-            </div>
-          )}
+          {post.content}
         </div>
-      )}
+
+        {showReadMore && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setCollapsed((c) => !c);
+              if (collapsed) setReplying(true);
+            }}
+            className="text-accent-lm text-sm font-medium mt-1"
+          >
+            {collapsed ? "Read more" : "Show less"}
+          </button>
+        )}
+
+        <div className="flex gap-2 flex-wrap mt-3">
+          <span className="font-bold bg-[#C23D00] text-primary-lm px-3 py-1.5 rounded-full text-sm">
+            #{post.category}
+          </span>
+          {post.tags.map((tag) => (
+            <span
+              key={tag}
+              className="font-bold bg-[#C23D00] text-primary-lm px-3 py-1.5 rounded-full text-sm"
+            >
+              #{tag}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Footer: actions + timestamp + inline reply area (if expanded) */}
+      <div>
+        <div className="flex gap-4 items-center mt-4">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onLike();
+            }}
+          >
+            <LikeButton />
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenDetail();
+            }}
+          >
+            <CommentButton />
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              alert("Share clicked");
+            }}
+          >
+            <ShareButton />
+          </button>
+        </div>
+
+        <p className="text-xs text-text-lighter-lm mt-2">{post.timestamp}</p>
+
+        {/* INLINE REPLY (kept in footer but reserves space only when visible) */}
+        {!collapsed && (
+          <div className="mt-4 bg-secondary-lm rounded-2xl p-6 border-2 border-stroke-grey">
+            {!replying ? (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setReplying(true);
+                }}
+                className="w-full text-left px-4 py-3 text-text-lighter-lm text-sm hover:bg-hover-lm rounded-lg transition"
+              >
+                Add a reply
+              </button>
+            ) : (
+              <div className="space-y-4">
+                <Textarea
+                  placeholder="Add a reply..."
+                  value={replyText}
+                  onChange={(e) => setReplyText(e.target.value)}
+                  className="border-none bg-secondary-lm text-text-lm focus-visible:ring-0"
+                />
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setReplying(false);
+                      setReplyText("");
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="bg-accent-lm text-primary-lm"
+                    onClick={() => {
+                      onAddInlineComment(replyText);
+                      setReplyText("");
+                      setReplying(false);
+                    }}
+                  >
+                    Comment
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

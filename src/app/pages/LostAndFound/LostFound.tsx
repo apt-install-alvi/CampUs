@@ -619,9 +619,9 @@ export function LostFound() {
                     commentsByPost[activePost.id]
                   )}
                   currentUser={{
-                    name: "You",
+                    name: "Alvi Binte Zamil",
                     avatar: "/placeholder.svg",
-                    course: "—",
+                    course: "CSE-23",
                   }}
                   onChange={(newComments) =>
                     handleCommentsChangeForActivePost(newComments)

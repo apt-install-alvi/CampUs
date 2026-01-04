@@ -7,6 +7,7 @@ import EventPostDetail from "./components/EventPostDetail";
 import { PostBody } from "@/components/PostBody";
 import { placeholderUser } from "../../../lib/placeholderUser";
 import { addNotification } from "../../../lib/notifications";
+
 type Segment = {
   id: string;
   name?: string;
@@ -95,17 +96,52 @@ export function Events() {
   }, [posts, filter]);
 
   function handleCreate(post: EventPostType) {
-    setPosts((prev) => [post, ...prev]);
+    // ensure created post has defaults so layout behavior stays consistent
+    const normalized: EventPostType = {
+      id: post.id ?? Date.now().toString(),
+      category: post.category ?? "workshop",
+      title: post.title ?? "Untitled",
+      author: post.author ?? "Unknown",
+      dept: post.dept ?? "",
+      excerpt: post.excerpt ?? "",
+      body: post.body ?? "",
+      image: typeof post.image !== "undefined" ? post.image : null,
+      segments: post.segments ?? [],
+      tags: post.tags ?? [],
+      likes: post.likes ?? 0,
+      comments: post.comments ?? 0,
+      shares: post.shares ?? 0,
+    };
+
+    setPosts((prev) => [normalized, ...prev]);
     addNotification({
       type: "event",
-      title: `New Event: ${post.title}`,
-      description: post.excerpt || post.body,
+      title: `New Event: ${normalized.title}`,
+      description: normalized.excerpt || normalized.body,
       path: "/events",
     });
   }
 
   function openDetail(post: EventPostType) {
-    setSelectedPost(post);
+    // normalize post before selecting to avoid missing properties or capitalization issues
+    const normalized: EventPostType = {
+      id: post.id ?? Date.now().toString(),
+      category: post.category ?? "workshop",
+      title: post.title ?? "Untitled",
+      author: post.author ?? "Unknown",
+      dept: post.dept ?? "",
+      excerpt: post.excerpt ?? "",
+      body: post.body ?? "",
+      image: typeof post.image !== "undefined" ? post.image : null,
+      segments: post.segments ?? [],
+      tags: post.tags ?? [],
+      likes: post.likes ?? 0,
+      comments: post.comments ?? 0,
+      shares: post.shares ?? 0,
+    };
+
+    setSelectedPost(normalized);
+    // keep UX friendly: scroll top to show detail (optional)
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -125,49 +161,53 @@ export function Events() {
             Click to announce an event here
           </button>
 
+          {/* FIX: keep the same width wrapper for both list and detail */}
           <div className="mt-6 flex items-center justify-center">
-            {selectedPost ? (
-              <EventPostDetail post={selectedPost} onBack={closeDetail} />
-            ) : (
-              <div className="flex flex-col gap-10 h-full w-[60vw]">
-                {filtered.length === 0 ? (
-                  <div className="flex items-center justify-center">
-                    <p className="text-text-lighter-lm text-lg">
-                      No posts in this category
-                    </p>
-                  </div>
-                ) : (
-                  filtered.map((p) => {
-                    const content = {
-                      text: p.excerpt ?? p.body ?? "",
-                      img: p.image ?? undefined,
-                    };
+            <div className="w-[60vw]">
+              {selectedPost ? (
+                // detail view is constrained to same width as the list view
+                <EventPostDetail post={selectedPost} onBack={closeDetail} />
+              ) : (
+                <div className="flex flex-col gap-10 h-full">
+                  {filtered.length === 0 ? (
+                    <div className="flex items-center justify-center">
+                      <p className="text-text-lighter-lm text-lg">
+                        No posts in this category
+                      </p>
+                    </div>
+                  ) : (
+                    filtered.map((p) => {
+                      const content = {
+                        text: p.excerpt ?? p.body ?? "",
+                        img: p.image ?? undefined,
+                      };
 
-                    const user = {
-                      ...placeholderUser,
-                      name: p.author,
-                      batch: p.dept ?? "Student",
-                    };
+                      const user = {
+                        ...placeholderUser,
+                        name: p.author,
+                        batch: p.dept ?? "Student",
+                      };
 
-                    return (
-                      <div
-                        key={p.id}
-                        onClick={() => openDetail(p)}
-                        className="cursor-pointer flex flex-col gap-4"
-                      >
-                        <PostBody
-                          title={p.title}
-                          content={content}
-                          user={user}
-                          tags={p.tags}
-                          category={p.category}
-                        />
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            )}
+                      return (
+                        <div
+                          key={p.id}
+                          onClick={() => openDetail(p)}
+                          className="cursor-pointer flex flex-col gap-4"
+                        >
+                          <PostBody
+                            title={p.title}
+                            content={content}
+                            user={user}
+                            tags={p.tags}
+                            category={p.category}
+                          />
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
