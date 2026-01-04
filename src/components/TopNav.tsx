@@ -11,6 +11,11 @@ import signoutIcon from "../assets/icons/logout_icon.svg";
 import { UserInfo } from "./UserInfo";
 import { useEffect, useState } from "react";
 import NotificationsDrawer from "./NotificationsDrawer";
+import MessageDrawer from "@/app/pages/Messaging/components/MessageDrawer";
+import {
+  getActiveUserId,
+  getThreads,
+} from "@/app/pages/Messaging/backend/chatStore";
 import {
   subscribe as notiSubscribe,
   getUnreadCount,
@@ -25,6 +30,11 @@ export function TopNav() {
   const [isOpen, setIsOpen] = useState(false);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [hasUnread, setHasUnread] = useState(false);
+  const [isMsgOpen, setIsMsgOpen] = useState(false);
+  const [msgTarget, setMsgTarget] = useState<{
+    id: string | null;
+    name?: string;
+  } | null>(null);
 
   useEffect(() => {
     // initialize badge and subscribe to changes
@@ -59,8 +69,14 @@ export function TopNav() {
           )}
         </button>
 
-        <button>
-          <img src={messageIcon} className="size-6 cursor-pointer"></img>
+        <button
+          onClick={() => {
+            // Always open inbox list first
+            setMsgTarget({ id: null });
+            setIsMsgOpen(true);
+          }}
+        >
+          <img src={messageIcon} className="size-6 cursor-pointer" />
         </button>
 
         <button
@@ -73,6 +89,15 @@ export function TopNav() {
         {isOpen && <UserClickModal isOpen={isOpen}></UserClickModal>}
       </div>
       <NotificationsDrawer open={isNotifOpen} onOpenChange={setIsNotifOpen} />
+      {isMsgOpen && (
+        <MessageDrawer
+          open={isMsgOpen}
+          onOpenChange={setIsMsgOpen}
+          userId={msgTarget?.id || (undefined as any)}
+          userName={msgTarget?.name || ""}
+          avatarSrc={undefined}
+        />
+      )}
     </nav>
   );
 }

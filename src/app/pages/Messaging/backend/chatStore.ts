@@ -20,10 +20,26 @@ type Listener = (state: {
   activeUserId: string | null;
 }) => void;
 
+const STORAGE_KEY = "app.chat.v1";
 const state: { threads: ChatThread[]; activeUserId: string | null } = {
   threads: [],
   activeUserId: null,
 };
+
+// hydrate from localStorage
+(function hydrate() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as {
+        threads?: ChatThread[];
+        activeUserId?: string | null;
+      };
+      state.threads = Array.isArray(parsed.threads) ? parsed.threads : [];
+      state.activeUserId = parsed.activeUserId ?? null;
+    }
+  } catch {}
+})();
 
 const listeners: Listener[] = [];
 
@@ -32,6 +48,15 @@ function notify() {
     threads: [...state.threads],
     activeUserId: state.activeUserId,
   };
+  try {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        threads: state.threads,
+        activeUserId: state.activeUserId,
+      })
+    );
+  } catch {}
   listeners.forEach((l) => l(snapshot));
 }
 

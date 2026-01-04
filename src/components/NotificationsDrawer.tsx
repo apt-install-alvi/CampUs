@@ -76,8 +76,10 @@ export function NotificationsDrawer({
           height: `calc(100vh - ${NAVBAR_HEIGHT + NAVBAR_SPACING}px)`,
         }}
       >
-        <DrawerHeader className="border-b border-stroke-grey">
-          <DrawerTitle>Notifications</DrawerTitle>
+        <DrawerHeader className="border-b border-stroke-grey bg-secondary-lm">
+          <DrawerTitle className="text-accent-lm font-semibold">
+            Notifications
+          </DrawerTitle>
           <DrawerDescription className="text-text-lighter-lm">
             Stay updated with events and new posts
           </DrawerDescription>
