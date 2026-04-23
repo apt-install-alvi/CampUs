@@ -2,9 +2,9 @@
 An online hub and forum that encourages collaboration and communication between under-graduate students. It helps students in finding more opportunities to increase their skillset by collaborating with others and participating in various events, helps them preserve and share study resources easily and improve their overall teamwork and communication skills by engaging with the community. 
 
 ## Documentation
-[SRS Document](https://github.com/user-attachments/files/27017363/CampUs_SRS_Document.pdf)
+[SRS Document](https://github.com/user-attachments/files/27017363/CampUs_SRS_Document.pdf) (PDF)
 
-[User Manual](https://github.com/user-attachments/files/27017423/CampUs_User_Manual.2.pdf)
+[User Manual](https://github.com/user-attachments/files/27017423/CampUs_User_Manual.2.pdf) (PDF)
 
 ## Features
 - An intuitive Registration process that supports both OCR scanning of ID cards for automatic information input as well as manual input.
@@ -71,22 +71,22 @@ https://www.figma.com/community/file/1128675316324063134/30-minimal-patterns-bri
 https://www.figma.com/community/file/931094174831888421/empty-state-illustrations-freebies
 
 ## Contributors
-Alvi Binte Zamil - alvi.binte.zamil@gmail.com
+#### [Alvi Binte Zamil](https://github.com/apt-install-alvi) - alvi.binte.zamil@gmail.com
 - Lead front-end designer & developer
 - Developer of User Profile System, Messaging System and Study Portal
 - End-to-end tester
 
-Than Than Thay - thanmumu13@gmail.com
+#### [Than Than Thay](https://github.com/Thay-bleh) - thanmumu13@gmail.com
 - Co-frontend designer & developer
 - Developer of Events Portal, User Feed and Collaboration Hub
 - Lead requirements engineer
 
-Yeaser Ahmad - yeaser.007ahmad@gmail.com
+#### [Yeaser Ahmad](https://github.com/Amaterasu-u) - yeaser.007ahmad@gmail.com
 - Co-frontend designer & developer
 - Developer of Registration System, Login System and Lost & Found Portal
 - Documentation
 
-Md. Ariful Islam - arifulm926@gmail.com
+#### [Md. Ariful Islam](https://github.com/arifulmist) - arifulm926@gmail.com
 - Co-frontend designer & developer
 - Developer of Notifications System, Email server setup and co-developer of Study Portal
 - Hosting and Deployment
