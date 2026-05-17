@@ -25,30 +25,6 @@ An online hub and forum that encourages collaboration and communication between 
 The project is currently hosted at:
 https://campusbd-pearl.vercel.app/
 
-**or**
-
-### Manual Setup
-_Manual setup requires both **git** and **Node.js** to be installed on your system._
-
-1. Navigate to the correct directory you wish to setup the repository in either in your IDE's built-in Git terminal or in Git Bash.
-2. Clone the repository using:
-```
-git clone https://github.com/apt-install-alvi/CampUs
-```
-3. Open a Node.js cmd prompt at the root directory of the repository (or use the built-in powershell terminal inside your IDE)
-4. Run the project with the following command:
-```
-npm run dev
-```
-5. In a separate Node terminal(open at the same location), run the email server to recieve an OTP during the login process:
-```
-npm run email-server
-```
-Ensure you are in the root directory when running either of the above two commands and keep both terminals open when in use.
-If all steps have been executed correctly, a new browser window should open at http://localhost:5173/ and land you on the Signup page.
-
-Note that the system still works without step 5, you'll just receive a randomly generated OTP to use as a fallback instead of receiving one in your email. _This is not intended behaviour and is strictly for development._
-
 ## Tech Stack
 - ReactJS + Vite
 - Tailwind CSS
