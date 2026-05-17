@@ -19,10 +19,8 @@ An online hub and forum that encourages collaboration and communication between 
 - A real-time one-on-one Messaging System
 - A real-time Notifications system that supports 6 different types of notifications.
 
-## How to use
-
-### Visit Site
-The project is currently hosted at:
+## Visit Site
+The project is currently hosted at
 https://campusbd-pearl.vercel.app/
 
 ## Tech Stack
