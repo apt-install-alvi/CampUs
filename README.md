@@ -47,7 +47,7 @@ https://www.figma.com/community/file/931094174831888421/empty-state-illustration
 ## Contributors
 #### [Alvi Binte Zamil](https://github.com/apt-install-alvi) - alvi.binte.zamil@gmail.com
 - Lead front-end designer & developer
-- Developer of User Profile System, Messaging System and Study Portal
+- Developer of User Profile System, Messaging System, Revamped Notifications System and Study Portal
 - End-to-end tester
 
 #### [Than Than Thay](https://github.com/Thay-bleh) - thanmumu13@gmail.com
@@ -62,7 +62,7 @@ https://www.figma.com/community/file/931094174831888421/empty-state-illustration
 
 #### [Md. Ariful Islam](https://github.com/arifulmist) - arifulm926@gmail.com
 - Co-frontend designer & developer
-- Developer of Notifications System, Email server setup and co-developer of Study Portal
+- Developer of original Notifications System, Email server setup and co-developer of Study Portal
 - Hosting and Deployment
 
 For any bugs or suggestions, please open a new Issue and we'll get to it whenever possible.
