@@ -22,6 +22,7 @@ An online hub and forum that encourages collaboration and communication between 
 ## Visit Site
 The project is currently hosted at
 https://campusbd-pearl.vercel.app/
+There is a known bug with the hosted version (not present in the development version) where posting a new Event post shows an error page despite accurately updating the database. Returning to the Home page via the browser's address bar and redirecting to the Events page displays the post as correctly posted. This is being worked on by the team.
 
 ## Tech Stack
 - ReactJS + Vite
